@@ -1,0 +1,102 @@
+spring:
+  application:
+    name: om-communication-portal
+
+  # ─── Default Profile: H2 (Local Development) ──────────────────────────────────
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:h2}
+
+  datasource:
+    url: jdbc:h2:mem:omportaldb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # ─── Mail Settings (Dev Defaults) ───────────────────────────────────────────
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:25}
+    username: ${MAIL_USERNAME:mock}
+    password: ${MAIL_PASSWORD:mock}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+# ─── JWT Settings (Dev Default) ───────────────────────────────────────────────
+jwt:
+  secret: ${JWT_SECRET:om_comm_super_secret_jwt_key_2024_very_long_and_secure_key_here_min_256_bits}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}   # 24 hours
+
+# ─── Razorpay Credentials (Dev Default) ───────────────────────────────────────
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_key_id}
+  key-secret: ${RAZORPAY_KEY_SECRET:rzp_test_key_secret}
+
+# ─── Server ───────────────────────────────────────────────────────────────────
+server:
+  port: ${PORT:8080}
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+
+logging:
+  level:
+    com.omcommunication: INFO
+    org.springframework.security: WARN
+
+---
+# ─── PostgreSQL Profile (Production — Requires Strict Env Vars) ────────────────
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
+
+# Production override — require env vars without insecure fallbacks
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID}
+  key-secret: ${RAZORPAY_KEY_SECRET}

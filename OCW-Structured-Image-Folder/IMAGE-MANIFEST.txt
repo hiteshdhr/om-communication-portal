@@ -1,0 +1,41 @@
+01 | 03-services/epabx-telecom/epabx-office-cabling-installation.jpg | Office telecom/network cabinet installation
+02 | 03-services/turnkey-projects/turnkey-site-planning-team.jpg | Project/site planning; useful for turnkey section
+03 | 03-services/structured-cabling/structured-cabling-server-rack.jpg | Large structured cabling rack
+04 | 03-services/structured-cabling/network-rack-technician.jpg | Technician working on network/server rack
+05 | 03-services/structured-cabling/network-cabinet-equipment.jpg | Network cabinet/equipment
+06 | 03-services/structured-cabling/patch-panel-cable-management.jpg | Patch panel and cable management
+07 | 03-services/cctv/cctv-warehouse-surveillance.jpg | Warehouse CCTV surveillance
+08 | 03-services/cctv/cctv-technician-installation.jpg | Technician installing outdoor CCTV
+09 | 03-services/structured-cabling/cat6-cabling-office-installation.jpg | Structured/CAT6 cabling installation
+10 | 03-services/biometric-access-control/biometric-terminal-installation.jpg | Biometric terminal installation
+11 | 08-review-needed/vdp-promotional-graphic-review.png | VDP graphic contains embedded marketing text; better not use as-is
+12 | 03-services/epabx-telecom/epabx-system-technician.jpg | EPABX/telephone system technician
+13 | 02-homepage/services-preview/services-4-panel-collage.png | Services collage: AMC, structured cabling, conduit wiring, turnkey
+14 | 02-homepage/hero/security-surveillance-hero.png | Hero composite; security/surveillance landing visual
+15 | 01-brand/ocw-logo.png | OCW logo
+16 | 03-services/cctv/cctv-residential-installation.jpg | Residential CCTV installation
+17 | 03-services/cctv/cctv-dome-installation.jpg | Indoor/commercial dome CCTV installation
+18 | 03-services/cctv/cctv-technician-ceiling-installation.jpg | CCTV installation technician
+19 | 03-services/biometric-access-control/access-control-gate.jpg | Access control/security entrance
+20 | 03-services/turnkey-projects/turnkey-project-team.jpg | Turnkey project team
+21 | 03-services/biometric-access-control/access-control-technician.jpg | Access control installation
+22 | 03-services/structured-cabling/server-rack-cable-installation.jpg | Server rack cabling technician
+23 | 03-services/biometric-access-control/door-entry-system-installation.jpg | Door entry/access system installation
+24 | 03-services/vdp/vdp-indoor-monitor.jpg | Video door phone indoor monitor
+25 | 03-services/biometric-access-control/rfid-card-access-control.jpg | RFID/card access reader
+26 | 03-services/vdp/vdp-user-monitoring.jpg | User operating video door phone
+27 | 03-services/cctv/cctv-exterior-installation.jpg | Outdoor CCTV installation
+28 | 03-services/cctv/cctv-industrial-monitoring.jpg | Industrial CCTV installation
+29 | 03-services/epabx-telecom/epabx-telephone-console.jpg | EPABX/office telephone console
+30 | 03-services/epabx-telecom/telecom-cabling-technician.jpg | Telecom installation/maintenance
+31 | 04-industries/industrial/industrial-cctv-factory.jpg | Factory/industrial CCTV
+32 | 04-industries/commercial/security-control-room.jpg | Commercial security monitoring/control room
+33 | 03-services/biometric-access-control/biometric-access-reader.jpg | Biometric access reader
+34 | 03-services/cctv/cctv-technician-installation-2.jpg | Two-technician CCTV installation
+35 | 03-services/conduit-wiring/conduit-cable-installation.jpg | Conduit/cable installation
+36 | 04-industries/commercial/commercial-cctv-monitoring.jpg | Commercial CCTV monitoring
+37 | 03-services/epabx-telecom/epabx-office-phones.jpg | Office EPABX/telephone setup
+38 | 05-about/technician-client-consultation.jpg | Technician discussing installation/project with client
+39 | 03-services/structured-cabling/server-network-rack.jpg | Server/network rack
+40 | 03-services/epabx-telecom/telecom-rack-technician.jpg | Technician working on telecom rack
+41 | 03-services/structured-cabling/structured-cabling-technician.jpg | Structured cabling technician
