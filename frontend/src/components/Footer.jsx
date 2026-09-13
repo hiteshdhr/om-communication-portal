@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Phone, MapPin, Shield, ArrowRight } from 'lucide-react'
 import logo from '../assets/ocw-logo.png'
+import StickyMobileBar from './StickyMobileBar'
 
 export default function Footer() {
   return (
@@ -213,6 +214,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
+      <StickyMobileBar />
     </footer>
   )
 }

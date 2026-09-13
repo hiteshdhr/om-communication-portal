@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { MapPin, Layers, Wrench, Settings, CheckCircle2, ShieldCheck } from 'lucide-react'
 
 const PROCESS_STEPS = [
@@ -47,14 +48,22 @@ export default function ProcessTimeline() {
         padding: 'clamp(56px, 7vw, 88px) 0',
         background: '#FFFFFF',
         borderBottom: '1px solid #E5E7EB',
+        position: 'relative',
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
         {/* Header */}
-        <div style={{ marginBottom: 44 }}>
-          <div className="eyebrow">Engineering Methodology</div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5 }}
+          style={{ marginBottom: 44 }}
+        >
+          <div className="eyebrow-numbered">03 / HOW WE EXECUTE</div>
           <h2
             id="methodology-heading"
+            className="heading-accent-left"
             style={{
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
@@ -69,17 +78,23 @@ export default function ProcessTimeline() {
           <p style={{ color: '#59636F', fontSize: '1rem', margin: 0, maxWidth: 580 }}>
             Every project follows a systematic 6-stage engineering lifecycle ensuring zero blind spots and predictable post-handover reliability.
           </p>
-        </div>
+        </motion.div>
 
         {/* ── 6-Step Editorial Timeline ── */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
           gap: 16,
+          position: 'relative',
         }} className="process-grid">
           {PROCESS_STEPS.map((step, idx) => (
-            <div
+            <motion.div
               key={step.step}
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -4, borderColor: '#B4233C' }}
               style={{
                 background: '#F6F7F8',
                 border: '1px solid #E5E7EB',
@@ -88,6 +103,7 @@ export default function ProcessTimeline() {
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
+                transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
               }}
             >
               <div style={{
@@ -128,7 +144,7 @@ export default function ProcessTimeline() {
               }}>
                 {step.desc}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

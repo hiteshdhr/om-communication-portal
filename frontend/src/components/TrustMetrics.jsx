@@ -1,4 +1,4 @@
-import { Calendar, Clock, MapPin, Wrench } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const METRICS = [
   {
@@ -34,7 +34,7 @@ export default function TrustMetrics() {
       style={{
         background: '#F6F7F8',
         borderBottom: '1px solid #E5E7EB',
-        padding: '32px 0',
+        padding: '36px 0',
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
@@ -44,8 +44,12 @@ export default function TrustMetrics() {
           gap: 24,
         }}>
           {METRICS.map((m, i) => (
-            <div
+            <motion.div
               key={m.label}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -57,38 +61,39 @@ export default function TrustMetrics() {
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4 }}>
                 <span style={{
                   fontFamily: "'Manrope', 'Inter', sans-serif",
-                  fontSize: '2.2rem',
+                  fontSize: 'clamp(2.2rem, 3.2vw, 3rem)',
                   fontWeight: 900,
                   color: '#111827',
                   lineHeight: 1,
+                  letterSpacing: '-0.03em',
                 }}>
                   {m.number}
                 </span>
                 <span style={{
-                  fontSize: '0.78rem',
+                  fontSize: '0.75rem',
                   fontWeight: 800,
                   color: '#B4233C',
-                  letterSpacing: '0.06em',
+                  letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                 }}>
                   {m.label}
                 </span>
               </div>
 
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1F2937', marginBottom: 2 }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#111827', marginBottom: 3 }}>
                 {m.sub}
               </div>
-              <div style={{ fontSize: '0.78rem', color: '#59636F', lineHeight: 1.4 }}>
+              <div style={{ fontSize: '0.8rem', color: '#59636F', lineHeight: 1.5 }}>
                 {m.desc}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
       <style>{`
         @media (max-width: 768px) {
-          .metric-column { border-left: none !important; padding-left: 0 !important; border-top: 1px solid #E5E7EB; padding-top: 16px; }
+          .metric-column { border-left: none !important; padding-left: 0 !important; border-top: 1px solid #E5E7EB; padding-top: 20px; }
           .metric-column:first-child { border-top: none; padding-top: 0; }
         }
       `}</style>

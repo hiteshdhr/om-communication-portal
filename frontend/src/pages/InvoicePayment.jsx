@@ -20,9 +20,13 @@ export default function InvoicePayment() {
       .finally(() => setLoading(false))
   }, [invoiceNumber])
 
+  const [gatewayError, setGatewayError] = useState(null)
+  const [showTechDetails, setShowTechDetails] = useState(false)
+
   async function handlePay() {
     if (!invoice || invoice.status === 'PAID') return
     setPaying(true)
+    setGatewayError(null)
 
     // Load Razorpay script dynamically
     const scriptLoaded = await new Promise(resolve => {
@@ -36,43 +40,51 @@ export default function InvoicePayment() {
     })
 
     if (!scriptLoaded) {
-      toast.error('Failed to load payment gateway. Please try again.')
+      setGatewayError('Failed to load payment gateway script.')
+      toast.error("Payment service unavailable. We couldn't connect to Razorpay.")
       setPaying(false)
       return
     }
 
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_key',
-      amount: Math.round(Number(invoice.totalAmount) * 100), // paise
-      currency: 'INR',
-      name: 'OM Communication',
-      description: `Invoice ${invoice.invoiceNumber}`,
-      order_id: invoice.razorpayOrderId,
-      handler: async function (response) {
-        try {
-          await api.post(`/public/invoices/${invoiceNumber}/verify-payment`, {
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          })
-          setPaid(true)
-          toast.success('Payment successful! Your invoice is now marked as PAID.')
-        } catch {
-          toast.error('Payment verification failed. Please contact support.')
-        }
-        setPaying(false)
-      },
-      modal: { ondismiss: () => setPaying(false) },
-      prefill: {
-        name: invoice.clientName,
-        contact: invoice.clientPhone || '',
-        email: invoice.clientEmail || '',
-      },
-      theme: { color: '#B4233C' },
-    }
+    try {
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_key',
+        amount: Math.round(Number(invoice.totalAmount) * 100), // paise
+        currency: 'INR',
+        name: 'OM Communication',
+        description: `Invoice ${invoice.invoiceNumber}`,
+        order_id: invoice.razorpayOrderId,
+        handler: async function (response) {
+          try {
+            await api.post(`/public/invoices/${invoiceNumber}/verify-payment`, {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            })
+            setPaid(true)
+            toast.success('Payment successful! Your invoice is now marked as PAID.')
+          } catch (err) {
+            setGatewayError(err.response?.data?.error || 'Payment verification error')
+            toast.error('Payment verification failed. Please contact support.')
+          }
+          setPaying(false)
+        },
+        modal: { ondismiss: () => setPaying(false) },
+        prefill: {
+          name: invoice.clientName,
+          contact: invoice.clientPhone || '',
+          email: invoice.clientEmail || '',
+        },
+        theme: { color: '#B4233C' },
+      }
 
-    const rzp = new window.Razorpay(options)
-    rzp.open()
+      const rzp = new window.Razorpay(options)
+      rzp.open()
+    } catch (err) {
+      setGatewayError(err.message || 'Razorpay Gateway Exception')
+      toast.error("Payment service unavailable. We couldn't connect to Razorpay.")
+      setPaying(false)
+    }
   }
 
   if (loading) return (
@@ -194,6 +206,33 @@ export default function InvoicePayment() {
               </span>
             </div>
           </div>
+
+          {/* Gateway Error Banner */}
+          {gatewayError && (
+            <div style={{ marginTop: 20, padding: 16, background: '#FFF5F5', border: '1px solid #FEB2B2', borderRadius: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                <AlertCircle size={18} color="#C93636" style={{ marginTop: 2 }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.875rem', color: '#9B2C2C', marginBottom: 4 }}>
+                    Payment service unavailable. We couldn't connect to Razorpay. Invoice management is still available.
+                  </div>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 8 }}>
+                    <button onClick={handlePay} className="btn-secondary" style={{ padding: '4px 12px', minHeight: 32, fontSize: '0.75rem' }}>
+                      Retry Payment
+                    </button>
+                    <button onClick={() => setShowTechDetails(!showTechDetails)} style={{ background: 'none', border: 'none', color: '#742A2A', textDecoration: 'underline', fontSize: '0.75rem', cursor: 'pointer', padding: 0 }}>
+                      {showTechDetails ? 'Hide technical details' : 'View technical details'}
+                    </button>
+                  </div>
+                  {showTechDetails && (
+                    <div style={{ marginTop: 8, padding: 8, background: '#FFFFFF', borderRadius: 4, fontFamily: 'monospace', fontSize: '0.7rem', color: '#742A2A', border: '1px solid #FED7D7' }}>
+                      {gatewayError}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Payment Button */}
           {!isAlreadyPaid ? (

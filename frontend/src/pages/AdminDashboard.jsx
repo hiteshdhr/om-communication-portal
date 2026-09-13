@@ -565,21 +565,37 @@ export default function AdminDashboard() {
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
-  const tabs = [
-    { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'leads', label: 'Leads & Enquiries', icon: Inbox },
-    { id: 'surveys', label: 'Site Surveys', icon: Wrench },
-    { id: 'tickets', label: 'Support Desk', icon: TicketIcon },
-    { id: 'invoices', label: 'Invoices', icon: ReceiptText },
+  const navGroups = [
+    {
+      title: 'OVERVIEW',
+      items: [
+        { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+      ]
+    },
+    {
+      title: 'OPERATIONS',
+      items: [
+        { id: 'leads', label: 'Leads & Enquiries', icon: Inbox },
+        { id: 'surveys', label: 'Site Surveys', icon: Wrench },
+        { id: 'tickets', label: 'Support Desk', icon: TicketIcon },
+        { id: 'invoices', label: 'Invoices', icon: ReceiptText },
+      ]
+    },
+    {
+      title: 'SYSTEM',
+      items: [
+        { id: 'settings', label: 'Settings & Log', icon: FileText },
+      ]
+    }
   ]
 
   const metricCards = [
-    { label: 'Total Inquiries', value: metrics?.totalInquiries ?? '—', icon: Inbox, color: '#C5A03F', sub: 'All time service leads' },
-    { label: 'New Leads', value: metrics?.newLeads ?? '—', icon: TrendingUp, color: '#06b6d4', sub: 'Awaiting initial contact' },
-    { label: 'Site Surveys', value: metrics?.siteSurveysScheduled ?? '—', icon: Wrench, color: '#e879f9', sub: 'Scheduled inspections' },
-    { label: 'Active Complaints', value: metrics?.activeComplaints ?? '—', icon: AlertTriangle, color: '#ef4444', sub: 'Open + In-progress tickets' },
-    { label: 'Total Revenue', value: metrics?.totalRevenue !== undefined ? fmtCurrency(metrics.totalRevenue) : '—', icon: DollarSign, color: '#22c55e', sub: 'Paid invoices' },
-    { label: 'Outstanding', value: metrics?.outstandingPayments !== undefined ? fmtCurrency(metrics.outstandingPayments) : '—', icon: FileText, color: '#f59e0b', sub: 'Pending invoices' },
+    { label: 'Total Inquiries', value: metrics?.totalInquiries ?? '—', icon: Inbox, color: '#B4233C', sub: 'All time service leads' },
+    { label: 'New Leads', value: metrics?.newLeads ?? '—', icon: TrendingUp, color: '#3E6F8F', sub: 'Awaiting initial contact' },
+    { label: 'Site Surveys', value: metrics?.siteSurveysScheduled ?? '—', icon: Wrench, color: '#B7791F', sub: 'Scheduled inspections' },
+    { label: 'Active Complaints', value: metrics?.activeComplaints ?? '—', icon: AlertTriangle, color: '#C93636', sub: 'Open + In-progress tickets' },
+    { label: 'Total Revenue', value: metrics?.totalRevenue !== undefined ? fmtCurrency(metrics.totalRevenue) : '—', icon: DollarSign, color: '#18864B', sub: 'Paid invoices' },
+    { label: 'Outstanding', value: metrics?.outstandingPayments !== undefined ? fmtCurrency(metrics.outstandingPayments) : '—', icon: FileText, color: '#B7791F', sub: 'Pending invoices' },
   ]
 
   const filteredInquiries = inquiries.filter(i =>
@@ -589,48 +605,64 @@ export default function AdminDashboard() {
   )
 
   return (
-    <div style={{ minHeight: '100vh', background: '#040C1A', display: 'flex', color: '#F8FAFC' }}>
+    <div style={{ minHeight: '100vh', background: '#F6F7F8', display: 'flex', color: '#111827' }}>
       {/* Sidebar */}
-      <aside style={{ width: 260, background: '#0B1E38', borderRight: '1px solid rgba(197,160,63,0.2)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-        <div style={{ padding: '24px 20px', borderBottom: '1px solid rgba(197,160,63,0.15)', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <aside style={{ width: 260, background: '#17191D', borderRight: '1px solid #2D323B', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+        <div style={{ padding: '24px 20px', borderBottom: '1px solid #2D323B', display: 'flex', alignItems: 'center', gap: 12 }}>
           <img src={logo} alt="Logo" style={{ width: 38, height: 38, objectFit: 'contain', flexShrink: 0 }} />
           <div>
             <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFFFFF' }}>OCW Operations</div>
-            <div style={{ fontSize: '0.7rem', color: '#C5A03F', fontWeight: 600 }}>Admin Workspace</div>
+            <div style={{ fontSize: '0.7rem', color: '#B4233C', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Admin Command Center</div>
           </div>
         </div>
 
-        <nav style={{ padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-          {tabs.map(t => {
-            const active = activeTab === t.id
-            return (
-              <button
-                key={t.id}
-                onClick={() => setActiveTab(t.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  padding: '11px 14px',
-                  borderRadius: 10,
-                  cursor: 'pointer',
-                  border: 'none',
-                  background: active ? 'rgba(197,160,63,0.15)' : 'transparent',
-                  color: active ? '#FBF6E0' : '#A8BCCC',
-                  fontWeight: active ? 700 : 500,
-                  fontSize: '0.875rem',
-                  textAlign: 'left',
-                  transition: 'all 0.15s'
-                }}
-              >
-                <t.icon size={18} color={active ? '#C5A03F' : '#A8BCCC'} />
-                <span>{t.label}</span>
-              </button>
-            )
-          })}
+        <nav style={{ padding: '20px 12px', display: 'flex', flexDirection: 'column', gap: 20, flex: 1, overflowY: 'auto' }}>
+          {navGroups.map(group => (
+            <div key={group.title}>
+              <div style={{
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                color: '#6B7280',
+                letterSpacing: '0.12em',
+                padding: '0 12px 8px',
+                textTransform: 'uppercase',
+              }}>
+                {group.title}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {group.items.map(t => {
+                  const active = activeTab === t.id
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => setActiveTab(t.id)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 12,
+                        padding: '10px 14px',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                        border: 'none',
+                        background: active ? '#B4233C' : 'transparent',
+                        color: active ? '#FFFFFF' : '#9CA3AF',
+                        fontWeight: active ? 700 : 500,
+                        fontSize: '0.875rem',
+                        textAlign: 'left',
+                        transition: 'all 0.15s'
+                      }}
+                    >
+                      <t.icon size={18} color={active ? '#FFFFFF' : '#9CA3AF'} />
+                      <span>{t.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        <div style={{ padding: 16, borderTop: '1px solid rgba(197,160,63,0.15)' }}>
+        <div style={{ padding: 16, borderTop: '1px solid #2D323B' }}>
           <button
             onClick={logout}
             style={{
@@ -638,10 +670,10 @@ export default function AdminDashboard() {
               alignItems: 'center',
               gap: 10,
               padding: '10px 14px',
-              borderRadius: 8,
+              borderRadius: 6,
               cursor: 'pointer',
-              border: 'none',
-              background: 'rgba(239,68,68,0.12)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              background: 'rgba(239, 68, 68, 0.08)',
               color: '#f87171',
               fontWeight: 600,
               fontSize: '0.84rem',

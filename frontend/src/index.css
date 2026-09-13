@@ -18,6 +18,12 @@
   --text-on-dark:   #FFFFFF;
   --text-on-dark-sub: #9CA3AF;
 
+/* ── Functional Accents & Info ── */
+  --color-success:  #18864B;
+  --color-warning:  #B7791F;
+  --color-error:    #C93636;
+  --color-info:     #3E6F8F;
+
   /* ── Functional Accents (Technical Red) ── */
   --red-primary:    #B4233C;
   --red-secondary:  #8F3042;
@@ -34,9 +40,10 @@
   --border-charcoal: #2D323B;
 
   /* ── Status Colors ── */
-  --success: #16A34A;
-  --danger:  #DC2626;
-  --warning: #D97706;
+  --success: #18864B;
+  --danger:  #C93636;
+  --warning: #B7791F;
+  --info:    #3E6F8F;
 
   /* ── Typography Scale ── */
   --font-display: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -141,10 +148,37 @@ h1, h2, h3, h4, h5, h6 {
   gap: 6px;
   font-size: 0.75rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--red-primary);
   margin-bottom: 12px;
+}
+
+.eyebrow-numbered {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red-primary);
+  margin-bottom: 12px;
+}
+
+.heading-accent-left {
+  position: relative;
+  padding-left: 16px;
+}
+.heading-accent-left::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  background: var(--red-primary);
+  border-radius: 2px;
 }
 
 .section-title {

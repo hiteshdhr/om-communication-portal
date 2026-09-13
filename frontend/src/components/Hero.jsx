@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Shield, CheckCircle2, PhoneCall, MapPin } from 'lucide-react'
+import { ArrowRight, Shield, CheckCircle2, MapPin } from 'lucide-react'
 import { images } from '../assets/imageMap'
 
 export default function Hero() {
@@ -24,9 +24,13 @@ export default function Hero() {
         }} className="hero-grid">
           
           {/* ── Left Column: Editorial Value Proposition ── */}
-          <div>
-            {/* Eyebrow */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Editorial Numbered Eyebrow */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
               <span style={{
                 width: 6,
                 height: 6,
@@ -38,17 +42,17 @@ export default function Hero() {
                 fontSize: '0.75rem',
                 fontWeight: 800,
                 color: '#B4233C',
-                letterSpacing: '0.12em',
+                letterSpacing: '0.14em',
                 textTransform: 'uppercase',
               }}>
-                Security &amp; Telecom Solutions
+                01 / ENTERPRISE INFRASTRUCTURE
               </span>
             </div>
 
             {/* Main Headline */}
-            <h1 style={{
+            <h1 className="heading-accent-left" style={{
               fontFamily: "'Manrope', 'Inter', sans-serif",
-              fontSize: 'clamp(2.4rem, 5vw, 4.2rem)',
+              fontSize: 'clamp(2.5rem, 5.2vw, 4.2rem)',
               fontWeight: 900,
               lineHeight: 1.08,
               letterSpacing: '-0.035em',
@@ -60,34 +64,49 @@ export default function Hero() {
             </h1>
 
             {/* Supporting Description */}
-            <p style={{
-              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
-              lineHeight: 1.65,
-              color: '#59636F',
-              margin: '0 0 28px',
-              maxWidth: 540,
-            }}>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+                lineHeight: 1.65,
+                color: '#59636F',
+                margin: '0 0 28px',
+                maxWidth: 540,
+              }}
+            >
               CCTV, access control, EPABX, networking and maintenance solutions designed around real business environments.
-            </p>
+            </motion.p>
 
             {/* CTAs */}
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 32 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 32 }}
+            >
               <Link to="/services" className="btn-primary">
                 Explore Solutions <ArrowRight size={16} />
               </Link>
               <Link to="/quote" className="btn-secondary">
                 Talk to an Expert →
               </Link>
-            </div>
+            </motion.div>
 
             {/* Technical Capability Badges */}
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 16,
-              paddingTop: 20,
-              borderTop: '1px solid #F0F2F5',
-            }}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 16,
+                paddingTop: 20,
+                borderTop: '1px solid #F0F2F5',
+              }}
+            >
               {[
                 'Turnkey Project Execution',
                 'Delhi-NCR Field Teams',
@@ -100,13 +119,18 @@ export default function Hero() {
                   </span>
                 </div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* ── Right Column: Authentic Project Installation Visual ── */}
-          <div style={{ position: 'relative' }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{ position: 'relative' }}
+          >
             <div style={{
-              borderRadius: 16,
+              borderRadius: 12,
               overflow: 'hidden',
               border: '1px solid #E5E7EB',
               boxShadow: '0 16px 40px rgba(0, 0, 0, 0.07)',
@@ -114,7 +138,10 @@ export default function Hero() {
               height: 'clamp(320px, 42vw, 440px)',
               position: 'relative',
             }}>
-              <img
+              <motion.img
+                initial={{ scale: 1.04 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 1, ease: 'easeOut' }}
                 src={images.projects.controlRoom}
                 alt="Corporate security control room and CCTV monitoring installation by Om Communication Work"
                 loading="eager"
@@ -153,7 +180,7 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>
