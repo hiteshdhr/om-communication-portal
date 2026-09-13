@@ -28,6 +28,16 @@ public class PublicController {
         this.ticketService = ticketService;
     }
 
+    // ─── Health Check Endpoint for Cloud / Hosting Platforms ─────────────────
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "service", "Om Communication Work Portal API",
+                "timestamp", System.currentTimeMillis()
+        ));
+    }
+
     // ─── Submit Bulk Quote / Inquiry ──────────────────────────────────────────
     @PostMapping("/inquiries")
     public ResponseEntity<?> submitInquiry(@Valid @RequestBody Inquiry inquiry) {

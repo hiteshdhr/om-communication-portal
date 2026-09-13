@@ -1,0 +1,40 @@
+# Om Communication Work (OCW)
+
+> Professional security systems, telecommunications, biometric access control, and structured networking infrastructure provider based in Delhi-NCR, India.
+
+## Company Summary
+- **Organization Name**: Om Communication Work (OCW)
+- **Year Established**: 2009
+- **Experience**: 15+ Years of Turnkey Project Execution
+- **Geographic Service Area**: Delhi, Noida, Greater Noida, Gurgaon, Ghaziabad, Faridabad (National Capital Region, India)
+- **Primary Business Focus**: Turnkey electronic security system design, supply, installation, testing, commissioning, and Annual Maintenance Contracts (AMC).
+- **Phone**: +91 72177 15296 / +91 88029 80922
+- **Website**: https://om-communication-portal.hiteshdheer155.workers.dev
+
+## Core Engineering Services
+1. **CCTV Surveillance Systems**: IP cameras, high-definition analog CCTV, Network Video Recorders (NVR), Digital Video Recorders (DVR), centralized security monitoring control rooms, color night vision, motion detection analytics, and remote mobile viewing.
+2. **EPABX & Office Intercom Systems**: Multi-line PBX systems, digital/IP intercom networks, vertical riser shaft cabling, Krone distribution frames, auto-attendant, extension routing, and gate-to-flat residential communication.
+3. **Video Door Phone (VDP) & Intercom**: Multi-apartment and standalone villa video entry panels, indoor color touch monitors, electronic rim lock integration, two-way audio verification, and visitor snapshot capture.
+4. **Biometric Attendance & Access Control**: Fingerprint terminals, AI face recognition access readers, RFID proximity card readers, electromagnetic door strikes, shift-based attendance logging, and zone-based entry management.
+5. **Structured Cabling & Networking Infrastructure**: CAT6/CAT6A copper cabling, server rack assembly, patch panel dressing & termination, Gigabit PoE switches, ISI-marked PVC/GI conduit raceways, and LAN speed certification.
+6. **Annual Maintenance Contracts (AMC)**: Comprehensive and non-comprehensive maintenance agreements, scheduled preventive system audits, priority technician dispatch, lens cleaning, PSU testing, and backup power checks.
+
+## Key Target Industries
+- Corporate Offices & IT Campuses
+- Manufacturing Units, Warehouses & Industrial Plants
+- Residential Societies, High-Rise Gated Communities & Villas
+- Retail Outlets, Showrooms & Commercial Malls
+- Educational Institutions & Hospitals
+
+## Primary Canonical URLs
+- Homepage: https://om-communication-portal.hiteshdheer155.workers.dev/
+- About Us: https://om-communication-portal.hiteshdheer155.workers.dev/about
+- CCTV Surveillance: https://om-communication-portal.hiteshdheer155.workers.dev/services/cctv
+- EPABX & Intercom: https://om-communication-portal.hiteshdheer155.workers.dev/services/epabx
+- Video Door Phone: https://om-communication-portal.hiteshdheer155.workers.dev/services/vdp
+- Biometric Access Control: https://om-communication-portal.hiteshdheer155.workers.dev/services/biometrics
+- Structured Cabling & Networking: https://om-communication-portal.hiteshdheer155.workers.dev/services/networking
+- Annual Maintenance Contracts (AMC): https://om-communication-portal.hiteshdheer155.workers.dev/services/amc
+- Real Projects Portfolio: https://om-communication-portal.hiteshdheer155.workers.dev/projects
+- Request a Quotation: https://om-communication-portal.hiteshdheer155.workers.dev/quote
+- Contact Us: https://om-communication-portal.hiteshdheer155.workers.dev/contact

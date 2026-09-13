@@ -1,7 +1,30 @@
+# robots.txt for Om Communication Work (OCW)
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /api/
+Disallow: /admin/login
+Disallow: /admin/dashboard
 Disallow: /pay/
+Disallow: /invoice/
+Disallow: /api/
 
-Sitemap: https://omcommunicationworks.com/sitemap.xml
+# Explicitly allow legitimate AI and Search Engine crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+Sitemap: https://om-communication-portal.hiteshdheer155.workers.dev/sitemap.xml

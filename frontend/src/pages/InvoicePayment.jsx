@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
-import { Shield, CheckCircle2, Clock, CreditCard, AlertCircle } from 'lucide-react'
+import { Shield, CheckCircle2, Clock, CreditCard, AlertCircle, ArrowLeft } from 'lucide-react'
 import api from '../api'
 
 export default function InvoicePayment() {
@@ -45,7 +45,7 @@ export default function InvoicePayment() {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_key',
       amount: Math.round(Number(invoice.totalAmount) * 100), // paise
       currency: 'INR',
-      name: 'Om Communication Work',
+      name: 'OM Communication',
       description: `Invoice ${invoice.invoiceNumber}`,
       order_id: invoice.razorpayOrderId,
       handler: async function (response) {
@@ -68,7 +68,7 @@ export default function InvoicePayment() {
         contact: invoice.clientPhone || '',
         email: invoice.clientEmail || '',
       },
-      theme: { color: '#0066FF' },
+      theme: { color: '#B4233C' },
     }
 
     const rzp = new window.Razorpay(options)
@@ -76,20 +76,23 @@ export default function InvoicePayment() {
   }
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0B192C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 48, height: 48, border: '3px solid rgba(0,102,255,0.2)', borderTopColor: '#0066FF', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-        <div style={{ color: '#94A3B8' }}>Loading invoice...</div>
+        <div style={{ width: 44, height: 44, border: '3px solid #E5E7EB', borderTopColor: '#B4233C', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
+        <div style={{ color: '#59636F', fontSize: '0.9rem' }}>Loading invoice details...</div>
       </div>
     </div>
   )
 
   if (error) return (
-    <div style={{ minHeight: '100vh', background: '#0B192C', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <div className="glass-card" style={{ padding: '48px', textAlign: 'center', maxWidth: 440 }}>
-        <AlertCircle size={40} color="#ef4444" style={{ marginBottom: 16 }} />
-        <h2 style={{ margin: '0 0 10px' }}>Invoice Not Found</h2>
-        <p style={{ color: '#94A3B8' }}>{error}</p>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ padding: '48px', textAlign: 'center', maxWidth: 440, background: '#FFFFFF', borderRadius: 14, border: '1px solid #E5E7EB', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
+        <AlertCircle size={40} color="#B4233C" style={{ marginBottom: 16 }} />
+        <h2 style={{ margin: '0 0 10px', color: '#111827', fontSize: '1.4rem', fontWeight: 800 }}>Invoice Not Found</h2>
+        <p style={{ color: '#59636F', marginBottom: 20 }}>{error}</p>
+        <Link to="/" className="btn-secondary" style={{ display: 'inline-flex' }}>
+          <ArrowLeft size={15} /> Return Home
+        </Link>
       </div>
     </div>
   )
@@ -97,37 +100,45 @@ export default function InvoicePayment() {
   const isAlreadyPaid = invoice.status === 'PAID' || paid
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0B192C', padding: '60px 24px' }}>
-      {/* Orbs */}
-      <div className="bg-orb" style={{ width: 400, height: 400, background: '#0066FF', top: -100, right: -100, opacity: 0.07 }} />
-
+    <div style={{ minHeight: '100vh', background: '#F6F7F8', padding: '60px 24px', color: '#111827' }}>
       <div style={{ maxWidth: 660, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
-          <div style={{ width: 40, height: 40, background: 'linear-gradient(135deg, #0066FF, #0052cc)', borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Shield size={20} color="white" />
-          </div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '1rem' }}>Om Communication Work</div>
-            <div style={{ color: '#94A3B8', fontSize: '0.75rem' }}>Enterprise Security & Telecom</div>
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+            <div style={{ width: 36, height: 36, background: '#FAF4F5', border: '1px solid #F2D2D7', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Shield size={18} color="#B4233C" />
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#111827' }}>OM Communication</div>
+              <div style={{ color: '#59636F', fontSize: '0.75rem' }}>Enterprise Security & Telecom</div>
+            </div>
+          </Link>
+          <Link to="/" style={{ color: '#59636F', fontSize: '0.85rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <ArrowLeft size={14} /> Back to Site
+          </Link>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="glass-card" style={{ padding: '36px 40px' }}>
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{
+          background: '#FFFFFF',
+          borderRadius: 14,
+          border: '1px solid #E5E7EB',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+          padding: '36px 40px'
+        }}>
           {/* Invoice Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
             <div>
-              <div style={{ color: '#94A3B8', fontSize: '0.75rem', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 6 }}>Tax Invoice</div>
-              <div style={{ fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 800 }}>{invoice.invoiceNumber}</div>
-              <div style={{ color: '#94A3B8', fontSize: '0.8125rem', marginTop: 4 }}>
+              <div style={{ color: '#59636F', fontSize: '0.75rem', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 6, fontWeight: 700 }}>Tax Invoice</div>
+              <div style={{ fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>{invoice.invoiceNumber}</div>
+              <div style={{ color: '#59636F', fontSize: '0.8125rem', marginTop: 4 }}>
                 Date: {new Date(invoice.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
               </div>
             </div>
             <div style={{
-              padding: '8px 18px', borderRadius: 10, fontSize: '0.8125rem', fontWeight: 700,
-              background: isAlreadyPaid ? 'rgba(34,197,94,0.15)' : 'rgba(245,158,11,0.15)',
-              color: isAlreadyPaid ? '#4ade80' : '#fbbf24',
-              border: `1px solid ${isAlreadyPaid ? 'rgba(34,197,94,0.3)' : 'rgba(245,158,11,0.3)'}`,
+              padding: '6px 14px', borderRadius: 8, fontSize: '0.8125rem', fontWeight: 700,
+              background: isAlreadyPaid ? '#F0FDF4' : '#FFFBEB',
+              color: isAlreadyPaid ? '#16A34A' : '#D97706',
+              border: `1px solid ${isAlreadyPaid ? '#BBF7D0' : '#FDE68A'}`,
               display: 'flex', alignItems: 'center', gap: 6
             }}>
               {isAlreadyPaid ? <CheckCircle2 size={14} /> : <Clock size={14} />}
@@ -136,11 +147,11 @@ export default function InvoicePayment() {
           </div>
 
           {/* Client Info */}
-          <div style={{ background: 'rgba(11,25,44,0.6)', borderRadius: 12, padding: '16px 18px', marginBottom: 24, border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div style={{ fontSize: '0.7rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Billed To</div>
-            <div style={{ fontWeight: 700, fontSize: '1rem' }}>{invoice.clientName}</div>
-            {invoice.clientPhone && <div style={{ color: '#94A3B8', fontSize: '0.875rem', marginTop: 3 }}>{invoice.clientPhone}</div>}
-            {invoice.clientEmail && <div style={{ color: '#94A3B8', fontSize: '0.875rem' }}>{invoice.clientEmail}</div>}
+          <div style={{ background: '#F6F7F8', borderRadius: 10, padding: '16px 18px', marginBottom: 24, border: '1px solid #E5E7EB' }}>
+            <div style={{ fontSize: '0.7rem', color: '#59636F', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, fontWeight: 700 }}>Billed To</div>
+            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#111827' }}>{invoice.clientName}</div>
+            {invoice.clientPhone && <div style={{ color: '#59636F', fontSize: '0.875rem', marginTop: 2 }}>{invoice.clientPhone}</div>}
+            {invoice.clientEmail && <div style={{ color: '#59636F', fontSize: '0.875rem' }}>{invoice.clientEmail}</div>}
           </div>
 
           {/* Line Items */}
@@ -156,29 +167,29 @@ export default function InvoicePayment() {
             <tbody>
               {invoice.items?.map((item, i) => (
                 <tr key={i}>
-                  <td style={{ fontWeight: 500 }}>{item.description}</td>
-                  <td style={{ textAlign: 'right', color: '#94A3B8' }}>{item.quantity}</td>
-                  <td style={{ textAlign: 'right', color: '#94A3B8' }}>₹{Number(item.unitPrice).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                  <td style={{ textAlign: 'right', fontWeight: 600 }}>₹{Number(item.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td style={{ fontWeight: 600, color: '#111827' }}>{item.description}</td>
+                  <td style={{ textAlign: 'right', color: '#59636F' }}>{item.quantity}</td>
+                  <td style={{ textAlign: 'right', color: '#59636F' }}>₹{Number(item.unitPrice).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td style={{ textAlign: 'right', fontWeight: 700, color: '#111827' }}>₹{Number(item.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           {/* Totals */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20, marginTop: 12 }}>
+          <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: 18, marginTop: 12 }}>
             {[
               ['Subtotal', invoice.subtotal],
               ['GST (18%)', invoice.taxAmount],
             ].map(([label, val]) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                <span style={{ color: '#94A3B8', fontSize: '0.9rem' }}>{label}</span>
-                <span style={{ fontSize: '0.9rem' }}>₹{Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                <span style={{ color: '#59636F', fontSize: '0.9rem' }}>{label}</span>
+                <span style={{ fontSize: '0.9rem', color: '#111827', fontWeight: 500 }}>₹{Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
             ))}
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 0', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: 8 }}>
-              <span style={{ fontWeight: 800, fontSize: '1.0625rem' }}>Total Amount Due</span>
-              <span style={{ fontWeight: 900, fontSize: '1.25rem', color: '#0066FF' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 0', borderTop: '1px solid #E5E7EB', marginTop: 8 }}>
+              <span style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827' }}>Total Amount Due</span>
+              <span style={{ fontWeight: 900, fontSize: '1.3rem', color: '#B4233C' }}>
                 ₹{Number(invoice.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>
             </div>
@@ -187,18 +198,18 @@ export default function InvoicePayment() {
           {/* Payment Button */}
           {!isAlreadyPaid ? (
             <button onClick={handlePay} disabled={paying} className="btn-primary"
-              style={{ width: '100%', justifyContent: 'center', marginTop: 24, fontSize: '1.0625rem', padding: '14px' }}>
+              style={{ width: '100%', justifyContent: 'center', marginTop: 24, fontSize: '1rem', padding: '12px' }}>
               <CreditCard size={18} />
               {paying ? 'Opening Payment Gateway...' : `Pay ₹${Number(invoice.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })} via Razorpay`}
             </button>
           ) : (
-            <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '16px', background: 'rgba(34,197,94,0.1)', borderRadius: 12, border: '1px solid rgba(34,197,94,0.25)' }}>
-              <CheckCircle2 size={20} color="#22c55e" />
-              <span style={{ color: '#4ade80', fontWeight: 700 }}>This invoice has been fully paid. Thank you!</span>
+            <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '14px', background: '#F0FDF4', borderRadius: 10, border: '1px solid #BBF7D0' }}>
+              <CheckCircle2 size={18} color="#16A34A" />
+              <span style={{ color: '#16A34A', fontWeight: 700, fontSize: '0.95rem' }}>This invoice has been fully paid. Thank you!</span>
             </div>
           )}
 
-          <p style={{ textAlign: 'center', color: '#64748b', fontSize: '0.75rem', marginTop: 16 }}>
+          <p style={{ textAlign: 'center', color: '#59636F', fontSize: '0.75rem', marginTop: 16, margin: '16px 0 0' }}>
             Secured by Razorpay • All transactions are encrypted • GST invoice will be emailed
           </p>
         </motion.div>

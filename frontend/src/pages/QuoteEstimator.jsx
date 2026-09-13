@@ -3,23 +3,24 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import {
-  Camera, Phone, DoorOpen, Fingerprint, Wrench, Building2, Factory, Home, ShoppingBag,
+  Camera, Phone, DoorOpen, Fingerprint, Wrench, Building2, Factory, Home, ShoppingBag, Network,
   ChevronRight, ChevronLeft, CheckCircle2, Send, PhoneCall, MessageCircle
 } from 'lucide-react'
 import api from '../api'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import Breadcrumbs from '../components/Breadcrumbs'
 
 const STEPS = ['Select Services', 'Facility Type', 'Site Requirements', 'Survey & Contact']
 
 const servicesList = [
-  { id: 'CCTV Surveillance', label: 'CCTV Surveillance Systems', icon: Camera, color: '#C5A03F' },
-  { id: 'EPABX & Telecom', label: 'EPABX & Society Intercoms', icon: Phone, color: '#8b5cf6' },
-  { id: 'Video Door Phone', label: 'Video Door Phone (VDP)', icon: DoorOpen, color: '#06b6d4' },
-  { id: 'Biometric Access', label: 'Biometric Access & Attendance', icon: Fingerprint, color: '#D4AA50' },
-  { id: 'AMC Maintenance', label: 'Annual Maintenance Contract (AMC)', icon: Wrench, color: '#22c55e' },
-  { id: 'Structured Cabling', label: 'Structured Cabling & Conduit Piping', icon: Building2, color: '#60a5fa' },
+  { id: 'CCTV Surveillance', label: 'CCTV Surveillance Systems', icon: Camera },
+  { id: 'EPABX & Telecom', label: 'EPABX & Society Intercoms', icon: Phone },
+  { id: 'Video Door Phone', label: 'Video Door Phone (VDP)', icon: DoorOpen },
+  { id: 'Biometric Access', label: 'Biometric Access & Attendance', icon: Fingerprint },
+  { id: 'AMC Maintenance', label: 'Annual Maintenance Contract (AMC)', icon: Wrench },
+  { id: 'Structured Cabling', label: 'Structured Cabling & Networking', icon: Network },
 ]
 
 const facilityList = [
@@ -40,9 +41,9 @@ export default function QuoteEstimator() {
   const [projectType, setProjectType] = useState('New Installation') // 'New Installation' | 'Upgrade / Expansion' | 'Repair / Overhaul'
   const [cctvScope, setCctvScope] = useState({ indoorOutdoor: 'Both Indoor & Outdoor', remoteAccess: 'Yes, Mobile & Central Screen', approxPoints: '8–16 Points' })
   const [epabxScope, setEpabxScope] = useState({ approxLines: '10–50 Extensions', riserCablingNeeded: 'Yes, Riser Shaft Cabling' })
-  const [vdpScope] = useState({ units: 'Multi-Apartment Building', lockIntegration: 'Yes, Automated Gate Release' })
-  const [biometricScope] = useState({ employees: '20–100 Staff', type: 'Face Recognition + Fingerprint' })
-  const [amcScope] = useState({ currentStatus: 'Systems Working, Need Routine Care', urgency: 'Within 7 Days' })
+  const [vdpScope, setVdpScope] = useState({ units: 'Multi-Apartment Building', lockIntegration: 'Yes, Automated Gate Release' })
+  const [biometricScope, setBiometricScope] = useState({ employees: '20–100 Staff', type: 'Face Recognition + Fingerprint' })
+  const [amcScope, setAmcScope] = useState({ currentStatus: 'Systems Working, Need Routine Care', urgency: 'Within 7 Days' })
   const [notes, setNotes] = useState('')
 
   // Contact
@@ -115,31 +116,37 @@ export default function QuoteEstimator() {
 
   if (submitted) {
     return (
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #040C1A 0%, #0B1E38 100%)' }}>
-        <SEO title="Requirement Submitted | Om Communication Work" canonical="/quote" />
+      <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+        <SEO title="Requirement Submitted | OM Communication" canonical="/quote" />
         <Navbar />
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '140px 24px 80px', textAlign: 'center' }}>
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="glass-card" style={{ padding: '48px 36px' }}>
-            <div style={{ width: 72, height: 72, background: 'rgba(34,197,94,0.15)', borderRadius: '50%', border: '2px solid #22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <CheckCircle2 size={36} color="#22c55e" />
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{
+            background: '#FFFFFF',
+            borderRadius: 16,
+            border: '1px solid #E5E7EB',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+            padding: '48px 36px'
+          }}>
+            <div style={{ width: 72, height: 72, background: '#F0FDF4', borderRadius: '50%', border: '2px solid #16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <CheckCircle2 size={36} color="#16A34A" />
             </div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 12 }}>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#111827', marginBottom: 12 }}>
               Requirement Received!
             </h1>
-            <p style={{ color: '#94A3B8', fontSize: '1rem', lineHeight: 1.6, marginBottom: 20 }}>
-              Thank you, <strong style={{ color: '#F8FAFC' }}>{clientName}</strong>. Our engineering team has logged your technical requirement for <strong>{facilityType}</strong>.
+            <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6, marginBottom: 20 }}>
+              Thank you, <strong style={{ color: '#111827' }}>{clientName}</strong>. Our engineering team has logged your technical requirement for <strong>{facilityType}</strong>.
             </p>
-            <p style={{ color: '#A8BCCC', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: 28, background: 'rgba(197,160,63,0.1)', padding: 14, borderRadius: 10, border: '1px solid rgba(197,160,63,0.25)' }}>
+            <p style={{ color: '#374151', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: 28, background: '#FAF4F5', padding: 16, borderRadius: 10, border: '1px solid #F2D2D7' }}>
               An engineer will call you at <strong>{phone}</strong> to verify cable access, schedule your on-site assessment, and prepare an official itemized technical quotation.
             </p>
 
             <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
               <a
-                href={`https://wa.me/917217715296?text=${encodeURIComponent(`Hello Om Communication Work,\n\nI have submitted a quotation requirement:\nName: ${clientName}\nFacility: ${facilityType}\nServices: ${services.join(', ')}\n\nPlease connect with me.`)}`}
+                href={`https://wa.me/917217715296?text=${encodeURIComponent(`Hello OM Communication,\n\nI have submitted a quotation requirement:\nName: ${clientName}\nFacility: ${facilityType}\nServices: ${services.join(', ')}\n\nPlease connect with me.`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
-                style={{ background: 'linear-gradient(135deg, #25D366 0%, #128C5E 100%)', border: 'none' }}
+                style={{ background: '#16A34A', border: 'none' }}
               >
                 <MessageCircle size={16} /> Send via WhatsApp
               </a>
@@ -158,25 +165,35 @@ export default function QuoteEstimator() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #040C1A 0%, #0B1E38 100%)' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
       <SEO
-        title="Request a Quotation & Site Assessment | Om Communication Work"
-        description="Submit your facility security and communication requirements. Our engineers will evaluate your property and structure a customized turnkey quotation."
+        title="Request a Quotation & Site Assessment | OM Communication"
+        description="Submit your facility security and communication requirements. Our engineers will evaluate your property and structure a customized turnkey quotation in Delhi-NCR."
         canonical="/quote"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://om-communication-portal.hiteshdheer155.workers.dev/' },
+            { '@type': 'ListItem', position: 2, name: 'Quote Estimator', item: 'https://om-communication-portal.hiteshdheer155.workers.dev/quote' }
+          ]
+        }}
       />
       <Navbar />
 
-      <div style={{ maxWidth: 840, margin: '0 auto', padding: '120px 24px 80px' }}>
+      <div style={{ maxWidth: 840, margin: '0 auto', padding: '110px 24px 80px' }}>
+        <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Quote Estimator' }]} />
+
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ color: '#C5A03F', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+        <div style={{ textAlign: 'left', marginBottom: 36 }}>
+          <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Engineered Proposal Desk
           </div>
-          <h1 style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)', fontWeight: 800, margin: '0 0 10px', color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: '0 0 10px', color: '#111827', letterSpacing: '-0.02em' }}>
             Request Quotation & Site Assessment
           </h1>
-          <p style={{ color: '#94A3B8', fontSize: '0.95rem' }}>
-            Tell us about your facility requirements. We will engineer a custom technical specification and formal quotation.
+          <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6 }}>
+            Tell us about your facility requirements. We will engineer a custom technical specification and formal quotation for your site.
           </p>
         </div>
 
@@ -190,19 +207,19 @@ export default function QuoteEstimator() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.875rem', fontWeight: 700, border: '2px solid',
                   ...(i < step
-                    ? { background: 'rgba(34,197,94,0.15)', borderColor: '#22c55e', color: '#22c55e' }
+                    ? { background: '#F0FDF4', borderColor: '#16A34A', color: '#16A34A' }
                     : i === step
-                    ? { background: 'rgba(197,160,63,0.2)', borderColor: '#C5A03F', color: '#FBF6E0' }
-                    : { background: 'transparent', borderColor: 'rgba(255,255,255,0.12)', color: '#64748b' })
+                    ? { background: '#FAF4F5', borderColor: '#B4233C', color: '#B4233C' }
+                    : { background: '#FFFFFF', borderColor: '#E5E7EB', color: '#9CA3AF' })
                 }}>
                   {i < step ? <CheckCircle2 size={16} /> : i + 1}
                 </div>
-                <div style={{ fontSize: '0.68rem', fontWeight: 600, marginTop: 6, color: i === step ? '#C5A03F' : '#64748b', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 600, marginTop: 6, color: i === step ? '#B4233C' : '#59636F', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
                   {s}
                 </div>
               </div>
               {i < STEPS.length - 1 && (
-                <div style={{ flex: 1, height: 2, margin: '0 8px', marginBottom: 20, background: i < step ? '#22c55e' : 'rgba(255,255,255,0.08)', transition: 'background 0.3s' }} />
+                <div style={{ flex: 1, height: 2, margin: '0 8px', marginBottom: 20, background: i < step ? '#16A34A' : '#E5E7EB', transition: 'background 0.3s' }} />
               )}
             </div>
           ))}
@@ -215,17 +232,22 @@ export default function QuoteEstimator() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.25 }}
-            className="glass-card"
-            style={{ padding: '36px 32px' }}
+            transition={{ duration: 0.2 }}
+            style={{
+              background: '#FFFFFF',
+              borderRadius: 14,
+              border: '1px solid #E5E7EB',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+              padding: '36px 32px'
+            }}
           >
             {/* STEP 0: Select Services */}
             {step === 0 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>
-                  Which services do you require?
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
+                  Which systems do you require?
                 </h2>
-                <p style={{ color: '#94A3B8', fontSize: '0.85rem', marginBottom: 24 }}>
+                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
                   Select all systems that apply to your site (you can bundle multiple solutions):
                 </p>
 
@@ -242,25 +264,25 @@ export default function QuoteEstimator() {
                           alignItems: 'center',
                           gap: 14,
                           padding: '16px 18px',
-                          borderRadius: 12,
+                          borderRadius: 10,
                           cursor: 'pointer',
                           textAlign: 'left',
-                          border: `2px solid ${selected ? '#C5A03F' : 'rgba(255,255,255,0.08)'}`,
-                          background: selected ? 'rgba(197,160,63,0.14)' : 'rgba(11,25,44,0.6)',
-                          color: selected ? '#FFFFFF' : '#94A3B8',
+                          border: `2px solid ${selected ? '#B4233C' : '#E5E7EB'}`,
+                          background: selected ? '#FAF4F5' : '#FFFFFF',
+                          color: selected ? '#111827' : '#59636F',
                           transition: 'all 0.15s'
                         }}
                       >
                         <div style={{
-                          width: 38, height: 38, borderRadius: 10,
+                          width: 38, height: 38, borderRadius: 8,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: selected ? '#C5A03F' : 'rgba(255,255,255,0.05)',
-                          color: selected ? '#040C1A' : s.color
+                          background: selected ? '#B4233C' : '#F6F7F8',
+                          color: selected ? '#FFFFFF' : '#111827'
                         }}>
                           <s.icon size={19} />
                         </div>
-                        <span style={{ fontWeight: 600, fontSize: '0.88rem', color: selected ? '#FFFFFF' : '#E2E8F0' }}>{s.label}</span>
-                        {selected && <CheckCircle2 size={16} color="#C5A03F" style={{ marginLeft: 'auto' }} />}
+                        <span style={{ fontWeight: 600, fontSize: '0.88rem', color: selected ? '#B4233C' : '#111827' }}>{s.label}</span>
+                        {selected && <CheckCircle2 size={16} color="#B4233C" style={{ marginLeft: 'auto' }} />}
                       </button>
                     )
                   })}
@@ -271,10 +293,10 @@ export default function QuoteEstimator() {
             {/* STEP 1: Facility Type */}
             {step === 1 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   What type of property / facility is this for?
                 </h2>
-                <p style={{ color: '#94A3B8', fontSize: '0.85rem', marginBottom: 24 }}>
+                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
                   This helps our engineers determine relevant compliance, cable routing, and environmental constraints:
                 </p>
 
@@ -288,17 +310,17 @@ export default function QuoteEstimator() {
                         onClick={() => setFacilityType(f.id)}
                         style={{
                           padding: '18px',
-                          borderRadius: 12,
+                          borderRadius: 10,
                           cursor: 'pointer',
                           textAlign: 'left',
-                          border: `2px solid ${selected ? '#C5A03F' : 'rgba(255,255,255,0.08)'}`,
-                          background: selected ? 'rgba(197,160,63,0.14)' : 'rgba(11,25,44,0.6)',
-                          color: '#FFFFFF',
+                          border: `2px solid ${selected ? '#B4233C' : '#E5E7EB'}`,
+                          background: selected ? '#FAF4F5' : '#FFFFFF',
+                          color: '#111827',
                           transition: 'all 0.15s'
                         }}
                       >
-                        <f.icon size={22} color={selected ? '#C5A03F' : '#94A3B8'} style={{ marginBottom: 10 }} />
-                        <div style={{ fontWeight: 700, fontSize: '0.92rem' }}>{f.label}</div>
+                        <f.icon size={22} color={selected ? '#B4233C' : '#59636F'} style={{ marginBottom: 10 }} />
+                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: selected ? '#B4233C' : '#111827' }}>{f.label}</div>
                       </button>
                     )
                   })}
@@ -309,15 +331,15 @@ export default function QuoteEstimator() {
             {/* STEP 2: Site Requirements */}
             {step === 2 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Specific Requirements & Project Scope
                 </h2>
-                <p style={{ color: '#94A3B8', fontSize: '0.85rem', marginBottom: 24 }}>
+                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
                   Provide technical context for the selected services:
                 </p>
 
                 <div style={{ marginBottom: 20 }}>
-                  <label className="form-label">Nature of Work</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Nature of Work</label>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10 }}>
                     {['New Installation', 'Upgrade / Expansion', 'Repair / Overhaul', 'Annual Maintenance (AMC)'].map(t => (
                       <button
@@ -330,9 +352,9 @@ export default function QuoteEstimator() {
                           fontSize: '0.82rem',
                           fontWeight: 600,
                           cursor: 'pointer',
-                          background: projectType === t ? 'rgba(197,160,63,0.2)' : 'rgba(255,255,255,0.03)',
-                          border: `1px solid ${projectType === t ? '#C5A03F' : 'rgba(255,255,255,0.08)'}`,
-                          color: projectType === t ? '#FBF6E0' : '#94A3B8'
+                          background: projectType === t ? '#FAF4F5' : '#F6F7F8',
+                          border: `1px solid ${projectType === t ? '#B4233C' : '#E5E7EB'}`,
+                          color: projectType === t ? '#B4233C' : '#59636F'
                         }}
                       >
                         {t}
@@ -341,14 +363,14 @@ export default function QuoteEstimator() {
                   </div>
                 </div>
 
-                {/* CCTV Specifics if selected */}
+                {/* CCTV Specifics */}
                 {services.includes('CCTV Surveillance') && (
-                  <div style={{ background: 'rgba(4,12,26,0.6)', padding: 18, borderRadius: 10, border: '1px solid rgba(197,160,63,0.15)', marginBottom: 16 }}>
-                    <div style={{ color: '#C5A03F', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>CCTV Parameters</div>
+                  <div style={{ background: '#F6F7F8', padding: 18, borderRadius: 10, border: '1px solid #E5E7EB', marginBottom: 16 }}>
+                    <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>CCTV Parameters</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
-                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Approx. Number of Points</label>
-                        <select className="form-input" style={{ fontSize: '0.8rem', padding: '8px' }} value={cctvScope.approxPoints} onChange={e => setCctvScope(s => ({ ...s, approxPoints: e.target.value }))}>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Approx. Number of Points</label>
+                        <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={cctvScope.approxPoints} onChange={e => setCctvScope(s => ({ ...s, approxPoints: e.target.value }))}>
                           <option>1–8 Cameras (Small Facility)</option>
                           <option>8–16 Points (Mid Facility)</option>
                           <option>16–32 Points (Large Complex)</option>
@@ -356,8 +378,8 @@ export default function QuoteEstimator() {
                         </select>
                       </div>
                       <div>
-                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Environment</label>
-                        <select className="form-input" style={{ fontSize: '0.8rem', padding: '8px' }} value={cctvScope.indoorOutdoor} onChange={e => setCctvScope(s => ({ ...s, indoorOutdoor: e.target.value }))}>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Environment</label>
+                        <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={cctvScope.indoorOutdoor} onChange={e => setCctvScope(s => ({ ...s, indoorOutdoor: e.target.value }))}>
                           <option>Both Indoor & Outdoor</option>
                           <option>Primarily Indoor Corridors & Lobbies</option>
                           <option>Primarily Outdoor Boundary & Gates</option>
@@ -369,20 +391,20 @@ export default function QuoteEstimator() {
 
                 {/* EPABX Specifics */}
                 {services.includes('EPABX & Telecom') && (
-                  <div style={{ background: 'rgba(4,12,26,0.6)', padding: 18, borderRadius: 10, border: '1px solid rgba(139,92,246,0.2)', marginBottom: 16 }}>
-                    <div style={{ color: '#8b5cf6', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>EPABX Parameters</div>
+                  <div style={{ background: '#F6F7F8', padding: 18, borderRadius: 10, border: '1px solid #E5E7EB', marginBottom: 16 }}>
+                    <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>EPABX Parameters</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
-                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Approx. Extension Lines</label>
-                        <select className="form-input" style={{ fontSize: '0.8rem', padding: '8px' }} value={epabxScope.approxLines} onChange={e => setEpabxScope(s => ({ ...s, approxLines: e.target.value }))}>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Approx. Extension Lines</label>
+                        <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={epabxScope.approxLines} onChange={e => setEpabxScope(s => ({ ...s, approxLines: e.target.value }))}>
                           <option>1–8 Lines (Small Office)</option>
                           <option>10–50 Extensions (Commercial Building)</option>
                           <option>50–200+ Lines (Multi-Tower Society)</option>
                         </select>
                       </div>
                       <div>
-                        <label className="form-label" style={{ fontSize: '0.75rem' }}>Riser Shaft Cabling</label>
-                        <select className="form-input" style={{ fontSize: '0.8rem', padding: '8px' }} value={epabxScope.riserCablingNeeded} onChange={e => setEpabxScope(s => ({ ...s, riserCablingNeeded: e.target.value }))}>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Riser Shaft Cabling</label>
+                        <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={epabxScope.riserCablingNeeded} onChange={e => setEpabxScope(s => ({ ...s, riserCablingNeeded: e.target.value }))}>
                           <option>Yes, Riser Shaft Cabling & Krone Blocks</option>
                           <option>Existing Cables OK, Need EPABX Unit Only</option>
                           <option>Requires Diagnostic Assessment</option>
@@ -393,7 +415,7 @@ export default function QuoteEstimator() {
                 )}
 
                 <div>
-                  <label className="form-label">Additional Site Details or Specific Challenges</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Additional Site Details or Challenges</label>
                   <textarea
                     className="form-input"
                     rows={2}
@@ -409,16 +431,16 @@ export default function QuoteEstimator() {
             {/* STEP 3: Survey & Contact Info */}
             {step === 3 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Contact Information & Site Location
                 </h2>
-                <p style={{ color: '#94A3B8', fontSize: '0.85rem', marginBottom: 24 }}>
-                  Our field engineers will reach out to schedule an inspection:
+                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
+                  Our field engineers will reach out to schedule an on-site inspection:
                 </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div>
-                    <label className="form-label">Contact Person Name *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Contact Person Name *</label>
                     <input
                       className="form-input"
                       placeholder="Your full name"
@@ -429,7 +451,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label className="form-label">Phone Number *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Phone Number *</label>
                     <input
                       className="form-input"
                       placeholder="+91 98765 43210"
@@ -440,17 +462,17 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label className="form-label">Society / Company Name</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Society / Company Name</label>
                     <input
                       className="form-input"
-                      placeholder="e.g. Mahagun Society or Steelbird Plant"
+                      placeholder="e.g. Mahagun Society or Plant Unit"
                       value={companyName}
                       onChange={e => setCompanyName(e.target.value)}
                     />
                   </div>
 
                   <div>
-                    <label className="form-label">Email Address</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Email Address</label>
                     <input
                       className="form-input"
                       type="email"
@@ -461,7 +483,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label className="form-label">Site City / Sector Location</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Site City / Sector Location</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Indirapuram, Ghaziabad or Sector 62, Noida"
@@ -471,7 +493,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label className="form-label">Preferred Site Survey Date / Time</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Preferred Site Survey Date / Time</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Tomorrow afternoon / This Saturday"
@@ -482,11 +504,11 @@ export default function QuoteEstimator() {
                 </div>
 
                 {/* Summary Box */}
-                <div style={{ background: 'rgba(4,12,26,0.7)', borderRadius: 10, padding: 16, border: '1px solid rgba(197,160,63,0.18)', marginTop: 20 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#C5A03F', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+                <div style={{ background: '#FAF4F5', borderRadius: 10, padding: 16, border: '1px solid #F2D2D7', marginTop: 20 }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#B4233C', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
                     Inquiry Summary
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: '#E2E8F0', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: '0.85rem', color: '#111827', display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <div><strong>Facility:</strong> {facilityType} ({projectType})</div>
                     <div><strong>Selected Systems:</strong> {services.join(', ')}</div>
                   </div>

@@ -55,6 +55,9 @@ razorpay:
   key-id: ${RAZORPAY_KEY_ID:rzp_test_key_id}
   key-secret: ${RAZORPAY_KEY_SECRET:rzp_test_key_secret}
 
+admin:
+  initial-password: ${ADMIN_INITIAL_PASSWORD:admin-dev-pass}
+
 # ─── Server ───────────────────────────────────────────────────────────────────
 server:
   port: ${PORT:8080}
@@ -100,3 +103,7 @@ jwt:
 razorpay:
   key-id: ${RAZORPAY_KEY_ID}
   key-secret: ${RAZORPAY_KEY_SECRET}
+
+admin:
+  initial-password: ${ADMIN_INITIAL_PASSWORD}
+

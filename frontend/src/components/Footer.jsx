@@ -1,107 +1,105 @@
 import { Link } from 'react-router-dom'
-import { Phone, MapPin, Shield, ChevronRight } from 'lucide-react'
+import { Phone, MapPin, Shield, ArrowRight } from 'lucide-react'
 import logo from '../assets/ocw-logo.png'
 
 export default function Footer() {
   return (
     <footer style={{
-      borderTop: '1px solid rgba(197,160,63,0.22)',
-      background: 'linear-gradient(180deg, rgba(4,12,26,0.96) 0%, rgba(2,6,15,0.99) 100%)',
-      padding: '64px 24px 32px',
-      color: '#A8BCCC',
+      background: '#17191D',
+      color: '#9CA3AF',
       fontSize: '0.875rem',
-      position: 'relative',
-      zIndex: 10
+      padding: '56px 24px 28px',
+      borderTop: '1px solid #2D323B',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+      <div style={{ maxWidth: 1240, margin: '0 auto' }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 40,
-          marginBottom: 48
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 36,
+          marginBottom: 44,
         }}>
-          {/* Col 1: Brand & Credentials */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+          {/* Col 1: Brand */}
+          <div style={{ gridColumn: 'span 1' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
               <img
                 src={logo}
-                alt="Om Communication Work Logo"
-                style={{
-                  width: 44,
-                  height: 44,
-                  objectFit: 'contain',
-                  flexShrink: 0,
-                  display: 'block',
-                  filter: 'drop-shadow(0 0 8px rgba(197,160,63,0.35))'
-                }}
+                alt="Om Communication Work"
+                style={{ width: 36, height: 36, objectFit: 'contain' }}
               />
               <div>
-                <div style={{ fontWeight: 800, color: '#FFFFFF', fontSize: '1rem', letterSpacing: '-0.01em' }}>
-                  Om Communication Work
+                <div style={{ fontWeight: 800, color: '#FFFFFF', fontSize: '0.95rem', lineHeight: 1.1 }}>
+                  OM COMMUNICATION
                 </div>
-                <div style={{ color: '#C5A03F', fontSize: '0.6875rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                  Enterprise Security & Telecom
+                <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#B4233C', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                  Security &amp; Telecom Solutions
                 </div>
               </div>
             </div>
-            <p style={{ color: '#94A3B8', lineHeight: 1.6, fontSize: '0.8125rem', marginBottom: 16 }}>
-              End-to-end security, surveillance, telecom, and communication infrastructure solutions — consultation, system design, turnkey installation, and AMC support.
+            <p style={{ color: '#9CA3AF', lineHeight: 1.6, fontSize: '0.8125rem', marginBottom: 14 }}>
+              Engineered CCTV surveillance, EPABX intercom, access control, structured cabling, and Annual Maintenance Contracts (AMC) across Delhi-NCR.
             </p>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: 6,
-              padding: '4px 10px',
-              borderRadius: 6,
-              background: 'rgba(197,160,63,0.1)',
-              border: '1px solid rgba(197,160,63,0.25)',
-              color: '#FBF6E0',
-              fontSize: '0.75rem',
-              fontWeight: 600
+              padding: '3px 8px',
+              borderRadius: 4,
+              background: '#22262C',
+              border: '1px solid #2D323B',
+              color: '#D1D5DB',
+              fontSize: '0.72rem',
+              fontWeight: 600,
             }}>
-              <Shield size={13} color="#C5A03F" /> GSTIN: 07COSPS8901L2ZO
+              <Shield size={12} color="#B4233C" /> GSTIN: 07COSPS8901L2ZO
             </div>
           </div>
 
-          {/* Col 2: Solutions & Services */}
+          {/* Col 2: Solutions */}
           <div>
-            <h4 style={{ color: '#FBF6E0', fontSize: '0.9375rem', fontWeight: 700, marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ color: '#FFFFFF', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 14 }}>
               Solutions
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            </div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <li>
-                <Link to="/services/cctv" style={{ color: '#A8BCCC', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
+                <Link to="/services/cctv" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
                   CCTV Surveillance Systems
                 </Link>
               </li>
               <li>
-                <Link to="/services/epabx" style={{ color: '#A8BCCC', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
-                  EPABX & Telecom Intercoms
+                <Link to="/services/epabx" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  EPABX &amp; Office Intercom
                 </Link>
               </li>
               <li>
-                <Link to="/services/vdp" style={{ color: '#A8BCCC', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
+                <Link to="/services/vdp" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
                   Video Door Phone (VDP)
                 </Link>
               </li>
               <li>
-                <Link to="/services/biometrics" style={{ color: '#A8BCCC', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
+                <Link to="/services/biometrics" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
                   Biometric Access Control
                 </Link>
               </li>
               <li>
-                <Link to="/services/amc" style={{ color: '#A8BCCC', textDecoration: 'none', transition: 'color 0.2s' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
-                  AMC & Turnkey Maintenance
+                <Link to="/services/networking" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  Structured Cabling &amp; LAN
+                </Link>
+              </li>
+              <li>
+                <Link to="/services/amc" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  AMC Maintenance Services
                 </Link>
               </li>
             </ul>
@@ -109,105 +107,109 @@ export default function Footer() {
 
           {/* Col 3: Industries */}
           <div>
-            <h4 style={{ color: '#FBF6E0', fontSize: '0.9375rem', fontWeight: 700, marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Industries Served
-            </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ color: '#FFFFFF', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 14 }}>
+              Industries
+            </div>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <li>
-                <Link to="/industries/residential" style={{ color: '#A8BCCC', textDecoration: 'none' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
-                  Residential Societies & High-Rises
+                <Link to="/industries/offices" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  Commercial Offices &amp; IT
                 </Link>
               </li>
               <li>
-                <Link to="/industries/factories" style={{ color: '#A8BCCC', textDecoration: 'none' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
-                  Factories & Industrial Plants
+                <Link to="/industries/factories" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  Factories &amp; Manufacturing
                 </Link>
               </li>
               <li>
-                <Link to="/industries/offices" style={{ color: '#A8BCCC', textDecoration: 'none' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
-                  Commercial & Corporate Offices
+                <Link to="/industries/residential" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  Residential Societies &amp; Flats
                 </Link>
               </li>
               <li>
-                <Link to="/industries/retail" style={{ color: '#A8BCCC', textDecoration: 'none' }}
-                  onMouseEnter={e => e.target.style.color = '#FBF6E0'}
-                  onMouseLeave={e => e.target.style.color = '#A8BCCC'}>
-                  Retail Chains & Outlets
+                <Link to="/industries/retail" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  Retail Outlets &amp; Showrooms
                 </Link>
               </li>
               <li>
-                <Link to="/solutions" style={{ color: '#C5A03F', fontWeight: 600, textDecoration: 'none' }}>
-                  Integrated Turnkey Solutions →
+                <Link to="/projects" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#FFFFFF'}
+                  onMouseLeave={e => e.target.style.color = '#9CA3AF'}>
+                  Project Photo Gallery
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Contact & Operations */}
+          {/* Col 4: Contact & Coverage */}
           <div>
-            <h4 style={{ color: '#FBF6E0', fontSize: '0.9375rem', fontWeight: 700, marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Direct Contact
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <a
-                href="tel:+917217715296"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  color: '#FBF6E0',
-                  fontWeight: 700,
-                  fontSize: '0.9375rem',
-                  textDecoration: 'none',
-                  background: 'rgba(197,160,63,0.12)',
-                  padding: '8px 12px',
-                  borderRadius: 8,
-                  border: '1px solid rgba(197,160,63,0.3)'
-                }}
-              >
-                <Phone size={15} color="#C5A03F" /> +91 72177 15296
-              </a>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#94A3B8', fontSize: '0.8125rem' }}>
-                <MapPin size={15} color="#C5A03F" style={{ flexShrink: 0, marginTop: 2 }} />
-                <span>Primary Hub: Delhi-NCR (Delhi, Noida, Ghaziabad, Gurugram) & Pan-India for Enterprise Projects</span>
+            <div style={{ color: '#FFFFFF', fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 14 }}>
+              Direct Support
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '0.825rem' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <MapPin size={15} color="#B4233C" style={{ flexShrink: 0, marginTop: 2 }} />
+                <span>Serving Delhi, Noida, Greater Noida, Gurgaon, Ghaziabad &amp; Faridabad</span>
               </div>
-
-              <div style={{ marginTop: 8 }}>
-                <Link to="/quote" className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.8125rem', width: '100%', justifyContent: 'center' }}>
-                  Request Site Survey <ChevronRight size={13} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Phone size={15} color="#B4233C" style={{ flexShrink: 0 }} />
+                <a href="tel:+917217715296" style={{ color: '#FFFFFF', fontWeight: 700, textDecoration: 'none' }}>
+                  +91 72177 15296
+                </a>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Phone size={15} color="#B4233C" style={{ flexShrink: 0 }} />
+                <a href="tel:+918802980922" style={{ color: '#D1D5DB', textDecoration: 'none' }}>
+                  +91 88029 80922
+                </a>
+              </div>
+              <div style={{ marginTop: 6 }}>
+                <Link
+                  to="/complaint"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    color: '#B4233C',
+                    textDecoration: 'none',
+                  }}
+                >
+                  Online Complaint Desk <ArrowRight size={12} />
                 </Link>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom copyright */}
         <div style={{
-          borderTop: '1px solid rgba(197,160,63,0.12)',
-          paddingTop: 24,
+          paddingTop: 20,
+          borderTop: '1px solid #22262C',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: 16,
-          fontSize: '0.78125rem',
-          color: '#607080'
+          gap: 12,
+          fontSize: '0.75rem',
+          color: '#6B7280',
         }}>
           <div>
-            © {new Date().getFullYear()} Om Communication Work. All rights reserved. GST Registered Enterprise.
+            &copy; {new Date().getFullYear()} Om Communication Work. All rights reserved.
           </div>
-          <div style={{ display: 'flex', gap: 20 }}>
-            <Link to="/installation" style={{ color: '#94A3B8', textDecoration: 'none' }}>Installation Process</Link>
-            <Link to="/projects" style={{ color: '#94A3B8', textDecoration: 'none' }}>Projects</Link>
-            <Link to="/complaint" style={{ color: '#94A3B8', textDecoration: 'none' }}>Support Desk</Link>
-            <Link to="/admin/login" style={{ color: '#C5A03F', textDecoration: 'none', opacity: 0.8 }}>Admin Portal</Link>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <Link to="/about" style={{ color: '#6B7280', textDecoration: 'none' }}>About Us</Link>
+            <Link to="/contact" style={{ color: '#6B7280', textDecoration: 'none' }}>Contact</Link>
+            <Link to="/admin/login" style={{ color: '#4B5563', textDecoration: 'none' }}>Staff Portal</Link>
           </div>
         </div>
       </div>

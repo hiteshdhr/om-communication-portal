@@ -1,54 +1,66 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { CheckCircle2, ChevronRight, PhoneCall } from 'lucide-react'
+import { CheckCircle2, ChevronRight, PhoneCall, ShoppingBag } from 'lucide-react'
 import Navbar from '../../components/Navbar'
 import Footer from '../../components/Footer'
 import SEO from '../../components/SEO'
-
+import Breadcrumbs from '../../components/Breadcrumbs'
 import { images } from '../../assets/imageMap'
 
 export default function RetailPage() {
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #040C1A 0%, #0B1E38 100%)' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
       <SEO
-        title="Retail Chains & Store Security Solutions | Om Communication Work"
-        description="Loss prevention CCTV surveillance, POS cash counter monitoring, multi-store remote viewing, and staff attendance for retail chains across Delhi-NCR."
+        title="Retail Chains & Store Security Solutions | OM Communication"
+        description="Loss prevention CCTV surveillance, POS billing counter monitoring, multi-store remote viewing, and staff attendance for retail chains across Delhi-NCR."
         canonical="/industries/retail"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://om-communication-portal.hiteshdheer155.workers.dev/' },
+            { '@type': 'ListItem', position: 2, name: 'Industries', item: 'https://om-communication-portal.hiteshdheer155.workers.dev/industries' },
+            { '@type': 'ListItem', position: 3, name: 'Retail Chains & Outlets', item: 'https://om-communication-portal.hiteshdheer155.workers.dev/industries/retail' }
+          ]
+        }}
       />
       <Navbar />
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '120px 24px 80px' }}>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ color: '#22c55e', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 12 }}>
-            Retail Solutions
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '110px 24px 80px' }}>
+        <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Industries', path: '/industries' }, { label: 'Retail Chains & Outlets' }]} />
+
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'left', marginBottom: 40 }}>
+          <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+            Retail Infrastructure
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, margin: 0, color: '#111827', letterSpacing: '-0.02em' }}>
             Retail Chains, Showrooms & Commercial Outlets
           </h1>
-          <p style={{ color: '#94A3B8', marginTop: 14, fontSize: '1.05rem', maxWidth: 680, margin: '14px auto 0', lineHeight: 1.6 }}>
-            Loss prevention surveillance, high-detail billing counter monitoring, multi-branch remote viewing, and staff attendance solutions engineered for retail operations.
+          <p style={{ color: '#59636F', marginTop: 12, fontSize: '1.05rem', maxWidth: 760, lineHeight: 1.65 }}>
+            Loss prevention surveillance, high-detail billing counter monitoring, multi-branch remote viewing, and staff attendance solutions engineered for retail operations in Delhi-NCR.
           </p>
         </motion.div>
 
         {/* Hero Visual */}
         <div style={{
-          borderRadius: 20,
+          borderRadius: 16,
           overflow: 'hidden',
-          border: '1px solid rgba(34,197,94,0.3)',
-          marginBottom: 50,
+          border: '1px solid #E5E7EB',
+          marginBottom: 48,
           position: 'relative',
+          background: '#17191D',
           height: 340,
         }}>
           <img
             src={images.industries.commercial.monitoring}
             alt="Retail store aisle surveillance camera and loss prevention monitoring system"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%', opacity: 0.85 }}
             loading="eager"
           />
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to top, rgba(4,12,26,0.92) 0%, rgba(4,12,26,0.30) 60%, transparent 100%)',
+            background: 'linear-gradient(to top, rgba(23,25,29,0.92) 0%, rgba(23,25,29,0.30) 60%, transparent 100%)',
           }} />
           <div style={{
             position: 'absolute',
@@ -56,43 +68,54 @@ export default function RetailPage() {
             left: 28,
             right: 28,
           }}>
-            <div style={{ color: '#22c55e', fontWeight: 800, fontSize: '1.25rem', marginBottom: 4 }}>
+            <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '1.25rem', marginBottom: 4 }}>
               Loss Prevention & Multi-Branch Visibility
             </div>
-            <div style={{ color: '#A8BCCC', fontSize: '0.875rem' }}>
-              POS counter monitoring, compact dome aesthetics, central multi-store remote feeds & AMC
+            <div style={{ color: '#D1D5DB', fontSize: '0.875rem' }}>
+              POS counter detail cameras, stockroom security & mobile remote viewing
             </div>
           </div>
         </div>
 
         {/* Challenge vs Solution */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32, marginBottom: 60 }}>
-          <div className="glass-card" style={{ padding: 32 }}>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>
-              Key Retail Operational Priorities
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 28, marginBottom: 48 }}>
+          <div style={{
+            background: '#F6F7F8',
+            borderRadius: 14,
+            padding: 32,
+            border: '1px solid #E5E7EB'
+          }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 16, letterSpacing: '-0.01em' }}>
+              Retail Security Challenges
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: '#94A3B8', fontSize: '0.88rem' }}>
-              <div>• Preventing inventory shrinkage in aisles, fitting rooms, and stock rooms.</div>
-              <div>• Ultra-clear denomination & transaction monitoring at cash / POS counters.</div>
-              <div>• Centralized mobile viewing for business owners managing multi-location outlets.</div>
-              <div>• Compact, aesthetic installation that doesn't disrupt retail visual merchandising.</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: '#59636F', fontSize: '0.9rem', lineHeight: 1.6 }}>
+              <div>• Disputed cash drawer transactions and customer change disputes.</div>
+              <div>• Stockroom shrinkage and unauthorized staff entry into inventory zones.</div>
+              <div>• Requirement for business owners to monitor multiple branches from a single phone app.</div>
+              <div>• Unsightly dangling wires damaging store interior aesthetics.</div>
             </div>
           </div>
 
-          <div className="glass-card" style={{ padding: 32, border: '1px solid rgba(34,197,94,0.35)' }}>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#22c55e', marginBottom: 16 }}>
-              The OCW Retail Security Setup
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: 14,
+            padding: 32,
+            border: '1px solid #E5E7EB',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
+          }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#B4233C', marginBottom: 16, letterSpacing: '-0.01em' }}>
+              The OM Communication Retail Setup
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
-                'High-Resolution POS Counter CCTV with Micro-Detail Currency Capture',
-                'Aesthetic Dome Cameras Matching Store Lighting & Ceiling Grid Aesthetics',
-                'Centralized Cloud & Mobile App Remote Monitoring for Multi-Branch Outlets',
-                'Stockroom & Employee Entry Biometric Access Control',
-                'Fast-Response Maintenance AMC to Ensure 100% Continuous Recording Uptime'
+                'Specialized Varifocal Cameras Focused on POS Billing Counters',
+                'Multi-Store Mobile / NVR Remote Viewing Feeds for Owners',
+                'Stockroom Access Control via Biometrics / Keycards',
+                'Clean Concealed Cabling Protecting Showroom Interior Finish',
+                'Preventative Maintenance Support to Avoid Downtime During Sales'
               ].map(item => (
-                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.88rem', color: '#E2E8F0' }}>
-                  <CheckCircle2 size={16} color="#22c55e" style={{ flexShrink: 0, marginTop: 3 }} />
+                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.9rem', color: '#111827', fontWeight: 500 }}>
+                  <CheckCircle2 size={16} color="#B4233C" style={{ flexShrink: 0, marginTop: 3 }} />
                   <span>{item}</span>
                 </div>
               ))}
@@ -100,20 +123,50 @@ export default function RetailPage() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="glass-card" style={{ padding: 40, textAlign: 'center', background: 'linear-gradient(135deg, rgba(34,197,94,0.12) 0%, rgba(13,32,64,0.6) 100%)' }}>
-          <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 12 }}>
-            Secure Your Retail Stores & Outlets
+        {/* Case Study Example */}
+        <div style={{
+          padding: 32,
+          borderRadius: 14,
+          marginBottom: 48,
+          background: '#F6F7F8',
+          border: '1px solid #E5E7EB'
+        }}>
+          <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+            Featured Deployment
+          </div>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 12 }}>
+            Multi-Branch Retail Outlets — Delhi NCR
           </h3>
-          <p style={{ color: '#94A3B8', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem' }}>
-            Book a site survey to design a tailored security setup for single stores or multi-location retail chains.
+          <p style={{ color: '#59636F', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: 16 }}>
+            Installed high-detail POS counter dome cameras and biometric staff attendance terminals across store locations, feeding into a unified remote monitoring platform for management.
+          </p>
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', fontSize: '0.85rem', color: '#374151' }}>
+            <span><strong>Scope:</strong> POS CCTV + Biometrics + Mobile Feeds</span>
+            <span><strong>Location:</strong> Delhi-NCR</span>
+            <span><strong>Status:</strong> Active Preventative Support</span>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{
+          background: '#FAF4F5',
+          border: '1px solid #F2D2D7',
+          borderRadius: 14,
+          padding: 40,
+          textAlign: 'center'
+        }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>
+            Secure Your Retail Stores
+          </h3>
+          <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+            Our security technicians will evaluate billing counter angles, aisle sightlines, and remote network setup.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/quote" className="btn-primary" style={{ padding: '12px 30px' }}>
-              Request Retail Site Survey <ChevronRight size={16} />
+            <Link to="/quote" className="btn-primary" style={{ padding: '12px 28px' }}>
+              Request Store Site Survey <ChevronRight size={16} />
             </Link>
             <a href="tel:+917217715296" className="btn-secondary" style={{ padding: '12px 24px' }}>
-              <PhoneCall size={14} /> Call +91 72177 15296
+              <PhoneCall size={15} /> Call +91 72177 15296
             </a>
           </div>
         </div>

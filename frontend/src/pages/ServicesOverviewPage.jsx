@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Camera, Phone, DoorOpen, Fingerprint, Wrench, ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react'
+import { Camera, Phone, DoorOpen, Fingerprint, Network, Wrench, ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import Breadcrumbs from '../components/Breadcrumbs'
 import { images } from '../assets/imageMap'
 
 const services = [
@@ -13,7 +14,6 @@ const services = [
     href: '/services/cctv',
     desc: 'High-definition IP and analog video surveillance solutions engineered for 24/7 security monitoring, perimeter protection, and high-capacity recording.',
     features: ['IP, Dome, Bullet & PTZ Cameras', 'NVR/DVR Configuration & Storage Planning', 'Remote Mobile & Central Monitor Feeds', 'Preventative AMC Health Checks'],
-    color: '#C5A03F',
     photo: images.services.cctv.dome,
     alt: 'Commercial dome CCTV security camera installation'
   },
@@ -23,7 +23,6 @@ const services = [
     href: '/services/epabx',
     desc: 'Enterprise PABX systems, multi-line intercoms, Krone module distributions, and riser shaft cabling for high-rises, offices, and factories.',
     features: ['Multi-Line & Auto-Attendant Setup', 'Society Riser Shaft & Krone Overhaul', 'Beetel Standard & Display Extensions', 'Seamless Flat-to-Gate Communication'],
-    color: '#8b5cf6',
     photo: images.services.epabx.hero,
     alt: 'Enterprise EPABX telecom rack and structured office telephone cabling'
   },
@@ -33,7 +32,6 @@ const services = [
     href: '/services/vdp',
     desc: 'Multi-apartment and villa VDP solutions with high-clarity video panels, two-way audio, and automated door latch integration.',
     features: ['Multi-Apartment IP Video Networks', 'Villa Entry Kits with 7-Inch Screens', 'Night-Vision Outdoor Calling Stations', 'Access Control Integration'],
-    color: '#06b6d4',
     photo: images.services.vdp.hero,
     alt: 'Indoor video door phone access verification and communication touchscreen monitor'
   },
@@ -41,83 +39,111 @@ const services = [
     icon: Fingerprint,
     title: 'Biometric Access Control',
     href: '/services/biometrics',
-    desc: 'Multi-modal access control and time-attendance terminals utilizing biometric fingerprint, RFID cards, and AI facial recognition.',
+    desc: 'Multi-modal access control and time-attendance terminals utilizing biometric fingerprint, RFID cards, and verification logs.',
     features: ['Face Recognition & Fingerprint Readers', 'Automated Time & Attendance Logging', 'Magnetic Lock & Turnstile Integration', 'Audit Trail & Entry Permission Sets'],
-    color: '#D4AA50',
     photo: images.services.biometrics.hero,
-    alt: 'High-accuracy optical fingerprint and AI facial recognition biometric terminal'
+    alt: 'High-accuracy optical fingerprint and biometric access terminal'
+  },
+  {
+    icon: Network,
+    title: 'Networking & Structured Cabling',
+    href: '/services/networking',
+    desc: 'Enterprise CAT6 / CAT6A data & voice cabling, server rack assembly, patch panel dressing, and PoE network infrastructure.',
+    features: ['D-Link / Schneider Certified Cabling', 'Server Rack & Patch Panel Dressing', 'PoE Switch & Managed Distribution', 'Fluke / Continuity Certified Testing'],
+    photo: images.services.networking.rack,
+    alt: 'Structured CAT6 network cabling and server rack installation'
   },
   {
     icon: Wrench,
-    title: 'AMC & Turnkey Maintenance',
+    title: 'AMC & Maintenance Contracts',
     href: '/services/amc',
     desc: 'Comprehensive Annual Maintenance Contracts (AMC) with scheduled preventative audits, priority technician dispatch, and cabling health care.',
-    features: ['Scheduled Preventative Audits', '24–48 Hr SLA Technician Dispatch', 'Camera, NVR & PSU Health Diagnostics', 'Emergency Breakdown Repair'],
-    color: '#22c55e',
+    features: ['Scheduled Preventative Audits', 'Prompt SLA Technician Dispatch', 'Camera, NVR & PSU Health Diagnostics', 'Emergency Breakdown Repair'],
     photo: images.services.amc.rackMaintenance,
-    alt: 'OCW technician conducting scheduled preventative maintenance and testing on telecom server rack'
+    alt: 'OM Communication technician conducting scheduled preventative maintenance on server rack'
   },
 ]
 
 export default function ServicesOverviewPage() {
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #040C1A 0%, #0B1E38 100%)' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
       <SEO
-        title="Enterprise Security & Telecom Services | Om Communication Work"
-        description="Explore our full spectrum of enterprise security solutions: CCTV surveillance, EPABX intercom networks, Video Door Phones, biometric access control, and turnkey AMC maintenance."
+        title="Enterprise Security & Telecom Services | OM Communication"
+        description="Explore our full spectrum of enterprise security solutions: CCTV surveillance, EPABX intercom networks, Video Door Phones, biometric access control, networking, and turnkey AMC maintenance in Delhi-NCR."
         canonical="/services"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://om-communication-portal.hiteshdheer155.workers.dev/' },
+            { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://om-communication-portal.hiteshdheer155.workers.dev/services' }
+          ]
+        }}
       />
       <Navbar />
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '120px 24px 80px' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          style={{ textAlign: 'center', marginBottom: 60 }}
-        >
-          <div style={{ color: '#C5A03F', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 12 }}>
-            Engineered Security Solutions
-          </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
-            Enterprise Services & Infrastructure Solutions
-          </h1>
-          <p style={{ color: '#94A3B8', marginTop: 14, fontSize: '1.05rem', maxWidth: 640, margin: '14px auto 0', lineHeight: 1.6 }}>
-            OCW designs, installs, and maintains mission-critical security and communication infrastructure across residential societies, factories, and corporate offices.
-          </p>
-        </motion.div>
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
+          <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Services' }]} />
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ marginTop: 16 }}
+          >
+            <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+              Engineered Capabilities
+            </div>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+              Enterprise Services &amp; Infrastructure Solutions
+            </h1>
+            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+              OM Communication designs, installs, and maintains mission-critical security and communication infrastructure across residential societies, factories, and corporate offices in Delhi-NCR.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px clamp(16px, 4vw, 32px) 80px' }}>
 
         {/* Services List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 36, marginBottom: 60 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 28, marginBottom: 56 }}>
           {services.map((s, index) => (
             <motion.div
               key={s.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="glass-card"
-              style={{ padding: 36, overflow: 'hidden' }}
+              transition={{ delay: index * 0.06 }}
+              style={{
+                background: '#FFFFFF',
+                borderRadius: 14,
+                border: '1px solid #E5E7EB',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+                padding: 32,
+                overflow: 'hidden'
+              }}
             >
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 32, alignItems: 'center' }}>
                 <div>
                   <div style={{
-                    width: 52, height: 52, background: `${s.color}15`,
-                    border: `1px solid ${s.color}35`, borderRadius: 12,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20
+                    width: 48, height: 48, background: '#FAF4F5',
+                    border: '1px solid #F2D2D7', borderRadius: 10,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16
                   }}>
-                    <s.icon size={26} color={s.color} />
+                    <s.icon size={24} color="#B4233C" />
                   </div>
-                  <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 12 }}>
+                  <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginBottom: 10, letterSpacing: '-0.01em' }}>
                     {s.title}
                   </h2>
-                  <p style={{ color: '#94A3B8', lineHeight: 1.7, fontSize: '0.95rem', marginBottom: 20 }}>
+                  <p style={{ color: '#59636F', lineHeight: 1.65, fontSize: '0.92rem', marginBottom: 18 }}>
                     {s.desc}
                   </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10, marginBottom: 24 }}>
                     {s.features.map(f => (
-                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.84rem', color: '#E2E8F0' }}>
-                        <CheckCircle2 size={15} color={s.color} style={{ flexShrink: 0 }} />
+                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.84rem', color: '#111827', fontWeight: 500 }}>
+                        <CheckCircle2 size={15} color="#B4233C" style={{ flexShrink: 0 }} />
                         <span>{f}</span>
                       </div>
                     ))}
@@ -132,16 +158,13 @@ export default function ServicesOverviewPage() {
                 </div>
 
                 {s.photo && (
-                  <div style={{ position: 'relative', borderRadius: 16, overflow: 'hidden', height: 260, border: '1px solid rgba(197,160,63,0.2)' }}>
+                  <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', height: 240, border: '1px solid #E5E7EB' }}>
                     <img
                       src={s.photo}
-                      alt={s.title}
+                      alt={s.alt}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      loading="lazy"
                     />
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      background: 'linear-gradient(to top, rgba(4,12,26,0.7) 0%, rgba(4,12,26,0.1) 100%)'
-                    }} />
                   </div>
                 )}
               </div>
@@ -150,14 +173,20 @@ export default function ServicesOverviewPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="glass-card" style={{ padding: 40, textAlign: 'center', background: 'linear-gradient(135deg, rgba(197,160,63,0.12) 0%, rgba(13,32,64,0.6) 100%)' }}>
-          <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 12 }}>
+        <div style={{
+          background: '#FAF4F5',
+          border: '1px solid #F2D2D7',
+          borderRadius: 14,
+          padding: 40,
+          textAlign: 'center'
+        }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>
             Need a Multi-Service Security Solution?
           </h3>
-          <p style={{ color: '#94A3B8', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem' }}>
-            We bundle CCTV, Intercoms, Access Control, and Cabling into unified turnkey packages with single-vendor accountability.
+          <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+            We bundle CCTV, Intercoms, Access Control, and Structured Cabling into unified turnkey packages with single-vendor accountability.
           </p>
-          <Link to="/quote" className="btn-primary" style={{ padding: '12px 30px' }}>
+          <Link to="/quote" className="btn-primary" style={{ padding: '12px 28px' }}>
             Request Site Survey / Quote <ChevronRight size={16} />
           </Link>
         </div>

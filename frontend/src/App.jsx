@@ -17,6 +17,7 @@ import EpabxPage from './pages/services/EpabxPage'
 import VdpPage from './pages/services/VdpPage'
 import BiometricsPage from './pages/services/BiometricsPage'
 import AmcPage from './pages/services/AmcPage'
+import NetworkingPage from './pages/services/NetworkingPage'
 
 import IndustriesOverviewPage from './pages/IndustriesOverviewPage'
 import ResidentialPage from './pages/industries/ResidentialPage'
@@ -62,6 +63,7 @@ export default function App() {
         <Route path="/services/vdp" element={<VdpPage />} />
         <Route path="/services/biometrics" element={<BiometricsPage />} />
         <Route path="/services/amc" element={<AmcPage />} />
+        <Route path="/services/networking" element={<NetworkingPage />} />
 
         {/* Industries Served */}
         <Route path="/industries" element={<IndustriesOverviewPage />} />

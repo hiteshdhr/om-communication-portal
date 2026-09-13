@@ -18,12 +18,12 @@ public class OmCommunicationPortalApplication {
 
     /**
      * Seeds an initial admin user on startup if none exists in database.
-     * Password is provided via ADMIN_INITIAL_PASSWORD environment variable or config property.
+     * Password is provided via ADMIN_INITIAL_PASSWORD environment variable in production.
      */
     @Bean
     CommandLineRunner seedAdmin(UserRepository userRepository,
                                 PasswordEncoder passwordEncoder,
-                                @Value("${ADMIN_INITIAL_PASSWORD:${admin.initial-password:admin123}}") String initialPassword) {
+                                @Value("${admin.initial-password}") String initialPassword) {
         return args -> {
             if (!userRepository.existsByUsername("admin")) {
                 User admin = new User();

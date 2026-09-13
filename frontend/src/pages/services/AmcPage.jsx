@@ -1,98 +1,189 @@
-import { motion } from 'framer-motion'
-import { CheckCircle2 } from 'lucide-react'
-import Navbar from '../../components/Navbar'
-import Footer from '../../components/Footer'
-import SEO from '../../components/SEO'
-import { FAQAccordion, ServiceCTA } from '../../components/ServiceShared'
+import { Clock, Shield, Wrench, CheckCircle2, AlertCircle, Zap, FileCheck, PhoneCall } from 'lucide-react'
+import ServicePageLayout from '../../components/ServiceShared'
 import { images } from '../../assets/imageMap'
 
-const amcBenefits = [
-  'Comprehensive & Non-Comprehensive Annual Maintenance Contracts (AMC)',
-  'Scheduled Quarterly Preventative Diagnostics (Camera Focus, Lens Cleaning, HDD Health)',
-  'Priority 24–48 Hour SLA Technician Dispatch for Critical Breakdown Calls',
-  'On-Site Cable Testing, Krone Block Servicing & Riser Shaft Re-Terminations',
-  'Firmware Updates, NVR Recording Audits & Time Synchronization Checks',
-  'Detailed Service Log Reports & Equipment Health Recommendations'
+const benefits = [
+  {
+    icon: Shield,
+    title: 'Guaranteed 99.8% System Uptime',
+    desc: 'Regular scheduled inspections detect and resolve hardware degradation, dust accumulation, and power supply drops before outages occur.',
+  },
+  {
+    icon: Clock,
+    title: 'Priority Technician Dispatch (SLA)',
+    desc: 'Direct emergency hotline with committed response SLAs (2–4 hours for critical failures) ensuring downtime is minimized across Delhi-NCR.',
+  },
+  {
+    icon: Wrench,
+    title: 'Preventive Lens & Hardware Servicing',
+    desc: 'Quarterly physical cleaning of camera lenses, sensor recalibration, Krone terminal tightening, and server rack dust removal preserve clarity.',
+  },
+  {
+    icon: Zap,
+    title: 'Power Supply & UPS Battery Audits',
+    desc: 'Routine voltage testing of SMPS power supplies, PoE switch ports, and UPS battery backup arrays prevents unexpected recording interruptions.',
+  },
+  {
+    icon: FileCheck,
+    title: 'Comprehensive Health Audit Reports',
+    desc: 'Every preventive visit concludes with a signed technical audit report documenting storage retention status, line voltages, and component health.',
+  },
+  {
+    icon: CheckCircle2,
+    title: 'Predictable Maintenance Budgeting',
+    desc: 'Eliminate surprise emergency repair costs with predictable, transparent annual maintenance pricing and discounted replacement components.',
+  },
+]
+
+const capabilities = [
+  'Comprehensive AMC (Covers Preventive Labor + Breakdown Visits + Replacement Spares)',
+  'Non-Comprehensive AMC (Covers Scheduled Labor + Priority Breakdown Visits; Spares at Cost)',
+  'Quarterly Scheduled Preventive Maintenance Inspections (4 Mandatory Visits/Year)',
+  'CCTV Camera Cleaning, Focal Re-Alignment, and NVR Hard Drive Sector Diagnostics',
+  'EPABX Intercom Line Voltage Testing, Dial-Tone Verification & Krone Re-Punching',
+  'Biometric Access Reader Sensor Cleaning, Lock Latch Calibration & User Database Backup',
+  'Video Door Phone Audio/Video Calibration, Lock Power Supply & Wiring Continuity Checks',
+  'Structured Cabling Port Continuity Audits & Server Rack Ventilation Fan Servicing',
+  'Dedicated Emergency Breakdown Response Dispatch with 2-to-4 Hour SLA in Delhi-NCR',
+  'Firmware & Security Patch Updates for Network Video Recorders and Access Controllers',
+  'Inventory Tagging and Serialized Equipment Documentation at Contract Onboarding',
+  'Customer Support Ticketing Desk with Online Complaint Tracking and Resolution SLA',
+]
+
+const process = [
+  {
+    step: '01',
+    title: 'Initial Site Survey & Inventory Audit',
+    desc: 'Our engineers conduct a full physical audit of all existing cameras, NVRs, PBX switchboards, biometric readers, and cabling.',
+  },
+  {
+    step: '02',
+    title: 'System Health Baseline & Remediation',
+    desc: 'We test existing component functionality, identify legacy faults, fix degraded wiring, and establish a certified operating baseline.',
+  },
+  {
+    step: '03',
+    title: 'AMC Contract Onboarding & Tagging',
+    desc: 'All hardware units are assigned unique asset IDs, contract terms (Comprehensive or Non-Comprehensive) are formalized, and SLA is activated.',
+  },
+  {
+    step: '04',
+    title: 'Scheduled Quarterly Preventive Visits',
+    desc: 'Technicians execute systematic quarterly maintenance checklists covering optical cleaning, electrical voltage tests, and firmware reviews.',
+  },
+  {
+    step: '05',
+    title: 'Priority Breakdown Response & Logging',
+    desc: 'Whenever an issue arises, our mobile engineering team is dispatched per agreed SLA, resolving faults with formal service log sign-offs.',
+  },
+]
+
+const considerations = [
+  {
+    title: 'Comprehensive vs. Non-Comprehensive',
+    desc: 'Non-Comprehensive covers all labor and unlimited service calls (spares charged separately). Comprehensive includes spare parts replacement for mature hardware.',
+  },
+  {
+    title: 'System Age & Existing Faults',
+    desc: 'Before initiating an AMC, an initial health audit identifies pre-existing hardware failures so they can be rectified before entering maintenance coverage.',
+  },
+  {
+    title: 'Service Level Agreement (SLA) Priority',
+    desc: 'Evaluate facility criticality: 24/7 manufacturing plants require 2–4 hour emergency response, while standard corporate offices utilize 4–8 hour response.',
+  },
+  {
+    title: 'Backup Storage & Spare Inventory',
+    desc: 'A reliable AMC provider maintains ready standby buffer stock of essential spares (NVR power supplies, camera adapters, EM lock coils) for instant replacement.',
+  },
+]
+
+const applications = [
+  { label: 'Corporate IT Offices & Business Parks', desc: 'Continuous surveillance uptime, biometric attendance reliability, and server room access compliance.' },
+  { label: 'Residential Societies & High-Rises', desc: 'Gate-to-flat intercom clarity, perimeter CCTV coverage, and high-cycle boom barrier/VDP maintenance.' },
+  { label: 'Manufacturing Facilities & Industrial Hubs', desc: 'Harsh environment camera cleaning, factory floor conduit inspection, and multi-shift biometrics support.' },
+  { label: 'Retail Chains & Commercial Showrooms', desc: 'Zero-downtime cash desk cameras, anti-theft surveillance recording, and POS network drops.' },
+  { label: 'Warehouses & Logistics Centers', desc: 'Perimeter fence cameras, loading dock surveillance, and high-ceiling optical maintenance.' },
+  { label: 'Hospitals & Educational Institutions', desc: '24/7 campus security uptime, emergency intercom line maintenance, and nurse call verification.' },
 ]
 
 const faqs = [
-  { q: 'What is included in a Comprehensive AMC vs Non-Comprehensive AMC?', a: 'Non-Comprehensive AMC covers all scheduled preventative maintenance visits, emergency breakdown labor, technician visits, and diagnostics. Comprehensive AMC includes labor plus replacement of covered faulty components (such as power supplies, connectors, and standard hardware parts) per contract terms.' },
-  { q: 'Can OCW take over AMC for systems installed by another vendor?', a: 'Yes. We conduct a preliminary system health audit, document the existing equipment and cabling status, rectify pre-existing defects, and onboard the facility under our standard AMC contract.' },
-  { q: 'How quickly does a technician respond during an emergency breakdown?', a: 'Under our standard AMC SLA, technician dispatch is arranged within 24 to 48 hours for standard issues and prioritized for complete system outages.' },
-  { q: 'What types of facilities are covered under your AMC plans?', a: 'We manage AMC agreements for residential high-rise RWAs, industrial factories, manufacturing warehouses, corporate headquarters, and multi-branch retail locations.' }
+  {
+    q: 'What is an Annual Maintenance Contract (AMC) for security systems?',
+    a: 'An AMC is a formal service agreement where Om Communication Work assumes full responsibility for the routine preventive servicing, troubleshooting, and emergency repair of your electronic security and telecommunication infrastructure (CCTV, EPABX, Biometrics, VDP, and Networking). Instead of paying high ad-hoc repair charges when equipment fails, an AMC guarantees regular maintenance, priority technician dispatch, and maximum system lifespan.',
+  },
+  {
+    q: 'What is the difference between Comprehensive and Non-Comprehensive AMC?',
+    a: 'A Non-Comprehensive AMC covers all routine quarterly maintenance visits, unlimited emergency breakdown labor visits, and technical support; any burnt or damaged spare parts are billed at discounted actual cost. A Comprehensive AMC covers both labor and the cost of repairing or replacing faulty hardware components (such as camera power supplies, NVR mainboards, or cabling joints) within the agreed contract terms.',
+  },
+  {
+    q: 'What specific tasks are performed during a quarterly preventive visit?',
+    a: 'During each scheduled visit, our technicians: (1) physically clean camera lenses and dome covers, (2) inspect and tighten all BNC, RJ45, and power connectors, (3) verify NVR hard drive health and check recording retention days, (4) test line voltages on SMPS power supplies and UPS batteries, (5) clean biometric optical/facial sensors and back up user databases, (6) verify EPABX intercom dial-tones and Krone connections, and (7) deliver a signed service health audit report.',
+  },
+  {
+    q: 'What is your response time for emergency breakdown calls in Delhi-NCR?',
+    a: 'For clients under an active AMC contract, our committed emergency response time is typically within 2 to 4 hours for critical system outages (such as complete NVR failure or gate intercom shutdown) and within 6 to 8 hours for minor single-camera or extension issues across Delhi, Noida, Gurgaon, Ghaziabad, and Faridabad.',
+  },
+  {
+    q: 'Can you take over the AMC for a system installed by another contractor?',
+    a: 'Yes. A large portion of our AMC portfolio consists of systems originally installed by other vendors. We start with a comprehensive site audit to evaluate cable quality, equipment condition, and power supplies. We rectify any initial baseline faults and seamlessly onboard the infrastructure under our standardized AMC support.',
+  },
+  {
+    q: 'How do we log a service complaint under an active AMC contract?',
+    a: 'AMC clients can log service requests 24/7 through our Online Complaint Desk portal, by calling our dedicated priority service desk at +91 72177 15296, or directly via WhatsApp. Every ticket receives an immediate tracking reference and automated status updates until technician resolution.',
+  },
 ]
 
 export default function AmcPage() {
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #040C1A 0%, #0B1E38 100%)' }}>
-      <SEO
-        title="AMC & Turnkey Maintenance Contracts | Om Communication Work"
-        description="Comprehensive Annual Maintenance Contracts (AMC), scheduled preventative health checks, emergency technician dispatch, and cabling repairs for security systems."
-        canonical="/services/amc"
-      />
-      <Navbar />
-
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '120px 24px 80px' }}>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: 50 }}>
-          <div style={{ color: '#C5A03F', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 12 }}>
-            Lifecycle Care & Maintenance
-          </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
-            Annual Maintenance Contracts (AMC)
-          </h1>
-          <p style={{ color: '#94A3B8', marginTop: 14, fontSize: '1.05rem', maxWidth: 680, margin: '14px auto 0', lineHeight: 1.6 }}>
-            Guaranteed operational uptime, routine preventative health audits, and priority emergency technician support for your security and communication infrastructure.
-          </p>
-        </motion.div>
-
-        {/* Hero Photo & Capability */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 36, alignItems: 'center', marginBottom: 60 }}>
-          <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(197,160,63,0.25)', height: 320, position: 'relative' }}>
-            <img
-              src={images.services.amc.rackMaintenance}
-              alt="OCW support technician conducting preventative maintenance, diagnosis, and cable testing on communication server rack"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
-              loading="eager"
-            />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,12,26,0.85) 0%, transparent 60%)' }} />
-            <div style={{ position: 'absolute', bottom: 20, left: 24, right: 24 }}>
-              <div style={{ color: '#FBF6E0', fontWeight: 700, fontSize: '1.1rem' }}>Preventative Health Audits & SLA Support</div>
-              <div style={{ color: '#A8BCCC', fontSize: '0.8125rem' }}>Proactive maintenance preventing critical system downtime</div>
-            </div>
-          </div>
-
-          <div className="glass-card" style={{ padding: 32 }}>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 16 }}>
-              Key AMC Service Highlights
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {amcBenefits.map(item => (
-                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.88rem', color: '#E2E8F0' }}>
-                  <CheckCircle2 size={16} color="#22c55e" style={{ flexShrink: 0, marginTop: 3 }} />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* FAQs */}
-        <div style={{ marginBottom: 60 }}>
-          <div className="eyebrow" style={{ textAlign: 'center', display: 'block', marginBottom: 12 }}>Common Questions</div>
-          <h2 style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.9rem)', fontWeight: 800, textAlign: 'center', marginBottom: 32, color: '#FFFFFF' }}>
-            Frequently Asked Questions
-          </h2>
-          <div style={{ maxWidth: 880, margin: '0 auto', background: 'rgba(13,32,64,0.4)', border: '1px solid rgba(197,160,63,0.12)', borderRadius: 16, padding: '8px 28px' }}>
-            <FAQAccordion faqs={faqs} />
-          </div>
-        </div>
-      </div>
-
-      <ServiceCTA
-        headline="Ready to Discuss an AMC for Your Facility?"
-        sub="Our team will perform a system audit and structure a maintenance contract tailored to your equipment inventory and operational requirements."
-      />
-      <Footer />
-    </div>
+    <ServicePageLayout
+      seo={{
+        title: 'Security System AMC & Maintenance Contracts Delhi-NCR | Om Communication Work',
+        description: 'Comprehensive and non-comprehensive Annual Maintenance Contracts (AMC) for CCTV, EPABX intercom, biometric access control, and network infrastructure across Delhi, Noida, Gurgaon, and Ghaziabad.',
+        canonical: '/services/amc',
+      }}
+      breadcrumbs={[
+        { label: 'Solutions', href: '/services' },
+        { label: 'Annual Maintenance Contracts' },
+      ]}
+      hero={{
+        eyebrow: 'Annual Maintenance Contracts (AMC)',
+        h1: "Security doesn't end<br /><span class=\"gradient-text\">at installation.</span>",
+        sub: 'Scheduled preventive inspections, priority breakdown emergency response, optical lens cleaning, and power audits — ensuring 99.8% uptime for your security and communication systems across Delhi-NCR.',
+        image: images.services.amc.technician,
+        imageAlt: 'Security system maintenance technician inspecting server rack and NVR during preventive AMC visit by Om Communication Work',
+      }}
+      overview="Electronic security and telecommunication systems are critical infrastructure that must function flawlessly every second of the year. Dust accumulation, power surges, cable oxidation, and hard drive wear are the leading causes of sudden footage loss and system failure. Om Communication Work provides structured, SLA-backed Annual Maintenance Contracts (AMC) tailored for corporate offices, high-rise residential societies, and industrial manufacturing plants across Delhi-NCR."
+      whyNeeded={{
+        title: 'Why proactive maintenance is far superior to ad-hoc emergency repairs',
+        text: 'Waiting for hardware to fail before calling a technician leaves your premises vulnerable without surveillance footage or intercom communication when security incidents occur. An engineered AMC delivers:',
+        points: [
+          'Guaranteed 99.8% recording and communication uptime through quarterly preventive audits',
+          'Priority emergency technician dispatch (2–4 hour SLA) bypassing long public waitlists',
+          'Prolonged equipment lifespan through regular optical cleaning and power supply testing',
+          'Transparent, predictable annual maintenance budgeting with zero surprise labor fees',
+        ],
+      }}
+      benefits={benefits}
+      capabilities={capabilities}
+      process={process}
+      considerations={considerations}
+      maintenanceInfo={{
+        title: 'Dedicated Online Complaint Desk & Tracking',
+        text: 'All Om Communication AMC customers have access to our integrated digital Complaint Desk. Log issues in under 30 seconds, receive real-time technician assignment updates, and track resolution timelines with complete transparency.',
+        amcLink: '/complaint',
+      }}
+      applications={applications}
+      faqs={faqs}
+      relatedLinks={[
+        { label: 'CCTV Surveillance Systems', href: '/services/cctv' },
+        { label: 'EPABX & Intercom Systems', href: '/services/epabx' },
+        { label: 'Biometric Access Control', href: '/services/biometrics' },
+        { label: 'Video Door Phone (VDP)', href: '/services/vdp' },
+        { label: 'Structured Cabling & Networking', href: '/services/networking' },
+      ]}
+      ctaHeadline="Protect Your Security Investment with an AMC Plan"
+      ctaSub="Schedule an on-site system health audit in Delhi, Noida, Gurgaon, or Ghaziabad. Our certified engineers will assess your existing equipment and provide a tailored AMC quotation."
+      ctaText="Discuss Maintenance Support →"
+    />
   )
 }

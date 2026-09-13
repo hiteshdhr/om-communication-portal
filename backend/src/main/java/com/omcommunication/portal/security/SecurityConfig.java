@@ -61,7 +61,9 @@ public class SecurityConfig {
             "http://localhost:*",
             "https://omcommunicationworks.com",
             "https://www.omcommunicationworks.com",
-            "https://*.pages.dev"
+            "https://*.omcommunicationworks.com",
+            "https://*.pages.dev",
+            "https://*.workers.dev"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));

@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Phone, MapPin, MessageCircle, Send, CheckCircle2 } from 'lucide-react'
+import { Phone, MapPin, MessageCircle, Send, CheckCircle2, Clock } from 'lucide-react'
 import toast from 'react-hot-toast'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
+import Breadcrumbs from '../components/Breadcrumbs'
 import api from '../api'
 
 export default function ContactPage() {
@@ -48,36 +49,56 @@ export default function ContactPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg, #040C1A 0%, #0B1E38 100%)' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
       <SEO
-        title="Contact Us & Book a Site Survey | Om Communication Work"
-        description="Get in touch with Om Communication Work. Call +91 72177 15296, message via WhatsApp, or submit a request for an on-site security and intercom assessment."
+        title="Contact Us & Book a Site Survey | OM Communication"
+        description="Get in touch with OM Communication. Call +91 72177 15296, message via WhatsApp, or submit a request for an on-site security and intercom assessment across Delhi-NCR."
         canonical="/contact"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'ContactPage',
+          name: 'Contact OM Communication',
+          description: 'Technical consultations and on-site engineering surveys for security, intercom, and networking systems in Delhi-NCR.'
+        }}
       />
       <Navbar />
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '120px 24px 80px' }}>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: 50 }}>
-          <div style={{ color: '#C5A03F', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 12 }}>
-            Direct Engineering Contact
-          </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
-            Get in Touch & Book a Site Survey
-          </h1>
-          <p style={{ color: '#94A3B8', marginTop: 14, fontSize: '1.05rem', maxWidth: 640, margin: '14px auto 0', lineHeight: 1.6 }}>
-            Speak directly with our technical team to schedule an on-site inspection or request an engineered proposal for your property.
-          </p>
-        </motion.div>
+      {/* ── Page Hero ── */}
+      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
+          <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Contact & Survey' }]} />
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
+            <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+              Direct Engineering Contact
+            </div>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+              Get in Touch &amp; Book a Site Survey
+            </h1>
+            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+              Speak directly with our technical team to schedule an on-site inspection or request an engineered proposal for your property in Delhi-NCR.
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 40, marginBottom: 60 }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px clamp(16px, 4vw, 32px) 80px' }}>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32, marginBottom: 56 }}>
           {/* Left Column: Direct Contact Details */}
           <div>
-            <div className="glass-card" style={{ padding: 32, marginBottom: 24 }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 20 }}>
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: 14,
+              border: '1px solid #E5E7EB',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+              padding: 32,
+              marginBottom: 24
+            }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 20, letterSpacing: '-0.01em' }}>
                 Direct Communication Channels
               </h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <a
                   href="tel:+917217715296"
                   style={{
@@ -85,25 +106,25 @@ export default function ContactPage() {
                     alignItems: 'center',
                     gap: 14,
                     padding: '16px',
-                    borderRadius: 12,
-                    background: 'rgba(197,160,63,0.12)',
-                    border: '1px solid rgba(197,160,63,0.3)',
-                    color: '#FBF6E0',
+                    borderRadius: 10,
+                    background: '#FAF4F5',
+                    border: '1px solid #F2D2D7',
+                    color: '#111827',
                     textDecoration: 'none',
                     transition: 'transform 0.2s'
                   }}
                 >
-                  <div style={{ width: 44, height: 44, borderRadius: 10, background: '#C5A03F', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Phone size={20} color="#040C1A" />
+                  <div style={{ width: 44, height: 44, borderRadius: 8, background: '#B4233C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Phone size={20} color="#FFFFFF" />
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.75rem', color: '#C5A03F', fontWeight: 700, textTransform: 'uppercase' }}>Direct Phone / Dispatch</div>
+                    <div style={{ fontSize: '0.75rem', color: '#B4233C', fontWeight: 700, textTransform: 'uppercase' }}>Direct Phone / Dispatch</div>
                     <div style={{ fontSize: '1.15rem', fontWeight: 800 }}>+91 72177 15296</div>
                   </div>
                 </a>
 
                 <a
-                  href="https://wa.me/917217715296?text=Hello%20Om%20Communication%20Work,%20I%20would%20like%20to%20inquire%20about%20a%20site%20survey%20for%20our%20facility."
+                  href="https://wa.me/917217715296?text=Hello%20OM%20Communication,%20I%20would%20like%20to%20inquire%20about%20a%20site%20survey%20for%20our%20facility."
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -111,47 +132,62 @@ export default function ContactPage() {
                     alignItems: 'center',
                     gap: 14,
                     padding: '16px',
-                    borderRadius: 12,
-                    background: 'rgba(37,211,102,0.12)',
-                    border: '1px solid rgba(37,211,102,0.35)',
-                    color: '#FFFFFF',
+                    borderRadius: 10,
+                    background: '#F0FDF4',
+                    border: '1px solid #BBF7D0',
+                    color: '#111827',
                     textDecoration: 'none',
                     transition: 'transform 0.2s'
                   }}
                 >
-                  <div style={{ width: 44, height: 44, borderRadius: 10, background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 8, background: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <MessageCircle size={22} color="#FFFFFF" />
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.75rem', color: '#25D366', fontWeight: 700, textTransform: 'uppercase' }}>WhatsApp Direct</div>
-                    <div style={{ fontSize: '1.05rem', fontWeight: 700 }}>Chat on WhatsApp</div>
+                    <div style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 700, textTransform: 'uppercase' }}>WhatsApp Direct</div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 800 }}>Chat on WhatsApp</div>
                   </div>
                 </a>
               </div>
             </div>
 
-            <div className="glass-card" style={{ padding: 28 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, color: '#C5A03F', fontWeight: 700, fontSize: '0.9rem' }}>
+            <div style={{
+              background: '#F6F7F8',
+              borderRadius: 14,
+              border: '1px solid #E5E7EB',
+              padding: 28
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, color: '#B4233C', fontWeight: 700, fontSize: '0.9rem' }}>
                 <MapPin size={18} /> Service Locations & Coverage
               </div>
-              <p style={{ color: '#94A3B8', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: 16 }}>
+              <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 16 }}>
                 <strong>Primary Operations Hub:</strong> Delhi, Noida, Greater Noida, Ghaziabad (Indirapuram, Vaishali, Vasundhara), Gurugram, and Faridabad.
               </p>
-              <p style={{ color: '#94A3B8', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
-                <strong>Pan-India Enterprise Projects:</strong> Available for large manufacturing plants, multi-facility warehouse complexes, and corporate rollouts across India.
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, color: '#111827', fontWeight: 700, fontSize: '0.88rem' }}>
+                <Clock size={16} color="#B4233C" /> Working Hours
+              </div>
+              <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>
+                Monday – Saturday: 9:00 AM – 7:30 PM<br />
+                Emergency AMC support available for contracted sites.
               </p>
             </div>
           </div>
 
           {/* Right Column: Contact / Site Survey Form */}
-          <div className="glass-card" style={{ padding: 36 }}>
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: 14,
+            border: '1px solid #E5E7EB',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+            padding: 32
+          }}>
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(34,197,94,0.15)', border: '2px solid #22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-                  <CheckCircle2 size={32} color="#22c55e" />
+                <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#F0FDF4', border: '2px solid #16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                  <CheckCircle2 size={32} color="#16A34A" />
                 </div>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 10 }}>Inquiry Submitted!</h3>
-                <p style={{ color: '#94A3B8', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24 }}>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>Inquiry Submitted!</h3>
+                <p style={{ color: '#59636F', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24 }}>
                   Thank you, <strong>{form.clientName}</strong>. Our engineering team will review your requirement and reach out to you within 24 hours.
                 </p>
                 <button
@@ -163,16 +199,16 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>
+                <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Request an On-Site Survey
                 </h2>
-                <p style={{ color: '#94A3B8', fontSize: '0.85rem', marginBottom: 24 }}>
+                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
                   Fill out the form below and an engineer will schedule a site visit.
                 </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div style={{ gridColumn: 'span 2' }}>
-                    <label className="form-label">Full Name *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Full Name *</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Rajesh Sharma"
@@ -183,7 +219,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="form-label">Phone Number *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Phone Number *</label>
                     <input
                       className="form-input"
                       placeholder="+91 98765 43210"
@@ -194,7 +230,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="form-label">Email Address</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Email Address</label>
                     <input
                       className="form-input"
                       type="email"
@@ -205,10 +241,10 @@ export default function ContactPage() {
                   </div>
 
                   <div style={{ gridColumn: 'span 2' }}>
-                    <label className="form-label">Company / Society / RWA Name</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Company / Society / RWA Name</label>
                     <input
                       className="form-input"
-                      placeholder="e.g. Green Heights RWA or Steelbird Plant"
+                      placeholder="e.g. Green Heights RWA or Industrial Plant"
                       value={form.companyName}
                       onChange={e => setForm(f => ({ ...f, companyName: e.target.value }))}
                     />
@@ -216,7 +252,7 @@ export default function ContactPage() {
                 </div>
 
                 <div style={{ marginBottom: 16 }}>
-                  <label className="form-label">Property / Facility Type</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Property / Facility Type</label>
                   <select
                     className="form-input"
                     value={form.facilityType}
@@ -232,8 +268,8 @@ export default function ContactPage() {
                 </div>
 
                 <div style={{ marginBottom: 20 }}>
-                  <label className="form-label">Services Required</label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Services Required</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8 }}>
                     {['CCTV Surveillance', 'EPABX & Telecom', 'Video Door Phone', 'Biometric Access', 'AMC Maintenance', 'Structured Cabling'].map(svc => (
                       <button
                         type="button"
@@ -246,9 +282,9 @@ export default function ContactPage() {
                           fontSize: '0.78rem',
                           fontWeight: 600,
                           cursor: 'pointer',
-                          background: form.servicesRequired.includes(svc) ? 'rgba(197,160,63,0.18)' : 'rgba(255,255,255,0.03)',
-                          border: `1px solid ${form.servicesRequired.includes(svc) ? '#C5A03F' : 'rgba(255,255,255,0.08)'}`,
-                          color: form.servicesRequired.includes(svc) ? '#FBF6E0' : '#94A3B8',
+                          background: form.servicesRequired.includes(svc) ? '#FAF4F5' : '#F6F7F8',
+                          border: `1px solid ${form.servicesRequired.includes(svc) ? '#B4233C' : '#E5E7EB'}`,
+                          color: form.servicesRequired.includes(svc) ? '#B4233C' : '#59636F',
                           transition: 'all 0.15s'
                         }}
                       >
@@ -259,7 +295,7 @@ export default function ContactPage() {
                 </div>
 
                 <div style={{ marginBottom: 24 }}>
-                  <label className="form-label">Project Details / Site Description</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Project Details / Site Description</label>
                   <textarea
                     className="form-input"
                     rows={3}
