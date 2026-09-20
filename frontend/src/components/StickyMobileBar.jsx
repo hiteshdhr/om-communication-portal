@@ -38,7 +38,7 @@ export default function StickyMobileBar() {
           fontWeight: 700,
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
-          borderRight: '1px solid #E5E7EB',
+          borderRight: '1px solid var(--border-light)',
           minHeight: 52,
         }}
       >
@@ -66,7 +66,7 @@ export default function StickyMobileBar() {
           fontWeight: 700,
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
-          borderRight: '1px solid #E5E7EB',
+          borderRight: '1px solid var(--border-light)',
           minHeight: 52,
         }}
       >

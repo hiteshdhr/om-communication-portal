@@ -36,6 +36,7 @@
   /* ── Borders & Dividers ── */
   --border-light:   #E5E7EB;
   --border-subtle:  #F0F2F5;
+  --border-color:   #E5E7EB;
   --border-red:     rgba(180, 35, 60, 0.25);
   --border-charcoal: #2D323B;
 
@@ -69,6 +70,7 @@
 
   --border-light:    #2A3038;
   --border-subtle:   #232830;
+  --border-color:    #2A3038;
   --border-red:      rgba(196, 55, 82, 0.35);
   --border-charcoal: #373E48;
 }

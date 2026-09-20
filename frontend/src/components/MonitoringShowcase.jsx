@@ -31,7 +31,7 @@ export default function MonitoringShowcase() {
             Real-Time Telemetry
           </div>
           <h2 style={{ fontSize: '2rem', fontWeight: 800, margin: '0 0 10px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Live Infrastructure Monitoring</h2>
-          <p style={{ color: '#59636F', fontSize: '1rem', maxWidth: 600, margin: '0 auto' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: 600, margin: '0 auto' }}>
             Live operational feeds across commercial sites, EPABX racks, and biometric terminals installed by OM Communication.
           </p>
         </div>
@@ -39,7 +39,7 @@ export default function MonitoringShowcase() {
         {/* NVR Interactive Widget */}
         <div style={{
           background: '#17191D',
-          border: '1px solid #E5E7EB',
+          border: '1px solid var(--border-light)',
           borderRadius: 14,
           overflow: 'hidden',
           boxShadow: '0 12px 36px rgba(0,0,0,0.08)',

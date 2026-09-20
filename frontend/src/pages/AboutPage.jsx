@@ -86,7 +86,7 @@ export default function AboutPage() {
               padding: '6px 12px',
               fontSize: '0.78rem',
               fontWeight: 700,
-              color: '#D1D5DB',
+              color: 'var(--text-on-dark-sub)',
             }}>
               15+ Years Field Track Record
             </div>

@@ -30,13 +30,13 @@ export default function ResidentialPage() {
         <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Industries', path: '/industries' }, { label: 'Residential Societies' }]} />
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'left', marginBottom: 40 }}>
-          <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+          <div style={{ color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Residential Infrastructure
           </div>
           <h1 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Residential Societies & High-Rise Towers
           </h1>
-          <p style={{ color: '#59636F', marginTop: 12, fontSize: '1.05rem', maxWidth: 760, lineHeight: 1.65 }}>
+          <p style={{ color: 'var(--text-secondary)', marginTop: 12, fontSize: '1.05rem', maxWidth: 760, lineHeight: 1.65 }}>
             Integrated safety, intercom connectivity, and automated access systems designed specifically for high-density apartment complexes and gated RWAs across Delhi-NCR.
           </p>
         </motion.div>
@@ -45,7 +45,7 @@ export default function ResidentialPage() {
         <div style={{
           borderRadius: 16,
           overflow: 'hidden',
-          border: '1px solid #E5E7EB',
+          border: '1px solid var(--border-light)',
           marginBottom: 48,
           position: 'relative',
           background: '#17191D',
@@ -68,10 +68,10 @@ export default function ResidentialPage() {
             left: 28,
             right: 28,
           }}>
-            <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '1.25rem', marginBottom: 4 }}>
+            <div style={{ color: 'var(--text-on-dark)', fontWeight: 800, fontSize: '1.25rem', marginBottom: 4 }}>
               Turnkey Society Intercom & Perimeter Protection
             </div>
-            <div style={{ color: '#D1D5DB', fontSize: '0.875rem' }}>
+            <div style={{ color: 'var(--text-on-dark-sub)', fontSize: '0.875rem' }}>
               Full-tower Krone overhauls, boundary surveillance & video gate intercoms
             </div>
           </div>
@@ -80,15 +80,15 @@ export default function ResidentialPage() {
         {/* Core Challenges & Solutions */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 28, marginBottom: 48 }}>
           <div style={{
-            background: '#F6F7F8',
+            background: 'var(--bg-surface)',
             borderRadius: 14,
             padding: 32,
-            border: '1px solid #E5E7EB'
+            border: '1px solid var(--border-light)'
           }}>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16, letterSpacing: '-0.01em' }}>
               Common High-Rise RWA Challenges
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: '#59636F', fontSize: '0.9rem', lineHeight: 1.6 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6 }}>
               <div>• Corroded Krone distribution blocks causing dead intercom lines across tower shafts.</div>
               <div>• Unmonitored blindspots in basements, elevator lobbies, and rear perimeter walls.</div>
               <div>• Broken guard-to-flat communication leading to unauthorized visitor entry.</div>
@@ -97,13 +97,13 @@ export default function ResidentialPage() {
           </div>
 
           <div style={{
-            background: '#FFFFFF',
+            background: 'var(--bg-card)',
             borderRadius: 14,
             padding: 32,
-            border: '1px solid #E5E7EB',
+            border: '1px solid var(--border-color)',
             boxShadow: '0 4px 16px rgba(0,0,0,0.03)'
           }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#B4233C', marginBottom: 16, letterSpacing: '-0.01em' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--red-primary)', marginBottom: 16, letterSpacing: '-0.01em' }}>
               The OM Communication Society Solution
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -114,7 +114,7 @@ export default function ResidentialPage() {
                 'Comprehensive Preventative Annual Maintenance Contracts (AMC)'
               ].map(item => (
                 <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
-                  <CheckCircle2 size={16} color="#B4233C" style={{ flexShrink: 0, marginTop: 3 }} />
+                  <CheckCircle2 size={16} color="var(--red-primary)" style={{ flexShrink: 0, marginTop: 3 }} />
                   <span>{item}</span>
                 </div>
               ))}
@@ -130,16 +130,16 @@ export default function ResidentialPage() {
           background: 'var(--bg-card)',
           border: '1px solid var(--border-color)',
         }}>
-          <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+          <div style={{ color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
             Featured Deployment
           </div>
           <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
             84-Floor Multi-Tower Society — Ghaziabad, NCR
           </h3>
-          <p style={{ color: '#59636F', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: 16 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: 16 }}>
             Complete vertical riser overhaul replacing corroded Krone distribution modules across all towers, restoring 100% guard-to-flat voice clarity and eliminating intercom cross-talk.
           </p>
-          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', fontSize: '0.85rem', color: '#374151' }}>
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
             <span><strong>Scope:</strong> Multi-Tower EPABX Cabling Overhaul</span>
             <span><strong>Location:</strong> Ghaziabad, NCR</span>
             <span><strong>Status:</strong> Active Preventative AMC</span>
@@ -148,16 +148,16 @@ export default function ResidentialPage() {
 
         {/* CTA */}
         <div style={{
-          background: '#FAF4F5',
-          border: '1px solid #F2D2D7',
+          background: 'var(--bg-blush)',
+          border: '1px solid var(--border-red)',
           borderRadius: 14,
           padding: 40,
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>
             Schedule an RWA Site Survey
           </h3>
-          <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
             Our telecom and surveillance engineers will assess your society shaft wiring and perimeter coverage.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>

@@ -93,13 +93,13 @@ export default function ProjectsPage() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Projects' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
-            <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ color: 'var(--red-primary)', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Proven Execution Track Record
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Featured Deployments &amp; Field Case Studies
             </h1>
-            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
               Verified on-site engineering projects demonstrating how OM Communication delivers turnkey surveillance, intercom overhauls, biometric access, and structured cabling across Delhi-NCR.
             </p>
           </motion.div>
@@ -112,7 +112,7 @@ export default function ProjectsPage() {
         <div style={{
           borderRadius: 16,
           overflow: 'hidden',
-          border: '1px solid #E5E7EB',
+          border: '1px solid var(--border-light)',
           marginBottom: 48,
           position: 'relative',
           background: '#17191D',
@@ -173,9 +173,9 @@ export default function ProjectsPage() {
               viewport={{ once: true }}
               transition={{ delay: idx * 0.06 }}
               style={{
-                background: '#FFFFFF',
+                background: 'var(--bg-card)',
                 borderRadius: 14,
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-color)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 padding: '32px',
                 transition: 'all 0.2s ease'
@@ -183,7 +183,7 @@ export default function ProjectsPage() {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
                 <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#B4233C', fontSize: '0.8125rem', fontWeight: 700, marginBottom: 6 }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--red-primary)', fontSize: '0.8125rem', fontWeight: 700, marginBottom: 6 }}>
                     <p.icon size={15} /> {p.sector} • {p.location}
                   </div>
                   <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.01em' }}>
@@ -197,7 +197,7 @@ export default function ProjectsPage() {
                   borderRadius: 10,
                   overflow: 'hidden',
                   height: 200,
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--border-light)',
                   position: 'relative'
                 }}>
                   <img
@@ -210,16 +210,16 @@ export default function ProjectsPage() {
 
                 <div>
                   <div style={{ marginBottom: 16 }}>
-                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#59636F', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
                       The Requirement & Site Challenge:
                     </div>
-                    <p style={{ color: '#374151', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
                       {p.requirement}
                     </p>
                   </div>
 
                   <div>
-                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#B4233C', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--red-primary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
                       The OM Communication Solution:
                     </div>
                     <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
@@ -230,7 +230,7 @@ export default function ProjectsPage() {
               </div>
 
               <div style={{
-                background: 'var(--bg-card)',
+                background: 'var(--bg-surface)',
                 borderRadius: 10,
                 padding: '16px 20px',
                 border: '1px solid var(--border-color)',
@@ -241,15 +241,15 @@ export default function ProjectsPage() {
                 gap: 16
               }}>
                 <div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#59636F', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
                     Services Deployed:
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {p.servicesDeployed.map(s => (
                       <span key={s} style={{
                         background: 'var(--bg-card)',
-                        border: '1px solid #E5E7EB',
-                        color: '#111827',
+                        border: '1px solid var(--border-light)',
+                        color: 'var(--text-primary)',
                         fontSize: '0.78rem',
                         fontWeight: 600,
                         padding: '3px 10px',
@@ -271,8 +271,8 @@ export default function ProjectsPage() {
 
         {/* CTA */}
         <div style={{
-          background: '#FAF4F5',
-          border: '1px solid #F2D2D7',
+          background: 'var(--bg-blush)',
+          border: '1px solid var(--border-red)',
           borderRadius: 14,
           padding: 40,
           textAlign: 'center'
@@ -280,7 +280,7 @@ export default function ProjectsPage() {
           <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
             Have a Similar Infrastructure Requirement?
           </h3>
-          <p style={{ color: '#59636F', maxWidth: 560, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: 560, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
             Our engineering team will assess your site layout, identify conduit pathways, and prepare an engineered proposal with verified pricing.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>

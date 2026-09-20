@@ -47,10 +47,19 @@ const industryLinks = [
   { label: 'Retail Chains & Showrooms', href: '/industries/retail', desc: 'Loss prevention cameras and POS network points' },
 ]
 
+const NAVBAR_HEIGHT = 68
+const SCROLL_THRESHOLD = 6 // px of scroll required before triggering hide/show
+
 export default function Navbar() {
   const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [industriesOpen, setIndustriesOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // Scroll-hide state
+  const [headerVisible, setHeaderVisible] = useState(true)
+  const [scrolled, setScrolled] = useState(false)
+  const lastScrollY = useRef(0)
+  const ticking = useRef(false)
+
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
   const solRef = useRef(null)
@@ -63,28 +72,124 @@ export default function Navbar() {
     setMobileMenuOpen(false)
   }, [location.pathname])
 
-  // Close on outside click
+  // ── Samsung-style scroll hide / reveal ──────────────────────────────────
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ticking.current) return
+      ticking.current = true
+      window.requestAnimationFrame(() => {
+        const currentY = window.scrollY
+        const diff = currentY - lastScrollY.current
+
+        // Show header whenever near the top of the page
+        if (currentY < NAVBAR_HEIGHT) {
+          setHeaderVisible(true)
+          setScrolled(false)
+        } else {
+          setScrolled(true)
+          // Only react when movement exceeds threshold (prevents micro-jitter)
+          if (Math.abs(diff) >= SCROLL_THRESHOLD) {
+            if (diff > 0) {
+              // Scrolling DOWN — hide header
+              setHeaderVisible(false)
+              // Close any open menus so they don't hover orphaned
+              setSolutionsOpen(false)
+              setIndustriesOpen(false)
+            } else {
+              // Scrolling UP — show header
+              setHeaderVisible(true)
+            }
+          }
+        }
+
+        lastScrollY.current = currentY
+        ticking.current = false
+      })
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Close on outside click and Escape key
   useEffect(() => {
     function handleClickOutside(e) {
       if (solRef.current && !solRef.current.contains(e.target)) setSolutionsOpen(false)
       if (indRef.current && !indRef.current.contains(e.target)) setIndustriesOpen(false)
     }
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+        setSolutionsOpen(false)
+        setIndustriesOpen(false)
+        setMobileMenuOpen(false)
+      }
+    }
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    window.addEventListener('keydown', handleKeyDown, true)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('keydown', handleKeyDown, true)
+    }
   }, [])
 
   return (
-    <header
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000,
-        background: 'var(--bg-white)',
-        borderBottom: '1px solid var(--border-light)',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
-        transition: 'background-color 0.3s ease, border-color 0.3s ease',
-      }}
-    >
+    <>
+      {/* ── Spacer: prevents layout shift when header is fixed ── */}
+      <div style={{ height: NAVBAR_HEIGHT, flexShrink: 0 }} aria-hidden="true" />
+
+      {/* ── Backdrop Behind Mega Menu & Dropdowns ── */}
+      <AnimatePresence>
+        {(solutionsOpen || industriesOpen) && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => {
+              setSolutionsOpen(false)
+              setIndustriesOpen(false)
+            }}
+            style={{
+              position: 'fixed',
+              top: NAVBAR_HEIGHT,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: theme === 'dark' ? 'rgba(0, 0, 0, 0.30)' : 'rgba(15, 23, 42, 0.12)',
+              zIndex: 999,
+              pointerEvents: 'auto',
+            }}
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+
+      <header
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          background: 'var(--bg-white)',
+          borderBottom: scrolled
+            ? '1px solid var(--border-light)'
+            : '1px solid transparent',
+          boxShadow: scrolled
+            ? (theme === 'dark'
+                ? '0 2px 12px rgba(0,0,0,0.35)'
+                : '0 2px 12px rgba(15,23,42,0.08)')
+            : 'none',
+          transform: headerVisible ? 'translateY(0)' : 'translateY(-100%)',
+          transition: [
+            'transform 0.32s cubic-bezier(0.16, 1, 0.3, 1)',
+            'background-color 0.3s ease',
+            'border-color 0.3s ease',
+            'box-shadow 0.3s ease',
+          ].join(', '),
+          willChange: 'transform',
+        }}
+      >
       <div style={{
         maxWidth: 1240,
         margin: '0 auto',
@@ -94,6 +199,8 @@ export default function Navbar() {
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 20,
+        position: 'relative',
+        zIndex: 1002,
       }}>
         {/* ── Brand Logo ── */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
@@ -159,32 +266,42 @@ export default function Navbar() {
                 fontWeight: 600,
                 color: location.pathname.startsWith('/services') || solutionsOpen ? 'var(--red-primary)' : 'var(--text-primary)',
                 cursor: 'pointer',
+                transition: 'color 0.15s ease',
               }}
               aria-expanded={solutionsOpen}
+              aria-haspopup="true"
             >
               <span>Solutions</span>
-              <ChevronDown size={14} style={{ transform: solutionsOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              <ChevronDown
+                size={14}
+                style={{
+                  transform: solutionsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.24s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              />
             </button>
 
             {/* Mega Menu Dropdown */}
             <AnimatePresence>
               {solutionsOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  transition={{ duration: 0.18 }}
+                  initial={{ opacity: 0, y: -8, scale: 0.985, x: '-50%' }}
+                  animate={{ opacity: 1, y: 0, scale: 1, x: '-50%' }}
+                  exit={{ opacity: 0, y: -8, scale: 0.985, x: '-50%' }}
+                  transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
                   style={{
                     position: 'absolute',
                     top: 'calc(100% + 8px)',
                     left: '50%',
-                    transform: 'translateX(-50%)',
+                    transformOrigin: 'top center',
                     width: 580,
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border-light)',
                     borderRadius: 12,
                     padding: 20,
-                    boxShadow: '0 16px 36px rgba(0, 0, 0, 0.12)',
+                    boxShadow: theme === 'dark'
+                      ? '0 20px 45px -4px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08)'
+                      : '0 20px 45px -4px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.06)',
                     zIndex: 1100,
                   }}
                 >
@@ -275,31 +392,41 @@ export default function Navbar() {
                 fontWeight: 600,
                 color: location.pathname.startsWith('/industries') || industriesOpen ? 'var(--red-primary)' : 'var(--text-primary)',
                 cursor: 'pointer',
+                transition: 'color 0.15s ease',
               }}
               aria-expanded={industriesOpen}
+              aria-haspopup="true"
             >
               <span>Industries</span>
-              <ChevronDown size={14} style={{ transform: industriesOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              <ChevronDown
+                size={14}
+                style={{
+                  transform: industriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.24s cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              />
             </button>
 
             <AnimatePresence>
               {industriesOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 8 }}
-                  transition={{ duration: 0.18 }}
+                  initial={{ opacity: 0, y: -8, scale: 0.985, x: '-50%' }}
+                  animate={{ opacity: 1, y: 0, scale: 1, x: '-50%' }}
+                  exit={{ opacity: 0, y: -8, scale: 0.985, x: '-50%' }}
+                  transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
                   style={{
                     position: 'absolute',
                     top: 'calc(100% + 8px)',
                     left: '50%',
-                    transform: 'translateX(-50%)',
+                    transformOrigin: 'top center',
                     width: 380,
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border-light)',
                     borderRadius: 12,
                     padding: 16,
-                    boxShadow: '0 16px 36px rgba(0, 0, 0, 0.12)',
+                    boxShadow: theme === 'dark'
+                      ? '0 20px 45px -4px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08)'
+                      : '0 20px 45px -4px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.06)',
                     zIndex: 1100,
                   }}
                 >
@@ -565,5 +692,6 @@ export default function Navbar() {
         }
       `}</style>
     </header>
+    </>
   )
 }

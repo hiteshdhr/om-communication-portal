@@ -68,13 +68,13 @@ export default function ContactPage() {
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Contact & Survey' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
-            <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ color: 'var(--red-primary)', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Direct Engineering Contact
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Get in Touch &amp; Book a Site Survey
             </h1>
-            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
               Speak directly with our technical team to schedule an on-site inspection or request an engineered proposal for your property in Delhi-NCR.
             </p>
           </motion.div>
@@ -87,9 +87,9 @@ export default function ContactPage() {
           {/* Left Column: Direct Contact Details */}
           <div>
             <div style={{
-              background: '#FFFFFF',
+              background: 'var(--bg-card)',
               borderRadius: 14,
-              border: '1px solid #E5E7EB',
+              border: '1px solid var(--border-color)',
               boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
               padding: 32,
               marginBottom: 24
@@ -107,18 +107,18 @@ export default function ContactPage() {
                     gap: 14,
                     padding: '16px',
                     borderRadius: 10,
-                    background: '#FAF4F5',
-                    border: '1px solid #F2D2D7',
-                    color: '#111827',
+                    background: 'var(--bg-blush)',
+                    border: '1px solid var(--border-red)',
+                    color: 'var(--text-primary)',
                     textDecoration: 'none',
                     transition: 'transform 0.2s'
                   }}
                 >
-                  <div style={{ width: 44, height: 44, borderRadius: 8, background: '#B4233C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 8, background: 'var(--red-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Phone size={20} color="#FFFFFF" />
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.75rem', color: '#B4233C', fontWeight: 700, textTransform: 'uppercase' }}>Direct Phone / Dispatch</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--red-primary)', fontWeight: 700, textTransform: 'uppercase' }}>Direct Phone / Dispatch</div>
                     <div style={{ fontSize: '1.15rem', fontWeight: 800 }}>+91 72177 15296</div>
                   </div>
                 </a>
@@ -152,21 +152,21 @@ export default function ContactPage() {
             </div>
 
             <div style={{
-              background: '#F6F7F8',
+              background: 'var(--bg-surface)',
               borderRadius: 14,
-              border: '1px solid #E5E7EB',
+              border: '1px solid var(--border-light)',
               padding: 28
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, color: '#B4233C', fontWeight: 700, fontSize: '0.9rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.9rem' }}>
                 <MapPin size={18} /> Service Locations & Coverage
               </div>
-              <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 16 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 16 }}>
                 <strong>Primary Operations Hub:</strong> Delhi, Noida, Greater Noida, Ghaziabad (Indirapuram, Vaishali, Vasundhara), Gurugram, and Faridabad.
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.88rem' }}>
-                <Clock size={16} color="#B4233C" /> Working Hours
+                <Clock size={16} color="var(--red-primary)" /> Working Hours
               </div>
-              <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>
                 Monday – Saturday: 9:00 AM – 7:30 PM<br />
                 Emergency AMC support available for contracted sites.
               </p>
@@ -175,19 +175,19 @@ export default function ContactPage() {
 
           {/* Right Column: Contact / Site Survey Form */}
           <div style={{
-            background: '#FFFFFF',
+            background: 'var(--bg-card)',
             borderRadius: 14,
-            border: '1px solid #E5E7EB',
+            border: '1px solid var(--border-color)',
             boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
             padding: 32
           }}>
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#F0FDF4', border: '2px solid #16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(22, 163, 74, 0.1)', border: '2px solid #16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                   <CheckCircle2 size={32} color="#16A34A" />
                 </div>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>Inquiry Submitted!</h3>
-                <p style={{ color: '#59636F', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24 }}>
                   Thank you, <strong>{form.clientName}</strong>. Our engineering team will review your requirement and reach out to you within 24 hours.
                 </p>
                 <button
@@ -202,7 +202,7 @@ export default function ContactPage() {
                 <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Request an On-Site Survey
                 </h2>
-                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: 24 }}>
                   Fill out the form below and an engineer will schedule a site visit.
                 </p>
 
@@ -282,9 +282,9 @@ export default function ContactPage() {
                           fontSize: '0.78rem',
                           fontWeight: 600,
                           cursor: 'pointer',
-                          background: form.servicesRequired.includes(svc) ? '#FAF4F5' : '#F6F7F8',
-                          border: `1px solid ${form.servicesRequired.includes(svc) ? '#B4233C' : '#E5E7EB'}`,
-                          color: form.servicesRequired.includes(svc) ? '#B4233C' : '#59636F',
+                          background: form.servicesRequired.includes(svc) ? 'var(--bg-blush)' : 'var(--bg-surface)',
+                          border: `1px solid ${form.servicesRequired.includes(svc) ? '#B4233C' : 'var(--border-light)'}`,
+                          color: form.servicesRequired.includes(svc) ? '#B4233C' : 'var(--text-secondary)',
                           transition: 'all 0.15s'
                         }}
                       >

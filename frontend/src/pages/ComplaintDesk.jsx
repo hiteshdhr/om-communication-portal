@@ -79,14 +79,14 @@ export default function ComplaintDesk() {
             Your complaint has been logged. A support technician will be assigned to review your issue.
           </p>
           <div style={{
-            background: '#FAF4F5', border: '1px solid #F2D2D7',
+            background: 'var(--bg-blush)', border: '1px solid var(--border-red)',
             borderRadius: 12, padding: '20px 24px', margin: '28px 0'
           }}>
-            <div style={{ fontSize: '0.75rem', color: '#59636F', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 8 }}>Your Support Ticket Number</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 8 }}>Your Support Ticket Number</div>
             <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#B4233C', letterSpacing: '0.05em', fontFamily: 'monospace' }}>
               {submitted.ticketNumber}
             </div>
-            <div style={{ fontSize: '0.8rem', color: '#59636F', marginTop: 6 }}>Save this ticket number for tracking your service status</div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 6 }}>Save this ticket number for tracking your service status</div>
           </div>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
             <button onClick={() => { setSubmitted(null); setForm(initialForm); setTab('track'); setTrackId(submitted.ticketNumber) }}
@@ -113,24 +113,24 @@ export default function ComplaintDesk() {
         <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Support Desk' }]} />
 
         <div style={{ textAlign: 'left', marginBottom: 36 }}>
-          <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+          <div style={{ color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Customer Service & Maintenance
           </div>
           <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '0 0 10px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Customer Support Desk
           </h1>
-          <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6 }}>
             Log a technical service complaint or track the real-time status of an existing ticket.
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div style={{ display: 'flex', gap: 6, marginBottom: 28, background: '#F6F7F8', borderRadius: 10, padding: 4, border: '1px solid #E5E7EB' }}>
+        <div style={{ display: 'flex', gap: 6, marginBottom: 28, background: 'var(--bg-surface)', borderRadius: 10, padding: 4, border: '1px solid var(--border-light)' }}>
           {[['submit', 'Submit New Ticket'], ['track', 'Track Existing Ticket']].map(([id, label]) => (
             <button key={id} onClick={() => setTab(id)} style={{
               flex: 1, padding: '10px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem',
-              background: tab === id ? '#FFFFFF' : 'transparent',
-              color: tab === id ? '#111827' : '#59636F',
+              background: tab === id ? 'var(--bg-card)' : 'transparent',
+              color: tab === id ? 'var(--text-primary)' : 'var(--text-secondary)',
               boxShadow: tab === id ? '0 2px 6px rgba(0,0,0,0.06)' : 'none',
               transition: 'all 0.15s'
             }}>{label}</button>
@@ -141,9 +141,9 @@ export default function ComplaintDesk() {
           {tab === 'submit' ? (
             <motion.div key="submit" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               <form onSubmit={handleSubmit} style={{
-                background: '#FFFFFF',
+                background: 'var(--bg-card)',
                 borderRadius: 14,
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-color)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 padding: '36px'
               }}>
@@ -172,7 +172,7 @@ export default function ComplaintDesk() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Service Category</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Service Category</label>
                     <select className="form-input" value={form.issueCategory}
                       onChange={e => setForm(f => ({ ...f, issueCategory: e.target.value }))}>
                       <option value="">Select category</option>
@@ -180,7 +180,7 @@ export default function ComplaintDesk() {
                     </select>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Priority Level</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Priority Level</label>
                     <select className="form-input" value={form.priority}
                       onChange={e => setForm(f => ({ ...f, priority: e.target.value }))}>
                       {priorities.map(p => <option key={p} value={p}>{p}</option>)}
@@ -189,7 +189,7 @@ export default function ComplaintDesk() {
                 </div>
 
                 <div style={{ marginTop: 16 }}>
-                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Problem Description *</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Problem Description *</label>
                   <textarea className="form-input" rows={4} placeholder="Describe the issue in detail — what happened, when it started, and affected cameras/extensions..."
                     value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                     style={{ resize: 'vertical', minHeight: 110 }} required />
@@ -197,9 +197,9 @@ export default function ComplaintDesk() {
 
                 {/* Priority warning for CRITICAL */}
                 {form.priority === 'CRITICAL' && (
-                  <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 10, background: '#FAF4F5', border: '1px solid #F2D2D7', borderRadius: 8, padding: '12px 16px' }}>
-                    <AlertCircle size={16} color="#B4233C" />
-                    <span style={{ color: '#B4233C', fontSize: '0.85rem', fontWeight: 600 }}>Critical priority tickets receive expedited review. For urgent emergencies, please call our dispatch desk.</span>
+                  <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 10, background: 'var(--bg-blush)', border: '1px solid var(--border-red)', borderRadius: 8, padding: '12px 16px' }}>
+                    <AlertCircle size={16} color="var(--red-primary)" />
+                    <span style={{ color: 'var(--red-primary)', fontSize: '0.85rem', fontWeight: 600 }}>Critical priority tickets receive expedited review. For urgent emergencies, please call our dispatch desk.</span>
                   </div>
                 )}
 
@@ -211,13 +211,13 @@ export default function ComplaintDesk() {
           ) : (
             <motion.div key="track" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               <form onSubmit={handleTrack} style={{
-                background: '#FFFFFF',
+                background: 'var(--bg-card)',
                 borderRadius: 14,
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-color)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 padding: '36px'
               }}>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#111827', margin: '0 0 16px' }}>Enter your ticket number to check status</h3>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 16px' }}>Enter your ticket number to check status</h3>
                 <div style={{ display: 'flex', gap: 12 }}>
                   <input className="form-input" placeholder="OM-TICK-XXXXX" value={trackId}
                     onChange={e => setTrackId(e.target.value)} style={{ flex: 1, fontFamily: 'monospace', fontSize: '0.95rem', letterSpacing: '0.05em' }} />
@@ -228,11 +228,11 @@ export default function ComplaintDesk() {
 
                 {trackResult && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                    style={{ marginTop: 24, background: '#F6F7F8', borderRadius: 10, padding: 24, border: '1px solid #E5E7EB' }}>
+                    style={{ marginTop: 24, background: 'var(--bg-surface)', borderRadius: 10, padding: 24, border: '1px solid var(--border-light)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
                       <div>
-                        <div style={{ fontFamily: 'monospace', fontSize: '1.15rem', fontWeight: 800, color: '#B4233C' }}>{trackResult.ticketNumber}</div>
-                        <div style={{ color: '#59636F', fontSize: '0.8rem', marginTop: 4 }}>
+                        <div style={{ fontFamily: 'monospace', fontSize: '1.15rem', fontWeight: 800, color: 'var(--red-primary)' }}>{trackResult.ticketNumber}</div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: 4 }}>
                           Submitted: {new Date(trackResult.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
                         </div>
                       </div>
@@ -250,9 +250,9 @@ export default function ComplaintDesk() {
                         ['Priority', trackResult.priority],
                         ['Assigned To', trackResult.assignedTechnician || 'Dispatch Queue'],
                       ].map(([k, v]) => (
-                        <div key={k} style={{ background: '#FFFFFF', borderRadius: 8, padding: '12px 14px', border: '1px solid #E5E7EB' }}>
-                          <div style={{ fontSize: '0.7rem', color: '#59636F', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{k}</div>
-                          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: k === 'Priority' ? priorityColors[v] : '#111827' }}>{v}</div>
+                        <div key={k} style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '12px 14px', border: '1px solid var(--border-light)' }}>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{k}</div>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 700, color: k === 'Priority' ? priorityColors[v] : 'var(--text-primary)' }}>{v}</div>
                         </div>
                       ))}
                     </div>

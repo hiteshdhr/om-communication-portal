@@ -26,10 +26,10 @@ export default function Breadcrumbs({ items = [], light = false }) {
     ],
   }
 
-  const textColor = '#59636F'
-  const activeColor = '#111827'
-  const hoverColor = '#B4233C'
-  const slashColor = '#D1D5DB'
+  const textColor = 'var(--text-secondary)'
+  const activeColor = 'var(--text-primary)'
+  const hoverColor = 'var(--red-primary)'
+  const slashColor = 'var(--text-muted)'
 
   return (
     <>

@@ -125,7 +125,7 @@ export function ServiceCTA({ headline, sub, ctaText = 'Plan My System →', serv
           </h2>
 
           <p style={{
-            color: '#59636F',
+            color: 'var(--text-secondary)',
             maxWidth: 540,
             margin: '0 auto 28px',
             fontSize: '0.975rem',
@@ -147,7 +147,7 @@ export function ServiceCTA({ headline, sub, ctaText = 'Plan My System →', serv
               className="btn-secondary"
               style={{ fontSize: '0.9375rem', padding: '12px 24px' }}
             >
-              <Phone size={14} color="#B4233C" /> Call +91 72177 15296
+              <Phone size={14} color="var(--red-primary)" /> Call +91 72177 15296
             </a>
           </div>
         </div>
@@ -236,11 +236,11 @@ export default function ServicePageLayout({
 
       <Navbar />
 
-      {/* ── Page Hero (Clean Light Layout) ── */}
+      {/* ── Page Hero (Clean Layout) ── */}
       <section
         style={{
-          background: '#F6F7F8',
-          borderBottom: '1px solid #E5E7EB',
+          background: 'var(--bg-surface)',
+          borderBottom: '1px solid var(--border-light)',
           padding: 'clamp(36px, 5vw, 64px) 0',
         }}
         aria-labelledby="sp-h1"
@@ -275,7 +275,7 @@ export default function ServicePageLayout({
                 dangerouslySetInnerHTML={{ __html: hero.h1 }}
               />
               <p style={{
-                color: '#59636F',
+                color: 'var(--text-secondary)',
                 fontSize: 'clamp(1rem, 1.8vw, 1.125rem)',
                 lineHeight: 1.65,
                 maxWidth: 620,
@@ -288,7 +288,7 @@ export default function ServicePageLayout({
                   {ctaText || 'Request Site Assessment →'}
                 </Link>
                 <a href="tel:+917217715296" className="btn-secondary" style={{ fontSize: '0.9375rem', padding: '11px 20px' }}>
-                  <Phone size={14} color="#B4233C" /> Call +91 72177 15296
+                  <Phone size={14} color="var(--red-primary)" /> Call +91 72177 15296
                 </a>
               </div>
             </div>
@@ -297,10 +297,10 @@ export default function ServicePageLayout({
               <div style={{
                 borderRadius: 12,
                 overflow: 'hidden',
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-light)',
                 boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
                 maxHeight: 320,
-                background: '#E5E7EB',
+                background: 'var(--bg-surface)',
               }}>
                 <img
                   src={hero.image}
@@ -332,7 +332,7 @@ export default function ServicePageLayout({
               What is this system &amp; how does it work?
             </h2>
             <div style={{
-              color: '#374151',
+              color: 'var(--text-secondary)',
               fontSize: '1rem',
               lineHeight: 1.75,
             }}>
@@ -345,8 +345,8 @@ export default function ServicePageLayout({
         {whyNeeded && (
           <section style={{ padding: 'clamp(44px, 5vw, 64px) 0 0' }} aria-labelledby="sp-why-needed">
             <div style={{
-              background: '#F6F7F8',
-              border: '1px solid #E5E7EB',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-light)',
               borderRadius: 12,
               padding: 'clamp(24px, 4vw, 36px)',
             }}>
@@ -360,7 +360,7 @@ export default function ServicePageLayout({
               }}>
                 {whyNeeded.title || 'Why does a business need this system?'}
               </h2>
-              <p style={{ color: '#59636F', fontSize: '0.975rem', lineHeight: 1.7, margin: '0 0 20px' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.975rem', lineHeight: 1.7, margin: '0 0 20px' }}>
                 {whyNeeded.text}
               </p>
 
@@ -376,8 +376,8 @@ export default function ServicePageLayout({
                       alignItems: 'flex-start',
                       gap: 10,
                     }}>
-                      <CheckCircle2 size={16} color="#B4233C" style={{ flexShrink: 0, marginTop: 3 }} />
-                      <span style={{ color: '#1F2937', fontSize: '0.85rem', lineHeight: 1.5, fontWeight: 600 }}>
+                      <CheckCircle2 size={16} color="var(--red-primary)" style={{ flexShrink: 0, marginTop: 3 }} />
+                      <span style={{ color: 'var(--text-primary)', fontSize: '0.85rem', lineHeight: 1.5, fontWeight: 600 }}>
                         {pt}
                       </span>
                     </div>
@@ -405,16 +405,16 @@ export default function ServicePageLayout({
                   {b.icon && (
                     <div style={{
                       width: 38, height: 38, borderRadius: 8,
-                      background: '#FAF4F5', border: '1px solid rgba(180, 35, 60, 0.15)',
+                      background: 'var(--bg-blush)', border: '1px solid var(--border-red)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12,
                     }}>
-                      <b.icon size={18} color="#B4233C" />
+                      <b.icon size={18} color="var(--red-primary)" />
                     </div>
                   )}
                   <h3 style={{ fontSize: '0.975rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 6px' }}>
                     {b.title}
                   </h3>
-                  <p style={{ color: '#59636F', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
                     {b.desc}
                   </p>
                 </div>
@@ -431,8 +431,8 @@ export default function ServicePageLayout({
               What OM Communication Provides
             </h2>
             <div style={{
-              background: '#F6F7F8',
-              border: '1px solid #E5E7EB',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-light)',
               borderRadius: 12,
               padding: 'clamp(20px, 3.5vw, 32px)',
               display: 'grid',
@@ -441,8 +441,8 @@ export default function ServicePageLayout({
             }}>
               {capabilities.map(cap => (
                 <div key={cap} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '4px 0' }}>
-                  <CheckCircle2 size={15} color="#B4233C" style={{ flexShrink: 0, marginTop: 3 }} />
-                  <span style={{ color: '#1F2937', fontSize: '0.875rem', lineHeight: 1.55, fontWeight: 500 }}>
+                  <CheckCircle2 size={15} color="var(--red-primary)" style={{ flexShrink: 0, marginTop: 3 }} />
+                  <span style={{ color: 'var(--text-primary)', fontSize: '0.875rem', lineHeight: 1.55, fontWeight: 500 }}>
                     {cap}
                   </span>
                 </div>
@@ -472,8 +472,8 @@ export default function ServicePageLayout({
                   <div style={{
                     fontSize: '0.72rem',
                     fontWeight: 800,
-                    color: '#B4233C',
-                    background: '#FAF4F5',
+                    color: 'var(--red-primary)',
+                    background: 'var(--bg-blush)',
                     padding: '2px 6px',
                     borderRadius: 4,
                     display: 'inline-block',
@@ -484,7 +484,7 @@ export default function ServicePageLayout({
                   <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px' }}>
                     {p.title}
                   </h3>
-                  <p style={{ color: '#59636F', fontSize: '0.8rem', lineHeight: 1.5, margin: 0 }}>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: 1.5, margin: 0 }}>
                     {p.desc}
                   </p>
                 </div>
@@ -507,17 +507,17 @@ export default function ServicePageLayout({
                   style={{
                     padding: '18px 18px',
                     borderRadius: 8,
-                    background: '#F6F7F8',
-                    border: '1px solid #E5E7EB',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-light)',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                    <FileText size={15} color="#B4233C" />
+                    <FileText size={15} color="var(--red-primary)" />
                     <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                       {c.title}
                     </h3>
                   </div>
-                  <p style={{ color: '#59636F', fontSize: '0.825rem', lineHeight: 1.6, margin: 0 }}>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.825rem', lineHeight: 1.6, margin: 0 }}>
                     {c.desc}
                   </p>
                 </div>
@@ -530,8 +530,8 @@ export default function ServicePageLayout({
         {maintenanceInfo && (
           <section style={{ padding: 'clamp(44px, 5vw, 64px) 0 0' }}>
             <div style={{
-              background: '#FAF4F5',
-              border: '1px solid rgba(180, 35, 60, 0.18)',
+              background: 'var(--bg-blush)',
+              border: '1px solid var(--border-red)',
               borderRadius: 12,
               padding: '24px 28px',
               display: 'flex',
@@ -539,7 +539,7 @@ export default function ServicePageLayout({
               gap: 12,
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Clock size={18} color="#B4233C" />
+                <Clock size={18} color="var(--red-primary)" />
                 <h2 style={{
                   fontFamily: "'Manrope', 'Inter', sans-serif",
                   fontSize: '1.15rem',
@@ -550,7 +550,7 @@ export default function ServicePageLayout({
                   {maintenanceInfo.title || 'Ongoing Maintenance & Support'}
                 </h2>
               </div>
-              <p style={{ color: '#59636F', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>
                 {maintenanceInfo.text}
               </p>
               <div>
@@ -560,7 +560,7 @@ export default function ServicePageLayout({
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 6,
-                    color: '#B4233C',
+                    color: 'var(--red-primary)',
                     fontWeight: 700,
                     fontSize: '0.875rem',
                     textDecoration: 'none',
@@ -594,7 +594,7 @@ export default function ServicePageLayout({
                   <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: 4 }}>
                     {app.label}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#59636F', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                     {app.desc}
                   </div>
                 </div>
@@ -606,8 +606,8 @@ export default function ServicePageLayout({
         {/* ── 9. Delhi-NCR Coverage Note ── */}
         <section style={{ padding: 'clamp(36px, 4vw, 56px) 0 0' }}>
           <div style={{
-            background: '#F6F7F8',
-            border: '1px solid #E5E7EB',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-light)',
             borderRadius: 8,
             padding: '16px 20px',
             display: 'flex',
@@ -615,12 +615,12 @@ export default function ServicePageLayout({
             gap: 14,
             flexWrap: 'wrap',
           }}>
-            <MapPin size={20} color="#B4233C" style={{ flexShrink: 0 }} />
+            <MapPin size={20} color="var(--red-primary)" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 2 }}>
                 Delhi-NCR Service &amp; On-Site Support
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#59636F', lineHeight: 1.45 }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
                 Field engineering units available across Delhi, Noida, Greater Noida, Gurgaon, Ghaziabad, and Faridabad.
               </div>
             </div>
@@ -676,12 +676,12 @@ export default function ServicePageLayout({
                     transition: 'all 0.15s',
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = '#B4233C'
-                    e.currentTarget.style.color = '#B4233C'
+                    e.currentTarget.style.borderColor = 'var(--red-primary)'
+                    e.currentTarget.style.color = 'var(--red-primary)'
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = '#D1D5DB'
-                    e.currentTarget.style.color = '#374151'
+                    e.currentTarget.style.borderColor = 'var(--border-color)'
+                    e.currentTarget.style.color = 'var(--text-primary)'
                   }}
                 >
                   {rl.label} <ArrowRight size={12} />

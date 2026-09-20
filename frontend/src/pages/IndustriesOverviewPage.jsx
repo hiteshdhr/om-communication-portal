@@ -69,14 +69,14 @@ export default function IndustriesOverviewPage() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Industries' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
-            <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
-              Sector-Specific Solutions
+            <div style={{ color: 'var(--red-primary)', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+              Specialized Infrastructure
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-              Industries &amp; Facilities We Secure
+              Industry-Specific Security Engineering
             </h1>
-            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
-              Every facility has unique physical layout constraints and compliance standards. We engineer customized security architectures built for your specific operational environment in Delhi-NCR.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+              Tailored surveillance, access control, and intercom configurations designed for the specific operational demands of factories, offices, residential RWAs, and retail chains.
             </p>
           </motion.div>
         </div>
@@ -118,20 +118,20 @@ export default function IndustriesOverviewPage() {
                 <div>
                   <div style={{
                     display: 'inline-flex', alignItems: 'center', gap: 6,
-                    color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', marginBottom: 8
+                    color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.8125rem', marginBottom: 8
                   }}>
                     <ind.icon size={16} /> Industry Sector
                   </div>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
                     {ind.title}
                   </h2>
-                  <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 18 }}>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 18 }}>
                     {ind.desc}
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
                     {ind.solutions.map(sol => (
                       <div key={sol} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 500 }}>
-                        <CheckCircle2 size={14} color="#B4233C" style={{ flexShrink: 0 }} />
+                        <CheckCircle2 size={14} color="var(--red-primary)" style={{ flexShrink: 0 }} />
                         <span>{sol}</span>
                       </div>
                     ))}
@@ -152,17 +152,17 @@ export default function IndustriesOverviewPage() {
 
         {/* CTA */}
         <div style={{
-          background: '#FAF4F5',
-          border: '1px solid #F2D2D7',
+          background: 'var(--bg-blush)',
+          border: '1px solid var(--border-red)',
           borderRadius: 14,
           padding: 40,
           textAlign: 'center'
         }}>
           <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
-            Have a Specific Facility Requirement?
+            Request an On-Site Engineering Audit
           </h3>
-          <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
-            Our engineering team will conduct an on-site evaluation and design a customized security specification for your site.
+          <p style={{ color: 'var(--text-secondary)', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+            Our technical engineers visit your facility anywhere in Delhi-NCR to evaluate cable routes, power supply, and hardware scope.
           </p>
           <Link to="/quote" className="btn-primary" style={{ padding: '12px 28px' }}>
             Book On-Site Technical Assessment <ChevronRight size={16} />

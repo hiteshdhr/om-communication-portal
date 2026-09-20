@@ -61,13 +61,13 @@ export default function SolutionsPage() {
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Solutions' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
-            <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ color: 'var(--red-primary)', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Turnkey Integration
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Integrated Security &amp; Telecom Solutions
             </h1>
-            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
               Consolidate your security, surveillance, telecom, and structured cabling under one engineering partner with end-to-end design, deployment, and ongoing AMC warranty across Delhi-NCR.
             </p>
           </motion.div>
@@ -80,7 +80,7 @@ export default function SolutionsPage() {
         <div style={{
           borderRadius: 16,
           overflow: 'hidden',
-          border: '1px solid #E5E7EB',
+          border: '1px solid var(--border-light)',
           marginBottom: 48,
           background: 'var(--bg-surface)',
           boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
@@ -102,9 +102,9 @@ export default function SolutionsPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               style={{
-                background: '#FFFFFF',
+                background: 'var(--bg-card)',
                 borderRadius: 14,
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-color)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 padding: 32,
                 display: 'flex',
@@ -116,34 +116,34 @@ export default function SolutionsPage() {
               <div>
                 <div style={{
                   width: 48, height: 48, borderRadius: 10,
-                  background: '#FAF4F5', border: '1px solid #F2D2D7',
+                  background: 'var(--bg-blush)', border: '1px solid var(--border-red)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20
                 }}>
-                  <b.icon size={24} color="#B4233C" />
+                  <b.icon size={24} color="var(--red-primary)" />
                 </div>
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   {b.title}
                 </h2>
-                <div style={{ color: '#B4233C', fontSize: '0.8125rem', fontWeight: 600, marginBottom: 14 }}>
+                <div style={{ color: 'var(--red-primary)', fontSize: '0.8125rem', fontWeight: 600, marginBottom: 14 }}>
                   {b.subtitle}
                 </div>
-                <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.65, marginBottom: 20 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.65, marginBottom: 20 }}>
                   {b.desc}
                 </p>
                 <div style={{
                   background: 'var(--bg-surface)',
                   borderRadius: 10,
                   padding: 16,
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--border-light)',
                   marginBottom: 24
                 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#59636F', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
                     Bundled Sub-Systems:
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {b.components.map(comp => (
                       <div key={comp} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 500 }}>
-                        <CheckCircle2 size={14} color="#B4233C" style={{ flexShrink: 0 }} />
+                        <CheckCircle2 size={14} color="var(--red-primary)" style={{ flexShrink: 0 }} />
                         <span>{comp}</span>
                       </div>
                     ))}
@@ -191,8 +191,8 @@ export default function SolutionsPage() {
 
         {/* CTA */}
         <div style={{
-          background: '#FAF4F5',
-          border: '1px solid #F2D2D7',
+          background: 'var(--bg-blush)',
+          border: '1px solid var(--border-red)',
           borderRadius: 14,
           padding: 40,
           textAlign: 'center'
@@ -200,7 +200,7 @@ export default function SolutionsPage() {
           <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
             Have an Engineered Requirement for Your Site?
           </h3>
-          <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
             Book a site survey with our engineers to configure a custom integrated solution package.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>

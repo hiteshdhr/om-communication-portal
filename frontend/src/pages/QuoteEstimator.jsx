@@ -121,9 +121,9 @@ export default function QuoteEstimator() {
         <Navbar />
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '140px 24px 80px', textAlign: 'center' }}>
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{
-            background: '#FFFFFF',
+            background: 'var(--bg-card)',
             borderRadius: 16,
-            border: '1px solid #E5E7EB',
+            border: '1px solid var(--border-light)',
             boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
             padding: '48px 36px'
           }}>
@@ -133,10 +133,10 @@ export default function QuoteEstimator() {
             <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
               Requirement Received!
             </h1>
-            <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6, marginBottom: 20 }}>
-              Thank you, <strong style={{ color: '#111827' }}>{clientName}</strong>. Our engineering team has logged your technical requirement for <strong>{facilityType}</strong>.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6, marginBottom: 20 }}>
+              Thank you, <strong style={{ color: 'var(--text-primary)' }}>{clientName}</strong>. Our engineering team has logged your technical requirement for <strong>{facilityType}</strong>.
             </p>
-            <p style={{ color: '#374151', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: 28, background: '#FAF4F5', padding: 16, borderRadius: 10, border: '1px solid #F2D2D7' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: 28, background: 'var(--bg-blush)', padding: 16, borderRadius: 10, border: '1px solid var(--border-red)' }}>
               An engineer will call you at <strong>{phone}</strong> to verify cable access, schedule your on-site assessment, and prepare an official itemized technical quotation.
             </p>
 
@@ -192,7 +192,7 @@ export default function QuoteEstimator() {
           <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: '0 0 10px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Request Quotation & Site Assessment
           </h1>
-          <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6 }}>
             Tell us about your facility requirements. We will engineer a custom technical specification and formal quotation for your site.
           </p>
         </div>
@@ -207,19 +207,19 @@ export default function QuoteEstimator() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.875rem', fontWeight: 700, border: '2px solid',
                   ...(i < step
-                    ? { background: '#F0FDF4', borderColor: '#16A34A', color: '#16A34A' }
+                    ? { background: 'rgba(22, 163, 74, 0.1)', borderColor: '#16A34A', color: '#16A34A' }
                     : i === step
-                    ? { background: '#FAF4F5', borderColor: '#B4233C', color: '#B4233C' }
-                    : { background: '#FFFFFF', borderColor: '#E5E7EB', color: '#9CA3AF' })
+                    ? { background: 'var(--bg-blush)', borderColor: 'var(--red-primary)', color: 'var(--red-primary)' }
+                    : { background: 'var(--bg-card)', borderColor: 'var(--border-light)', color: 'var(--text-muted)' })
                 }}>
                   {i < step ? <CheckCircle2 size={16} /> : i + 1}
                 </div>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, marginTop: 6, color: i === step ? '#B4233C' : '#59636F', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 600, marginTop: 6, color: i === step ? 'var(--red-primary)' : 'var(--text-secondary)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
                   {s}
                 </div>
               </div>
               {i < STEPS.length - 1 && (
-                <div style={{ flex: 1, height: 2, margin: '0 8px', marginBottom: 20, background: i < step ? '#16A34A' : '#E5E7EB', transition: 'background 0.3s' }} />
+                <div style={{ flex: 1, height: 2, margin: '0 8px', marginBottom: 20, background: i < step ? '#16A34A' : 'var(--border-light)', transition: 'background 0.3s' }} />
               )}
             </div>
           ))}
@@ -234,7 +234,6 @@ export default function QuoteEstimator() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
             style={{
-              background: '#FFFFFF',
               background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
@@ -247,7 +246,7 @@ export default function QuoteEstimator() {
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Which systems do you require?
                 </h2>
-                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: 24 }}>
                   Select all systems that apply to your site (you can bundle multiple solutions):
                 </p>
 
@@ -267,22 +266,22 @@ export default function QuoteEstimator() {
                           borderRadius: 10,
                           cursor: 'pointer',
                           textAlign: 'left',
-                          border: `2px solid ${selected ? '#B4233C' : '#E5E7EB'}`,
-                          background: selected ? '#FAF4F5' : '#FFFFFF',
-                          color: selected ? '#111827' : '#59636F',
+                          border: `2px solid ${selected ? 'var(--red-primary)' : 'var(--border-light)'}`,
+                          background: selected ? 'var(--bg-blush)' : 'var(--bg-card)',
+                          color: selected ? 'var(--text-primary)' : 'var(--text-secondary)',
                           transition: 'all 0.15s'
                         }}
                       >
                         <div style={{
                           width: 38, height: 38, borderRadius: 8,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: selected ? '#B4233C' : '#F6F7F8',
-                          color: selected ? '#FFFFFF' : '#111827'
+                          background: selected ? 'var(--red-primary)' : 'var(--bg-surface)',
+                          color: selected ? '#FFFFFF' : 'var(--text-primary)'
                         }}>
                           <s.icon size={19} />
                         </div>
-                        <span style={{ fontWeight: 600, fontSize: '0.88rem', color: selected ? '#B4233C' : '#111827' }}>{s.label}</span>
-                        {selected && <CheckCircle2 size={16} color="#B4233C" style={{ marginLeft: 'auto' }} />}
+                        <span style={{ fontWeight: 600, fontSize: '0.88rem', color: selected ? 'var(--red-primary)' : 'var(--text-primary)' }}>{s.label}</span>
+                        {selected && <CheckCircle2 size={16} color="var(--red-primary)" style={{ marginLeft: 'auto' }} />}
                       </button>
                     )
                   })}
@@ -296,7 +295,7 @@ export default function QuoteEstimator() {
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   What type of property / facility is this for?
                 </h2>
-                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: 24 }}>
                   This helps our engineers determine relevant compliance, cable routing, and environmental constraints:
                 </p>
 
@@ -313,14 +312,14 @@ export default function QuoteEstimator() {
                           borderRadius: 10,
                           cursor: 'pointer',
                           textAlign: 'left',
-                          border: `2px solid ${selected ? '#B4233C' : '#E5E7EB'}`,
-                          background: selected ? '#FAF4F5' : '#FFFFFF',
-                          color: '#111827',
+                          border: `2px solid ${selected ? 'var(--red-primary)' : 'var(--border-light)'}`,
+                          background: selected ? 'var(--bg-blush)' : 'var(--bg-card)',
+                          color: 'var(--text-primary)',
                           transition: 'all 0.15s'
                         }}
                       >
-                        <f.icon size={22} color={selected ? '#B4233C' : '#59636F'} style={{ marginBottom: 10 }} />
-                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: selected ? '#B4233C' : '#111827' }}>{f.label}</div>
+                        <f.icon size={22} color={selected ? 'var(--red-primary)' : 'var(--text-secondary)'} style={{ marginBottom: 10 }} />
+                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: selected ? 'var(--red-primary)' : 'var(--text-primary)' }}>{f.label}</div>
                       </button>
                     )
                   })}
@@ -334,7 +333,7 @@ export default function QuoteEstimator() {
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Specific Requirements & Project Scope
                 </h2>
-                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: 24 }}>
                   Provide technical context for the selected services:
                 </p>
 
@@ -352,9 +351,9 @@ export default function QuoteEstimator() {
                           fontSize: '0.82rem',
                           fontWeight: 600,
                           cursor: 'pointer',
-                          background: projectType === t ? '#FAF4F5' : '#F6F7F8',
-                          border: `1px solid ${projectType === t ? '#B4233C' : '#E5E7EB'}`,
-                          color: projectType === t ? '#B4233C' : '#59636F'
+                          background: projectType === t ? 'var(--bg-blush)' : 'var(--bg-surface)',
+                          border: `1px solid ${projectType === t ? 'var(--red-primary)' : 'var(--border-light)'}`,
+                          color: projectType === t ? 'var(--red-primary)' : 'var(--text-secondary)'
                         }}
                       >
                         {t}
@@ -365,11 +364,11 @@ export default function QuoteEstimator() {
 
                 {/* CCTV Specifics */}
                 {services.includes('CCTV Surveillance') && (
-                  <div style={{ background: '#F6F7F8', padding: 18, borderRadius: 10, border: '1px solid #E5E7EB', marginBottom: 16 }}>
-                    <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>CCTV Parameters</div>
+                  <div style={{ background: 'var(--bg-surface)', padding: 18, borderRadius: 10, border: '1px solid var(--border-light)', marginBottom: 16 }}>
+                    <div style={{ color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>CCTV Parameters</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Approx. Number of Points</label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Approx. Number of Points</label>
                         <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={cctvScope.approxPoints} onChange={e => setCctvScope(s => ({ ...s, approxPoints: e.target.value }))}>
                           <option>1–8 Cameras (Small Facility)</option>
                           <option>8–16 Points (Mid Facility)</option>
@@ -378,7 +377,7 @@ export default function QuoteEstimator() {
                         </select>
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Environment</label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Environment</label>
                         <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={cctvScope.indoorOutdoor} onChange={e => setCctvScope(s => ({ ...s, indoorOutdoor: e.target.value }))}>
                           <option>Both Indoor & Outdoor</option>
                           <option>Primarily Indoor Corridors & Lobbies</option>
@@ -391,11 +390,11 @@ export default function QuoteEstimator() {
 
                 {/* EPABX Specifics */}
                 {services.includes('EPABX & Telecom') && (
-                  <div style={{ background: '#F6F7F8', padding: 18, borderRadius: 10, border: '1px solid #E5E7EB', marginBottom: 16 }}>
-                    <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>EPABX Parameters</div>
+                  <div style={{ background: 'var(--bg-surface)', padding: 18, borderRadius: 10, border: '1px solid var(--border-light)', marginBottom: 16 }}>
+                    <div style={{ color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>EPABX Parameters</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Approx. Extension Lines</label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Approx. Extension Lines</label>
                         <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={epabxScope.approxLines} onChange={e => setEpabxScope(s => ({ ...s, approxLines: e.target.value }))}>
                           <option>1–8 Lines (Small Office)</option>
                           <option>10–50 Extensions (Commercial Building)</option>
@@ -403,7 +402,7 @@ export default function QuoteEstimator() {
                         </select>
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#59636F', marginBottom: 4 }}>Riser Shaft Cabling</label>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Riser Shaft Cabling</label>
                         <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={epabxScope.riserCablingNeeded} onChange={e => setEpabxScope(s => ({ ...s, riserCablingNeeded: e.target.value }))}>
                           <option>Yes, Riser Shaft Cabling & Krone Blocks</option>
                           <option>Existing Cables OK, Need EPABX Unit Only</option>
@@ -415,7 +414,7 @@ export default function QuoteEstimator() {
                 )}
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Additional Site Details or Challenges</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Additional Site Details or Challenges</label>
                   <textarea
                     className="form-input"
                     rows={2}
@@ -431,10 +430,10 @@ export default function QuoteEstimator() {
             {/* STEP 3: Survey & Contact Info */}
             {step === 3 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Contact Information & Site Location
                 </h2>
-                <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: 24 }}>
                   Our field engineers will reach out to schedule an on-site inspection:
                 </p>
 
@@ -483,7 +482,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Site City / Sector Location</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Site City / Sector Location</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Indirapuram, Ghaziabad or Sector 62, Noida"
@@ -493,7 +492,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Preferred Site Survey Date / Time</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Preferred Site Survey Date / Time</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Tomorrow afternoon / This Saturday"
@@ -504,11 +503,11 @@ export default function QuoteEstimator() {
                 </div>
 
                 {/* Summary Box */}
-                <div style={{ background: '#FAF4F5', borderRadius: 10, padding: 16, border: '1px solid #F2D2D7', marginTop: 20 }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#B4233C', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+                <div style={{ background: 'var(--bg-blush)', borderRadius: 10, padding: 16, border: '1px solid var(--border-red)', marginTop: 20 }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--red-primary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
                     Inquiry Summary
                   </div>
-                  <div style={{ fontSize: '0.85rem', color: '#111827', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <div><strong>Facility:</strong> {facilityType} ({projectType})</div>
                     <div><strong>Selected Systems:</strong> {services.join(', ')}</div>
                   </div>

@@ -92,13 +92,13 @@ export default function ServicesOverviewPage() {
             transition={{ duration: 0.5 }}
             style={{ marginTop: 16 }}
           >
-            <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <div style={{ color: 'var(--red-primary)', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Engineered Capabilities
             </div>
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Enterprise Services &amp; Infrastructure Solutions
             </h1>
-            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
               OM Communication designs, installs, and maintains mission-critical security and communication infrastructure across residential societies, factories, and corporate offices in Delhi-NCR.
             </p>
           </motion.div>
@@ -117,7 +117,6 @@ export default function ServicesOverviewPage() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.06 }}
               style={{
-                background: '#FFFFFF',
                 background: 'var(--bg-card)',
                 border: '1px solid var(--border-color)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
@@ -128,22 +127,22 @@ export default function ServicesOverviewPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 32, alignItems: 'center' }}>
                 <div>
                   <div style={{
-                    width: 48, height: 48, background: '#FAF4F5',
-                    border: '1px solid #F2D2D7', borderRadius: 10,
+                    width: 48, height: 48, background: 'var(--bg-blush)',
+                    border: '1px solid var(--border-red)', borderRadius: 10,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16
                   }}>
-                    <s.icon size={24} color="#B4233C" />
+                    <s.icon size={24} color="var(--red-primary)" />
                   </div>
                   <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
                     {s.title}
                   </h2>
-                  <p style={{ color: '#59636F', lineHeight: 1.65, fontSize: '0.92rem', marginBottom: 18 }}>
+                  <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65, fontSize: '0.92rem', marginBottom: 18 }}>
                     {s.desc}
                   </p>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10, marginBottom: 24 }}>
                     {s.features.map(f => (
                       <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.84rem', color: 'var(--text-primary)', fontWeight: 500 }}>
-                        <CheckCircle2 size={15} color="#B4233C" style={{ flexShrink: 0 }} />
+                        <CheckCircle2 size={15} color="var(--red-primary)" style={{ flexShrink: 0 }} />
                         <span>{f}</span>
                       </div>
                     ))}
@@ -158,7 +157,7 @@ export default function ServicesOverviewPage() {
                 </div>
 
                 {s.photo && (
-                  <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', height: 240, border: '1px solid #E5E7EB' }}>
+                  <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', height: 240, border: '1px solid var(--border-light)' }}>
                     <img
                       src={s.photo}
                       alt={s.alt}
@@ -174,8 +173,8 @@ export default function ServicesOverviewPage() {
 
         {/* Bottom CTA */}
         <div style={{
-          background: '#FAF4F5',
-          border: '1px solid #F2D2D7',
+          background: 'var(--bg-blush)',
+          border: '1px solid var(--border-red)',
           borderRadius: 14,
           padding: 40,
           textAlign: 'center'
@@ -183,7 +182,7 @@ export default function ServicesOverviewPage() {
           <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>
             Need a Multi-Service Security Solution?
           </h3>
-          <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
             We bundle CCTV, Intercoms, Access Control, and Structured Cabling into unified turnkey packages with single-vendor accountability.
           </p>
           <Link to="/quote" className="btn-primary" style={{ padding: '12px 28px' }}>

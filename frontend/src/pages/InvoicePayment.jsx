@@ -90,8 +90,8 @@ export default function InvoicePayment() {
   if (loading) return (
     <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 44, height: 44, border: '3px solid #E5E7EB', borderTopColor: '#B4233C', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-        <div style={{ color: '#59636F', fontSize: '0.9rem' }}>Loading invoice details...</div>
+        <div style={{ width: 44, height: 44, border: '3px solid var(--border-light)', borderTopColor: '#B4233C', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
+        <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Loading invoice details...</div>
       </div>
     </div>
   )
@@ -101,7 +101,7 @@ export default function InvoicePayment() {
       <div style={{ padding: '48px', textAlign: 'center', maxWidth: 440, background: 'var(--bg-card)', borderRadius: 14, border: '1px solid var(--border-color)', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
         <AlertCircle size={40} color="#B4233C" style={{ marginBottom: 16 }} />
         <h2 style={{ margin: '0 0 10px', color: 'var(--text-primary)', fontSize: '1.4rem', fontWeight: 800 }}>Invoice Not Found</h2>
-        <p style={{ color: '#59636F', marginBottom: 20 }}>{error}</p>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: 20 }}>{error}</p>
         <Link to="/" className="btn-secondary" style={{ display: 'inline-flex' }}>
           <ArrowLeft size={15} /> Return Home
         </Link>
@@ -112,20 +112,20 @@ export default function InvoicePayment() {
   const isAlreadyPaid = invoice.status === 'PAID' || paid
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F6F7F8', padding: '60px 24px', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-surface)', padding: '60px 24px', color: 'var(--text-primary)' }}>
       <div style={{ maxWidth: 660, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-            <div style={{ width: 36, height: 36, background: '#FAF4F5', border: '1px solid #F2D2D7', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, background: 'var(--bg-blush)', border: '1px solid var(--border-red)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Shield size={18} color="#B4233C" />
             </div>
             <div>
               <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)' }}>OM Communication</div>
-              <div style={{ color: '#59636F', fontSize: '0.75rem' }}>Enterprise Security & Telecom</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Enterprise Security &amp; Telecom</div>
             </div>
           </Link>
-          <Link to="/" style={{ color: '#59636F', fontSize: '0.85rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Link to="/" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>
             <ArrowLeft size={14} /> Back to Site
           </Link>
         </div>
@@ -140,9 +140,9 @@ export default function InvoicePayment() {
           {/* Invoice Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
             <div>
-              <div style={{ color: '#59636F', fontSize: '0.75rem', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 6, fontWeight: 700 }}>Tax Invoice</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 6, fontWeight: 700 }}>Tax Invoice</div>
               <div style={{ fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{invoice.invoiceNumber}</div>
-              <div style={{ color: '#59636F', fontSize: '0.8125rem', marginTop: 4 }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.8125rem', marginTop: 4 }}>
                 Date: {new Date(invoice.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
               </div>
             </div>
@@ -159,11 +159,11 @@ export default function InvoicePayment() {
           </div>
 
           {/* Client Info */}
-          <div style={{ background: '#F6F7F8', borderRadius: 10, padding: '16px 18px', marginBottom: 24, border: '1px solid #E5E7EB' }}>
-            <div style={{ fontSize: '0.7rem', color: '#59636F', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, fontWeight: 700 }}>Billed To</div>
+          <div style={{ background: 'var(--bg-surface)', borderRadius: 10, padding: '16px 18px', marginBottom: 24, border: '1px solid var(--border-light)' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, fontWeight: 700 }}>Billed To</div>
             <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)' }}>{invoice.clientName}</div>
-            {invoice.clientPhone && <div style={{ color: '#59636F', fontSize: '0.875rem', marginTop: 2 }}>{invoice.clientPhone}</div>}
-            {invoice.clientEmail && <div style={{ color: '#59636F', fontSize: '0.875rem' }}>{invoice.clientEmail}</div>}
+            {invoice.clientPhone && <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: 2 }}>{invoice.clientPhone}</div>}
+            {invoice.clientEmail && <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>{invoice.clientEmail}</div>}
           </div>
 
           {/* Line Items */}
@@ -180,8 +180,8 @@ export default function InvoicePayment() {
               {invoice.items?.map((item, i) => (
                 <tr key={i}>
                   <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{item.description}</td>
-                  <td style={{ textAlign: 'right', color: '#59636F' }}>{item.quantity}</td>
-                  <td style={{ textAlign: 'right', color: '#59636F' }}>₹{Number(item.unitPrice).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td style={{ textAlign: 'right', color: 'var(--text-muted)' }}>{item.quantity}</td>
+                  <td style={{ textAlign: 'right', color: 'var(--text-muted)' }}>₹{Number(item.unitPrice).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                   <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--text-primary)' }}>₹{Number(item.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                 </tr>
               ))}
@@ -189,17 +189,17 @@ export default function InvoicePayment() {
           </table>
 
           {/* Totals */}
-          <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: 18, marginTop: 12 }}>
+          <div style={{ borderTop: '1px solid var(--border-light)', paddingTop: 18, marginTop: 12 }}>
             {[
               ['Subtotal', invoice.subtotal],
               ['GST (18%)', invoice.taxAmount],
             ].map(([label, val]) => (
               <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: '#59636F', fontSize: '0.9rem' }}>{label}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>{label}</span>
                 <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>₹{Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
             ))}
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 0', borderTop: '1px solid #E5E7EB', marginTop: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 0', borderTop: '1px solid var(--border-light)', marginTop: 8 }}>
               <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)' }}>Total Amount Due</span>
               <span style={{ fontWeight: 900, fontSize: '1.3rem', color: '#B4233C' }}>
                 ₹{Number(invoice.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
@@ -225,7 +225,7 @@ export default function InvoicePayment() {
                     </button>
                   </div>
                   {showTechDetails && (
-                    <div style={{ marginTop: 8, padding: 8, background: '#FFFFFF', borderRadius: 4, fontFamily: 'monospace', fontSize: '0.7rem', color: '#742A2A', border: '1px solid #FED7D7' }}>
+                    <div style={{ marginTop: 8, padding: 8, background: 'var(--bg-surface)', borderRadius: 4, fontFamily: 'monospace', fontSize: '0.7rem', color: 'var(--color-error)', border: '1px solid var(--border-light)' }}>
                       {gatewayError}
                     </div>
                   )}
@@ -248,7 +248,7 @@ export default function InvoicePayment() {
             </div>
           )}
 
-          <p style={{ textAlign: 'center', color: '#59636F', fontSize: '0.75rem', marginTop: 16, margin: '16px 0 0' }}>
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: 16, margin: '16px 0 0' }}>
             Secured by Razorpay • All transactions are encrypted • GST invoice will be emailed
           </p>
         </motion.div>

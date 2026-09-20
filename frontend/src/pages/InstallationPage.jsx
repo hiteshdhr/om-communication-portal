@@ -45,7 +45,7 @@ export default function InstallationPage() {
             <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Turnkey Installation &amp; Project Execution
             </h1>
-            <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
               Professional installation is the foundation of system reliability. We follow a strict 6-stage engineering process to ensure maximum uptime, clean cable aesthetics, and zero structural compromises.
             </p>
           </motion.div>
@@ -58,7 +58,7 @@ export default function InstallationPage() {
         <div style={{
           borderRadius: 16,
           overflow: 'hidden',
-          border: '1px solid #E5E7EB',
+          border: '1px solid var(--border-light)',
           marginBottom: 48,
           position: 'relative',
           background: '#17191D',
@@ -81,10 +81,10 @@ export default function InstallationPage() {
             left: 28,
             right: 28,
           }}>
-            <div style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '1.25rem', marginBottom: 4 }}>
+            <div style={{ color: 'var(--text-on-dark)', fontWeight: 800, fontSize: '1.25rem', marginBottom: 4 }}>
               Structured Infrastructure & Certified Workmanship
             </div>
-            <div style={{ color: '#D1D5DB', fontSize: '0.875rem' }}>
+            <div style={{ color: 'var(--text-on-dark-sub)', fontSize: '0.875rem' }}>
               ISI-marked conduit pathways, neat server rack dressing & documented terminations
             </div>
           </div>
@@ -99,9 +99,9 @@ export default function InstallationPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               style={{
-                background: '#FFFFFF',
+                background: 'var(--bg-card)',
                 borderRadius: 14,
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-light)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 padding: 28
               }}
@@ -112,7 +112,7 @@ export default function InstallationPage() {
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8, letterSpacing: '-0.01em' }}>
                 {st.title}
               </h3>
-              <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.65, margin: 0 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.65, margin: 0 }}>
                 {st.desc}
               </p>
             </motion.div>
@@ -147,8 +147,8 @@ export default function InstallationPage() {
 
         {/* CTA */}
         <div style={{
-          background: '#FAF4F5',
-          border: '1px solid #F2D2D7',
+          background: 'var(--bg-blush)',
+          border: '1px solid var(--border-red)',
           borderRadius: 14,
           padding: 40,
           textAlign: 'center'
@@ -156,7 +156,7 @@ export default function InstallationPage() {
           <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>
             Schedule an Installation Site Assessment
           </h3>
-          <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>
             Book a site survey with our engineers to evaluate conduit pathways and power requirements for your property.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
