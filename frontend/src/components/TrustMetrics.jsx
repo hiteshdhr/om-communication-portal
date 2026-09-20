@@ -32,9 +32,10 @@ export default function TrustMetrics() {
     <section
       aria-label="Verified company trust metrics"
       style={{
-        background: '#F6F7F8',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-surface)',
+        borderBottom: '1px solid var(--border-light)',
         padding: '36px 0',
+        transition: 'background-color 0.3s ease',
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
@@ -53,7 +54,7 @@ export default function TrustMetrics() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                borderLeft: i > 0 ? '1px solid #E5E7EB' : 'none',
+                borderLeft: i > 0 ? '1px solid var(--border-light)' : 'none',
                 paddingLeft: i > 0 ? 24 : 0,
               }}
               className="metric-column"
@@ -63,7 +64,7 @@ export default function TrustMetrics() {
                   fontFamily: "'Manrope', 'Inter', sans-serif",
                   fontSize: 'clamp(2.2rem, 3.2vw, 3rem)',
                   fontWeight: 900,
-                  color: '#111827',
+                  color: 'var(--text-primary)',
                   lineHeight: 1,
                   letterSpacing: '-0.03em',
                 }}>
@@ -72,7 +73,7 @@ export default function TrustMetrics() {
                 <span style={{
                   fontSize: '0.75rem',
                   fontWeight: 800,
-                  color: '#B4233C',
+                  color: 'var(--red-primary)',
                   letterSpacing: '0.12em',
                   textTransform: 'uppercase',
                 }}>
@@ -80,10 +81,10 @@ export default function TrustMetrics() {
                 </span>
               </div>
 
-              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#111827', marginBottom: 3 }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3 }}>
                 {m.sub}
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#59636F', lineHeight: 1.5 }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                 {m.desc}
               </div>
             </motion.div>
@@ -93,7 +94,7 @@ export default function TrustMetrics() {
 
       <style>{`
         @media (max-width: 768px) {
-          .metric-column { border-left: none !important; padding-left: 0 !important; border-top: 1px solid #E5E7EB; padding-top: 20px; }
+          .metric-column { border-left: none !important; padding-left: 0 !important; border-top: 1px solid var(--border-light); padding-top: 20px; }
           .metric-column:first-child { border-top: none; padding-top: 0; }
         }
       `}</style>

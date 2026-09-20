@@ -67,15 +67,15 @@ export default function ComplaintDesk() {
 
   if (submitted) {
     return (
-      <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
         <SEO title="Complaint Submitted | OM Communication" canonical="/support" />
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-          style={{ maxWidth: 560, width: '100%', padding: '48px', textAlign: 'center', background: '#FFFFFF', borderRadius: 16, border: '1px solid #E5E7EB', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+          style={{ maxWidth: 560, width: '100%', padding: '48px', textAlign: 'center', background: 'var(--bg-card)', borderRadius: 16, border: '1px solid var(--border-color)', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
           <div style={{ width: 72, height: 72, background: '#F0FDF4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', border: '2px solid #16A34A' }}>
             <CheckCircle2 size={36} color="#16A34A" />
           </div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 12px', color: '#111827' }}>Ticket Submitted!</h2>
-          <p style={{ color: '#59636F', lineHeight: 1.65 }}>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0 0 12px', color: 'var(--text-primary)' }}>Ticket Submitted!</h2>
+          <p style={{ color: 'var(--text-secondary)', lineHeight: 1.65 }}>
             Your complaint has been logged. A support technician will be assigned to review your issue.
           </p>
           <div style={{
@@ -101,7 +101,7 @@ export default function ComplaintDesk() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Support Desk & Service Tickets | OM Communication"
         description="Log service complaints, request troubleshooting, or track existing technical support tickets for security and telecom infrastructure."
@@ -116,7 +116,7 @@ export default function ComplaintDesk() {
           <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Customer Service & Maintenance
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '0 0 10px', color: '#111827', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.6rem)', fontWeight: 800, margin: '0 0 10px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Customer Support Desk
           </h1>
           <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6 }}>
@@ -149,22 +149,22 @@ export default function ComplaintDesk() {
               }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Client / Facility Name *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Client / Facility Name *</label>
                     <input className="form-input" placeholder="Your full name" value={form.clientName}
                       onChange={e => setForm(f => ({ ...f, clientName: e.target.value }))} required />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Phone Number *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Phone Number *</label>
                     <input className="form-input" placeholder="+91 98765 43210" value={form.phone}
                       onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} required />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Installation / Invoice ID</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Installation / Invoice ID</label>
                     <input className="form-input" placeholder="OM-INV-2024-0001 (optional)" value={form.installationId}
                       onChange={e => setForm(f => ({ ...f, installationId: e.target.value }))} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Site Location / Address</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Site Location / Address</label>
                     <input className="form-input" placeholder="Society / Sector location" value={form.installationAddress}
                       onChange={e => setForm(f => ({ ...f, installationAddress: e.target.value }))} />
                   </div>

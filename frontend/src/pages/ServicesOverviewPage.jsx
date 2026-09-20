@@ -58,7 +58,7 @@ const services = [
     title: 'AMC & Maintenance Contracts',
     href: '/services/amc',
     desc: 'Comprehensive Annual Maintenance Contracts (AMC) with scheduled preventative audits, priority technician dispatch, and cabling health care.',
-    features: ['Scheduled Preventative Audits', 'Prompt SLA Technician Dispatch', 'Camera, NVR & PSU Health Diagnostics', 'Emergency Breakdown Repair'],
+    features: ['Scheduled Preventative Audits', 'Prompt Technician Dispatch', 'Camera, NVR & PSU Health Diagnostics', 'Emergency Breakdown Repair'],
     photo: images.services.amc.rackMaintenance,
     alt: 'OM Communication technician conducting scheduled preventative maintenance on server rack'
   },
@@ -66,7 +66,7 @@ const services = [
 
 export default function ServicesOverviewPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Enterprise Security & Telecom Services | OM Communication"
         description="Explore our full spectrum of enterprise security solutions: CCTV surveillance, EPABX intercom networks, Video Door Phones, biometric access control, networking, and turnkey AMC maintenance in Delhi-NCR."
@@ -83,7 +83,7 @@ export default function ServicesOverviewPage() {
       <Navbar />
 
       {/* ── Page Hero ── */}
-      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+      <section style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-light)', padding: 'clamp(32px, 5vw, 56px) 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Services' }]} />
           <motion.div
@@ -95,7 +95,7 @@ export default function ServicesOverviewPage() {
             <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Engineered Capabilities
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Enterprise Services &amp; Infrastructure Solutions
             </h1>
             <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
@@ -118,8 +118,8 @@ export default function ServicesOverviewPage() {
               transition={{ delay: index * 0.06 }}
               style={{
                 background: '#FFFFFF',
-                borderRadius: 14,
-                border: '1px solid #E5E7EB',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 padding: 32,
                 overflow: 'hidden'
@@ -134,7 +134,7 @@ export default function ServicesOverviewPage() {
                   }}>
                     <s.icon size={24} color="#B4233C" />
                   </div>
-                  <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', marginBottom: 10, letterSpacing: '-0.01em' }}>
+                  <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
                     {s.title}
                   </h2>
                   <p style={{ color: '#59636F', lineHeight: 1.65, fontSize: '0.92rem', marginBottom: 18 }}>
@@ -142,7 +142,7 @@ export default function ServicesOverviewPage() {
                   </p>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10, marginBottom: 24 }}>
                     {s.features.map(f => (
-                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.84rem', color: '#111827', fontWeight: 500 }}>
+                      <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.84rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                         <CheckCircle2 size={15} color="#B4233C" style={{ flexShrink: 0 }} />
                         <span>{f}</span>
                       </div>
@@ -180,7 +180,7 @@ export default function ServicesOverviewPage() {
           padding: 40,
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>
             Need a Multi-Service Security Solution?
           </h3>
           <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>

@@ -116,7 +116,7 @@ export default function QuoteEstimator() {
 
   if (submitted) {
     return (
-      <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
         <SEO title="Requirement Submitted | OM Communication" canonical="/quote" />
         <Navbar />
         <div style={{ maxWidth: 680, margin: '0 auto', padding: '140px 24px 80px', textAlign: 'center' }}>
@@ -130,7 +130,7 @@ export default function QuoteEstimator() {
             <div style={{ width: 72, height: 72, background: '#F0FDF4', borderRadius: '50%', border: '2px solid #16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <CheckCircle2 size={36} color="#16A34A" />
             </div>
-            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#111827', marginBottom: 12 }}>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
               Requirement Received!
             </h1>
             <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6, marginBottom: 20 }}>
@@ -165,7 +165,7 @@ export default function QuoteEstimator() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Request a Quotation & Site Assessment | OM Communication"
         description="Submit your facility security and communication requirements. Our engineers will evaluate your property and structure a customized turnkey quotation in Delhi-NCR."
@@ -189,7 +189,7 @@ export default function QuoteEstimator() {
           <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Engineered Proposal Desk
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: '0 0 10px', color: '#111827', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', fontWeight: 800, margin: '0 0 10px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Request Quotation & Site Assessment
           </h1>
           <p style={{ color: '#59636F', fontSize: '1rem', lineHeight: 1.6 }}>
@@ -235,8 +235,8 @@ export default function QuoteEstimator() {
             transition={{ duration: 0.2 }}
             style={{
               background: '#FFFFFF',
-              borderRadius: 14,
-              border: '1px solid #E5E7EB',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
               boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
               padding: '36px 32px'
             }}
@@ -244,7 +244,7 @@ export default function QuoteEstimator() {
             {/* STEP 0: Select Services */}
             {step === 0 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Which systems do you require?
                 </h2>
                 <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
@@ -293,7 +293,7 @@ export default function QuoteEstimator() {
             {/* STEP 1: Facility Type */}
             {step === 1 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   What type of property / facility is this for?
                 </h2>
                 <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
@@ -331,7 +331,7 @@ export default function QuoteEstimator() {
             {/* STEP 2: Site Requirements */}
             {step === 2 && (
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Specific Requirements & Project Scope
                 </h2>
                 <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
@@ -339,7 +339,7 @@ export default function QuoteEstimator() {
                 </p>
 
                 <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Nature of Work</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Nature of Work</label>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10 }}>
                     {['New Installation', 'Upgrade / Expansion', 'Repair / Overhaul', 'Annual Maintenance (AMC)'].map(t => (
                       <button
@@ -440,7 +440,7 @@ export default function QuoteEstimator() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Contact Person Name *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Contact Person Name *</label>
                     <input
                       className="form-input"
                       placeholder="Your full name"
@@ -451,7 +451,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Phone Number *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Phone Number *</label>
                     <input
                       className="form-input"
                       placeholder="+91 98765 43210"
@@ -462,7 +462,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Society / Company Name</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Society / Company Name</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Mahagun Society or Plant Unit"
@@ -472,7 +472,7 @@ export default function QuoteEstimator() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Email Address</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Email Address</label>
                     <input
                       className="form-input"
                       type="email"

@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ChevronDown, Phone, Camera, PhoneCall, DoorOpen, Fingerprint, Wrench, Network, Shield, ArrowRight } from 'lucide-react'
+import { Menu, X, ChevronDown, Phone, Camera, PhoneCall, DoorOpen, Fingerprint, Wrench, Network, Shield, ArrowRight, Sun, Moon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import logo from '../assets/ocw-logo.png'
+import { useTheme } from '../utils/theme.jsx'
 
 // ─── Navigation Data ─────────────────────────────────────────────────────────
 const solutionGroups = [
@@ -34,7 +35,7 @@ const solutionGroups = [
   {
     category: 'Maintenance',
     items: [
-      { label: 'Annual Maintenance Contracts (AMC)', href: '/services/amc', icon: Wrench, desc: 'Quarterly inspections & priority breakdown SLA' },
+      { label: 'Annual Maintenance Contracts (AMC)', href: '/services/amc', icon: Wrench, desc: 'Quarterly inspections & priority breakdown support' },
     ],
   },
 ]
@@ -50,6 +51,7 @@ export default function Navbar() {
   const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [industriesOpen, setIndustriesOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { theme, toggleTheme } = useTheme()
   const location = useLocation()
   const solRef = useRef(null)
   const indRef = useRef(null)
@@ -77,9 +79,10 @@ export default function Navbar() {
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        background: '#FFFFFF',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-white)',
+        borderBottom: '1px solid var(--border-light)',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.03)',
+        transition: 'background-color 0.3s ease, border-color 0.3s ease',
       }}
     >
       <div style={{
@@ -104,7 +107,7 @@ export default function Navbar() {
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontWeight: 900,
               fontSize: '1rem',
-              color: '#111827',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.02em',
               lineHeight: 1.1,
             }}>
@@ -113,7 +116,7 @@ export default function Navbar() {
             <div style={{
               fontSize: '0.65rem',
               fontWeight: 700,
-              color: '#B4233C',
+              color: 'var(--red-primary)',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
             }}>
@@ -134,7 +137,7 @@ export default function Navbar() {
               textDecoration: 'none',
               fontSize: '0.9rem',
               fontWeight: 600,
-              color: location.pathname === '/' ? '#B4233C' : '#111827',
+              color: location.pathname === '/' ? 'var(--red-primary)' : 'var(--text-primary)',
               transition: 'color 0.15s',
             }}
           >
@@ -154,7 +157,7 @@ export default function Navbar() {
                 gap: 4,
                 fontSize: '0.9rem',
                 fontWeight: 600,
-                color: location.pathname.startsWith('/services') || solutionsOpen ? '#B4233C' : '#111827',
+                color: location.pathname.startsWith('/services') || solutionsOpen ? 'var(--red-primary)' : 'var(--text-primary)',
                 cursor: 'pointer',
               }}
               aria-expanded={solutionsOpen}
@@ -177,11 +180,11 @@ export default function Navbar() {
                     left: '50%',
                     transform: 'translateX(-50%)',
                     width: 580,
-                    background: '#FFFFFF',
-                    border: '1px solid #E5E7EB',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-light)',
                     borderRadius: 12,
                     padding: 20,
-                    boxShadow: '0 16px 36px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03)',
+                    boxShadow: '0 16px 36px rgba(0, 0, 0, 0.12)',
                     zIndex: 1100,
                   }}
                 >
@@ -205,28 +208,28 @@ export default function Navbar() {
                               textDecoration: 'none',
                               transition: 'background 0.15s',
                             }}
-                            onMouseEnter={e => e.currentTarget.style.background = '#F6F7F8'}
+                            onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                           >
                             <div style={{
                               width: 32,
                               height: 32,
                               borderRadius: 6,
-                              background: '#FAF4F5',
-                              border: '1px solid rgba(180, 35, 60, 0.15)',
+                              background: 'var(--red-light)',
+                              border: '1px solid var(--border-red)',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               flexShrink: 0,
                               marginTop: 2,
                             }}>
-                              <item.icon size={16} color="#B4233C" />
+                              <item.icon size={16} color="var(--red-primary)" />
                             </div>
                             <div>
-                              <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#111827', marginBottom: 2 }}>
+                              <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
                                 {item.label}
                               </div>
-                              <div style={{ fontSize: '0.75rem', color: '#59636F', lineHeight: 1.35 }}>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
                                 {item.desc}
                               </div>
                             </div>
@@ -239,18 +242,18 @@ export default function Navbar() {
                   <div style={{
                     marginTop: 12,
                     paddingTop: 12,
-                    borderTop: '1px solid #F0F2F5',
+                    borderTop: '1px solid var(--border-subtle)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}>
                     <Link
                       to="/services"
-                      style={{ fontSize: '0.8rem', fontWeight: 700, color: '#B4233C', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+                      style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--red-primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
                     >
                       View All Solutions Overview <ArrowRight size={13} />
                     </Link>
-                    <span style={{ fontSize: '0.72rem', color: '#9CA3AF' }}>Turnkey Installation &amp; AMC</span>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Turnkey Installation &amp; AMC</span>
                   </div>
                 </motion.div>
               )}
@@ -270,7 +273,7 @@ export default function Navbar() {
                 gap: 4,
                 fontSize: '0.9rem',
                 fontWeight: 600,
-                color: location.pathname.startsWith('/industries') || industriesOpen ? '#B4233C' : '#111827',
+                color: location.pathname.startsWith('/industries') || industriesOpen ? 'var(--red-primary)' : 'var(--text-primary)',
                 cursor: 'pointer',
               }}
               aria-expanded={industriesOpen}
@@ -292,11 +295,11 @@ export default function Navbar() {
                     left: '50%',
                     transform: 'translateX(-50%)',
                     width: 380,
-                    background: '#FFFFFF',
-                    border: '1px solid #E5E7EB',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-light)',
                     borderRadius: 12,
                     padding: 16,
-                    boxShadow: '0 16px 36px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03)',
+                    boxShadow: '0 16px 36px rgba(0, 0, 0, 0.12)',
                     zIndex: 1100,
                   }}
                 >
@@ -311,23 +314,23 @@ export default function Navbar() {
                           textDecoration: 'none',
                           transition: 'background 0.15s',
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#F6F7F8'}
+                        onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-surface)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                       >
-                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#111827', marginBottom: 2 }}>
+                        <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
                           {ind.label}
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: '#59636F' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                           {ind.desc}
                         </div>
                       </Link>
                     ))}
                   </div>
 
-                  <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid #F0F2F5' }}>
+                  <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid var(--border-subtle)' }}>
                     <Link
                       to="/industries"
-                      style={{ fontSize: '0.8rem', fontWeight: 700, color: '#B4233C', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
+                      style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--red-primary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
                     >
                       All Industry Deployments <ArrowRight size={13} />
                     </Link>
@@ -343,7 +346,7 @@ export default function Navbar() {
               textDecoration: 'none',
               fontSize: '0.9rem',
               fontWeight: 600,
-              color: location.pathname === '/projects' ? '#B4233C' : '#111827',
+              color: location.pathname === '/projects' ? 'var(--red-primary)' : 'var(--text-primary)',
             }}
           >
             Projects
@@ -355,7 +358,7 @@ export default function Navbar() {
               textDecoration: 'none',
               fontSize: '0.9rem',
               fontWeight: 600,
-              color: location.pathname === '/about' ? '#B4233C' : '#111827',
+              color: location.pathname === '/about' ? 'var(--red-primary)' : 'var(--text-primary)',
             }}
           >
             About
@@ -367,15 +370,37 @@ export default function Navbar() {
               textDecoration: 'none',
               fontSize: '0.9rem',
               fontWeight: 600,
-              color: location.pathname === '/services/amc' ? '#B4233C' : '#111827',
+              color: location.pathname === '/services/amc' ? 'var(--red-primary)' : 'var(--text-primary)',
             }}
           >
             AMC
           </Link>
         </nav>
 
-        {/* ── Right Actions (Phone & Quote CTA) ── */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        {/* ── Right Actions (Theme Toggle, Phone & Quote CTA) ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          {/* Theme Toggle Button (Desktop) */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-light)',
+              borderRadius: '50%',
+              width: 36,
+              height: 36,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              transition: 'all 0.2s ease',
+            }}
+            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+          >
+            {theme === 'light' ? <Moon size={17} /> : <Sun size={17} color="#FBBF24" />}
+          </button>
+
           <a
             href="tel:+917217715296"
             className="desktop-phone"
@@ -386,10 +411,10 @@ export default function Navbar() {
               textDecoration: 'none',
               fontSize: '0.875rem',
               fontWeight: 700,
-              color: '#111827',
+              color: 'var(--text-primary)',
             }}
           >
-            <Phone size={14} color="#B4233C" />
+            <Phone size={14} color="var(--red-primary)" />
             <span>+91 72177 15296</span>
           </a>
 
@@ -414,7 +439,7 @@ export default function Navbar() {
               border: 'none',
               padding: 6,
               cursor: 'pointer',
-              color: '#111827',
+              color: 'var(--text-primary)',
               display: 'none',
             }}
             aria-label="Toggle navigation menu"
@@ -432,50 +457,75 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             style={{
-              background: '#FFFFFF',
-              borderTop: '1px solid #E5E7EB',
+              background: 'var(--bg-white)',
+              borderTop: '1px solid var(--border-light)',
               padding: '16px 20px 24px',
               overflow: 'hidden',
+              transition: 'background-color 0.3s ease',
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <Link to="/" style={{ fontSize: '1rem', fontWeight: 700, color: '#111827', textDecoration: 'none' }}>
+              <Link to="/" style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none' }}>
                 Home
               </Link>
 
-              <div style={{ borderTop: '1px solid #F0F2F5', paddingTop: 8 }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#B4233C', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+              <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 8 }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--red-primary)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
                   Solutions
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8, paddingLeft: 8 }}>
-                  <Link to="/services/cctv" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>CCTV Surveillance</Link>
-                  <Link to="/services/epabx" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>EPABX &amp; Intercom</Link>
-                  <Link to="/services/vdp" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Video Door Phone (VDP)</Link>
-                  <Link to="/services/biometrics" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Biometrics &amp; Access Control</Link>
-                  <Link to="/services/networking" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Structured Cabling &amp; LAN</Link>
-                  <Link to="/services/amc" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Annual Maintenance (AMC)</Link>
+                  <Link to="/services/cctv" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>CCTV Surveillance</Link>
+                  <Link to="/services/epabx" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>EPABX &amp; Intercom</Link>
+                  <Link to="/services/vdp" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Video Door Phone (VDP)</Link>
+                  <Link to="/services/biometrics" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Biometrics &amp; Access Control</Link>
+                  <Link to="/services/networking" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Structured Cabling &amp; LAN</Link>
+                  <Link to="/services/amc" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Annual Maintenance (AMC)</Link>
                 </div>
               </div>
 
-              <div style={{ borderTop: '1px solid #F0F2F5', paddingTop: 8 }}>
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#B4233C', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+              <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 8 }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--red-primary)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
                   Industries
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 8, paddingLeft: 8 }}>
-                  <Link to="/industries/offices" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Commercial Offices</Link>
-                  <Link to="/industries/factories" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Industrial &amp; Factories</Link>
-                  <Link to="/industries/residential" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Residential Societies</Link>
-                  <Link to="/industries/retail" style={{ textDecoration: 'none', color: '#59636F', fontSize: '0.9rem' }}>Retail &amp; Showrooms</Link>
+                  <Link to="/industries/offices" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Commercial Offices</Link>
+                  <Link to="/industries/factories" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Industrial &amp; Factories</Link>
+                  <Link to="/industries/residential" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Residential Societies</Link>
+                  <Link to="/industries/retail" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Retail &amp; Showrooms</Link>
                 </div>
               </div>
 
-              <div style={{ borderTop: '1px solid #F0F2F5', paddingTop: 10, display: 'flex', gap: 16 }}>
-                <Link to="/projects" style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', textDecoration: 'none' }}>Projects</Link>
-                <Link to="/about" style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', textDecoration: 'none' }}>About</Link>
-                <Link to="/contact" style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', textDecoration: 'none' }}>Contact</Link>
+              <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 10, display: 'flex', gap: 16 }}>
+                <Link to="/projects" style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none' }}>Projects</Link>
+                <Link to="/about" style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none' }}>About</Link>
+                <Link to="/contact" style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none' }}>Contact</Link>
               </div>
 
-              <div style={{ borderTop: '1px solid #F0F2F5', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {/* Theme Toggle Row (Mobile) */}
+              <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)' }}>Theme Mode</span>
+                <button
+                  onClick={toggleTheme}
+                  style={{
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-light)',
+                    borderRadius: 6,
+                    padding: '6px 12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    cursor: 'pointer',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {theme === 'light' ? <Moon size={15} /> : <Sun size={15} color="#FBBF24" />}
+                  <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+                </button>
+              </div>
+
+              <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <a
                   href="tel:+917217715296"
                   style={{
@@ -485,14 +535,14 @@ export default function Navbar() {
                     gap: 8,
                     padding: '10px 16px',
                     borderRadius: 6,
-                    border: '1px solid #D1D5DB',
+                    border: '1px solid var(--border-light)',
                     textDecoration: 'none',
-                    color: '#111827',
+                    color: 'var(--text-primary)',
                     fontWeight: 700,
                     fontSize: '0.9rem',
                   }}
                 >
-                  <Phone size={15} color="#B4233C" /> Call +91 72177 15296
+                  <Phone size={15} color="var(--red-primary)" /> Call +91 72177 15296
                 </a>
                 <Link
                   to="/quote"

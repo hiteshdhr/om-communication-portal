@@ -48,7 +48,7 @@ const industries = [
 
 export default function IndustriesOverviewPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Industries We Secure | OM Communication"
         description="Tailored security and communication infrastructure solutions for residential societies, manufacturing factories, corporate offices, and retail chains across Delhi-NCR."
@@ -65,14 +65,14 @@ export default function IndustriesOverviewPage() {
       <Navbar />
 
       {/* ── Page Hero ── */}
-      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+      <section style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-light)', padding: 'clamp(32px, 5vw, 56px) 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Industries' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
             <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Sector-Specific Solutions
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Industries &amp; Facilities We Secure
             </h1>
             <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
@@ -93,9 +93,9 @@ export default function IndustriesOverviewPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               style={{
-                background: '#FFFFFF',
+                background: 'var(--bg-card)',
                 borderRadius: 14,
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-color)',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 overflow: 'hidden',
                 display: 'flex',
@@ -122,7 +122,7 @@ export default function IndustriesOverviewPage() {
                   }}>
                     <ind.icon size={16} /> Industry Sector
                   </div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 10, letterSpacing: '-0.01em' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
                     {ind.title}
                   </h2>
                   <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 18 }}>
@@ -130,7 +130,7 @@ export default function IndustriesOverviewPage() {
                   </p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
                     {ind.solutions.map(sol => (
-                      <div key={sol} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: '#111827', fontWeight: 500 }}>
+                      <div key={sol} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                         <CheckCircle2 size={14} color="#B4233C" style={{ flexShrink: 0 }} />
                         <span>{sol}</span>
                       </div>
@@ -158,7 +158,7 @@ export default function IndustriesOverviewPage() {
           padding: 40,
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10, letterSpacing: '-0.01em' }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
             Have a Specific Facility Requirement?
           </h3>
           <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>

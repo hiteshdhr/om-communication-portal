@@ -6,10 +6,11 @@ import {
   LogOut, TrendingUp, AlertTriangle, FileText, DollarSign,
   Plus, X, MessageCircle, ExternalLink, Trash2,
   LayoutDashboard, Inbox, TicketIcon, ReceiptText, RefreshCw, Wrench,
-  Calendar, Printer
+  Calendar, Printer, Menu, Sun, Moon
 } from 'lucide-react'
 import api from '../api'
 import logo from '../assets/ocw-logo.png'
+import { useTheme } from '../utils/theme.jsx'
 
 // ─── Helper Functions ──────────────────────────────────────────────────────────
 const fmtCurrency = v => `₹${Number(v || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
@@ -440,6 +441,7 @@ function InvoiceModal({ onClose, onCreated }) {
 
 // ─── Main Admin Dashboard ──────────────────────────────────────────────────────
 export default function AdminDashboard() {
+  const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('overview')
   const [metrics, setMetrics] = useState(null)
@@ -454,6 +456,8 @@ export default function AdminDashboard() {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false)
   const [surveyInquiry, setSurveyInquiry] = useState(null)
   const [quoteInquiry, setQuoteInquiry] = useState(null)
+
+  const tabs = navGroups.flatMap(g => g.items)
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
@@ -470,18 +474,32 @@ export default function AdminDashboard() {
       setSurveys(surv.data || [])
       setTickets(tick.data)
       setInvoices(inv.data)
-    } catch {
-      toast.error('Failed to load dashboard data.')
+    } catch (err) {
+      if (err.response?.status === 401) {
+        toast.error('Session expired. Please log in.')
+        localStorage.removeItem('om_admin_token')
+        navigate('/admin/login')
+      } else {
+        toast.error('Failed to load dashboard data.')
+      }
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [navigate])
 
-  useEffect(() => { fetchAll() }, [fetchAll])
+  useEffect(() => {
+    const token = localStorage.getItem('om_admin_token')
+    if (!token) {
+      navigate('/admin/login')
+      return
+    }
+    fetchAll()
+  }, [fetchAll, navigate])
 
   function logout() {
     localStorage.removeItem('om_admin_token')
     localStorage.removeItem('om_admin_user')
+    toast.success('Logged out.')
     navigate('/admin/login')
   }
 
@@ -604,65 +622,109 @@ export default function AdminDashboard() {
     i.phone?.includes(search)
   )
 
+  const [mobileAdminNav, setMobileAdminNav] = useState(false)
+
   return (
-    <div style={{ minHeight: '100vh', background: '#F6F7F8', display: 'flex', color: '#111827' }}>
-      {/* Sidebar */}
-      <aside style={{ width: 260, background: '#17191D', borderRight: '1px solid #2D323B', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-        <div style={{ padding: '24px 20px', borderBottom: '1px solid #2D323B', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src={logo} alt="Logo" style={{ width: 38, height: 38, objectFit: 'contain', flexShrink: 0 }} />
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#FFFFFF' }}>OCW Operations</div>
-            <div style={{ fontSize: '0.7rem', color: '#B4233C', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Admin Command Center</div>
-          </div>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-surface)', display: 'flex', flexDirection: 'column', color: 'var(--text-primary)', transition: 'background-color 0.3s ease' }}>
+      {/* Mobile Top Header */}
+      <header className="mobile-admin-header" style={{
+        display: 'none',
+        height: 60,
+        background: 'var(--bg-charcoal)',
+        borderBottom: '1px solid var(--border-charcoal)',
+        padding: '0 16px',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <img src={logo} alt="Logo" style={{ width: 32, height: 32, objectFit: 'contain' }} />
+          <span style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-on-dark)' }}>OCW Operations</span>
         </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            style={{ background: 'none', border: 'none', color: 'var(--text-on-dark)', cursor: 'pointer', padding: 6 }}
+          >
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} color="#FBBF24" />}
+          </button>
+          <button
+            onClick={() => setMobileAdminNav(o => !o)}
+            style={{ background: 'none', border: 'none', color: 'var(--text-on-dark)', cursor: 'pointer', padding: 6 }}
+          >
+            {mobileAdminNav ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </header>
 
-        <nav style={{ padding: '20px 12px', display: 'flex', flexDirection: 'column', gap: 20, flex: 1, overflowY: 'auto' }}>
-          {navGroups.map(group => (
-            <div key={group.title}>
-              <div style={{
-                fontSize: '0.65rem',
-                fontWeight: 800,
-                color: '#6B7280',
-                letterSpacing: '0.12em',
-                padding: '0 12px 8px',
-                textTransform: 'uppercase',
-              }}>
-                {group.title}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {group.items.map(t => {
-                  const active = activeTab === t.id
-                  return (
-                    <button
-                      key={t.id}
-                      onClick={() => setActiveTab(t.id)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 12,
-                        padding: '10px 14px',
-                        borderRadius: 6,
-                        cursor: 'pointer',
-                        border: 'none',
-                        background: active ? '#B4233C' : 'transparent',
-                        color: active ? '#FFFFFF' : '#9CA3AF',
-                        fontWeight: active ? 700 : 500,
-                        fontSize: '0.875rem',
-                        textAlign: 'left',
-                        transition: 'all 0.15s'
-                      }}
-                    >
-                      <t.icon size={18} color={active ? '#FFFFFF' : '#9CA3AF'} />
-                      <span>{t.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
+      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+        {/* Sidebar */}
+        <aside className={`admin-sidebar ${mobileAdminNav ? 'mobile-open' : ''}`} style={{
+          width: 260,
+          background: 'var(--bg-charcoal)',
+          borderRight: '1px solid var(--border-charcoal)',
+          display: 'flex',
+          flexDirection: 'column',
+          flexShrink: 0,
+        }}>
+          <div style={{ padding: '24px 20px', borderBottom: '1px solid var(--border-charcoal)', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src={logo} alt="Logo" style={{ width: 38, height: 38, objectFit: 'contain', flexShrink: 0 }} />
+            <div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-on-dark)' }}>OCW Operations</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--red-primary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Admin Command Center</div>
             </div>
-          ))}
-        </nav>
+          </div>
 
-        <div style={{ padding: 16, borderTop: '1px solid #2D323B' }}>
+          <nav style={{ padding: '20px 12px', display: 'flex', flexDirection: 'column', gap: 20, flex: 1, overflowY: 'auto' }}>
+            {navGroups.map(group => (
+              <div key={group.title}>
+                <div style={{
+                  fontSize: '0.65rem',
+                  fontWeight: 800,
+                  color: 'var(--text-faint)',
+                  letterSpacing: '0.12em',
+                  padding: '0 12px 8px',
+                  textTransform: 'uppercase',
+                }}>
+                  {group.title}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {group.items.map(t => {
+                    const active = activeTab === t.id
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => { setActiveTab(t.id); setMobileAdminNav(false) }}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 12,
+                          padding: '10px 14px',
+                          borderRadius: 6,
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: active ? 'var(--red-primary)' : 'transparent',
+                          color: active ? '#FFFFFF' : 'var(--text-on-dark-sub)',
+                          fontWeight: active ? 700 : 500,
+                          fontSize: '0.875rem',
+                          textAlign: 'left',
+                          transition: 'all 0.15s'
+                        }}
+                      >
+                        <t.icon size={18} color={active ? '#FFFFFF' : 'var(--text-on-dark-sub)'} />
+                        <span>{t.label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </nav>
+
+        <div style={{ padding: 16, borderTop: '1px solid var(--border-charcoal)' }}>
           <button
             onClick={logout}
             style={{
@@ -690,10 +752,10 @@ export default function AdminDashboard() {
         {/* Top bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
           <div>
-            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
               {tabs.find(t => t.id === activeTab)?.label}
             </h1>
-            <div style={{ fontSize: '0.82rem', color: '#94A3B8', marginTop: 4 }}>
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: 4 }}>
               Om Communication Work Management Portal
             </div>
           </div>
@@ -1100,6 +1162,8 @@ export default function AdminDashboard() {
           onClose={() => setQuoteInquiry(null)}
         />
       )}
+
+    </div>
     </div>
   )
 }

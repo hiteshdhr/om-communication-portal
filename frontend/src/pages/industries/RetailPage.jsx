@@ -9,7 +9,7 @@ import { images } from '../../assets/imageMap'
 
 export default function RetailPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Retail Chains & Store Security Solutions | OM Communication"
         description="Loss prevention CCTV surveillance, POS billing counter monitoring, multi-store remote viewing, and staff attendance for retail chains across Delhi-NCR."
@@ -33,7 +33,7 @@ export default function RetailPage() {
           <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Retail Infrastructure
           </div>
-          <h1 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, margin: 0, color: '#111827', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Retail Chains, Showrooms & Commercial Outlets
           </h1>
           <p style={{ color: '#59636F', marginTop: 12, fontSize: '1.05rem', maxWidth: 760, lineHeight: 1.65 }}>
@@ -85,7 +85,7 @@ export default function RetailPage() {
             padding: 32,
             border: '1px solid #E5E7EB'
           }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 16, letterSpacing: '-0.01em' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16, letterSpacing: '-0.01em' }}>
               Retail Security Challenges
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: '#59636F', fontSize: '0.9rem', lineHeight: 1.6 }}>
@@ -114,7 +114,7 @@ export default function RetailPage() {
                 'Clean Concealed Cabling Protecting Showroom Interior Finish',
                 'Preventative Maintenance Support to Avoid Downtime During Sales'
               ].map(item => (
-                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.9rem', color: '#111827', fontWeight: 500 }}>
+                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                   <CheckCircle2 size={16} color="#B4233C" style={{ flexShrink: 0, marginTop: 3 }} />
                   <span>{item}</span>
                 </div>
@@ -128,13 +128,13 @@ export default function RetailPage() {
           padding: 32,
           borderRadius: 14,
           marginBottom: 48,
-          background: '#F6F7F8',
-          border: '1px solid #E5E7EB'
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-color)'
         }}>
           <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
             Featured Deployment
           </div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 12 }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
             Multi-Branch Retail Outlets — Delhi NCR
           </h3>
           <p style={{ color: '#59636F', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: 16 }}>
@@ -155,7 +155,7 @@ export default function RetailPage() {
           padding: 40,
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
             Secure Your Retail Stores
           </h3>
           <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>

@@ -9,7 +9,7 @@ import { images } from '../../assets/imageMap'
 
 export default function ResidentialPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Residential Societies & High-Rise Security Solutions | OM Communication"
         description="Turnkey security, CCTV surveillance, riser shaft intercom rewiring, and VDP solutions for residential high-rises and RWAs across Delhi-NCR."
@@ -33,7 +33,7 @@ export default function ResidentialPage() {
           <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Residential Infrastructure
           </div>
-          <h1 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, margin: 0, color: '#111827', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, margin: 0, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Residential Societies & High-Rise Towers
           </h1>
           <p style={{ color: '#59636F', marginTop: 12, fontSize: '1.05rem', maxWidth: 760, lineHeight: 1.65 }}>
@@ -85,7 +85,7 @@ export default function ResidentialPage() {
             padding: 32,
             border: '1px solid #E5E7EB'
           }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 16, letterSpacing: '-0.01em' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 16, letterSpacing: '-0.01em' }}>
               Common High-Rise RWA Challenges
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, color: '#59636F', fontSize: '0.9rem', lineHeight: 1.6 }}>
@@ -113,7 +113,7 @@ export default function ResidentialPage() {
                 'Video Door Phones & Guard Console Setup',
                 'Comprehensive Preventative Annual Maintenance Contracts (AMC)'
               ].map(item => (
-                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.9rem', color: '#111827', fontWeight: 500 }}>
+                <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                   <CheckCircle2 size={16} color="#B4233C" style={{ flexShrink: 0, marginTop: 3 }} />
                   <span>{item}</span>
                 </div>
@@ -127,13 +127,13 @@ export default function ResidentialPage() {
           padding: 32,
           borderRadius: 14,
           marginBottom: 48,
-          background: '#F6F7F8',
-          border: '1px solid #E5E7EB'
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-color)',
         }}>
           <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
             Featured Deployment
           </div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 12 }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
             84-Floor Multi-Tower Society — Ghaziabad, NCR
           </h3>
           <p style={{ color: '#59636F', fontSize: '0.9rem', lineHeight: 1.65, marginBottom: 16 }}>

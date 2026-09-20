@@ -18,7 +18,7 @@ const installationStages = [
 
 export default function InstallationPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Turnkey Installation & Project Execution Process | OM Communication"
         description="Learn about OM Communication's 6-stage turnkey engineering and installation process — from on-site survey and conduit piping to network configuration and formal commissioning in Delhi-NCR."
@@ -35,14 +35,14 @@ export default function InstallationPage() {
       <Navbar />
 
       {/* ── Page Hero ── */}
-      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+      <section style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-light)', padding: 'clamp(32px, 5vw, 56px) 0' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Installation Standards' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
             <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Engineering Standards
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Turnkey Installation &amp; Project Execution
             </h1>
             <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
@@ -109,7 +109,7 @@ export default function InstallationPage() {
               <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#B4233C', marginBottom: 10, letterSpacing: '-0.02em' }}>
                 STAGE {st.num}
               </div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#111827', marginBottom: 8, letterSpacing: '-0.01em' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8, letterSpacing: '-0.01em' }}>
                 {st.title}
               </h3>
               <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.65, margin: 0 }}>
@@ -124,10 +124,10 @@ export default function InstallationPage() {
           padding: 36,
           borderRadius: 14,
           marginBottom: 48,
-          background: '#F6F7F8',
-          border: '1px solid #E5E7EB'
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-color)'
         }}>
-          <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', textAlign: 'center', marginBottom: 24, letterSpacing: '-0.01em' }}>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', textAlign: 'center', marginBottom: 24, letterSpacing: '-0.01em' }}>
             Our Strict On-Site Workmanship Standards
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
@@ -137,7 +137,7 @@ export default function InstallationPage() {
               'Surge-Suppressed Power Supplies & Inverter Battery Backup Integration',
               'Weatherproof Outdoor Junction Boxes with IP66 Rating'
             ].map(rule => (
-              <div key={rule} style={{ background: '#FFFFFF', padding: '16px 20px', borderRadius: 10, border: '1px solid #E5E7EB', display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.88rem', color: '#111827', fontWeight: 500 }}>
+              <div key={rule} style={{ background: 'var(--bg-card)', padding: '16px 20px', borderRadius: 10, border: '1px solid var(--border-color)', display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: '0.88rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                 <CheckCircle2 size={16} color="#B4233C" style={{ flexShrink: 0, marginTop: 2 }} />
                 <span>{rule}</span>
               </div>
@@ -153,7 +153,7 @@ export default function InstallationPage() {
           padding: 40,
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>
             Schedule an Installation Site Assessment
           </h3>
           <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>

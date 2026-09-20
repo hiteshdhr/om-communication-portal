@@ -46,9 +46,10 @@ export default function ProcessTimeline() {
       aria-labelledby="methodology-heading"
       style={{
         padding: 'clamp(56px, 7vw, 88px) 0',
-        background: '#FFFFFF',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-white)',
+        borderBottom: '1px solid var(--border-light)',
         position: 'relative',
+        transition: 'background-color 0.3s ease',
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
@@ -68,14 +69,14 @@ export default function ProcessTimeline() {
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
               fontWeight: 900,
-              color: '#111827',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.03em',
               margin: '0 0 10px',
             }}
           >
             From survey to support.
           </h2>
-          <p style={{ color: '#59636F', fontSize: '1rem', margin: 0, maxWidth: 580 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0, maxWidth: 580 }}>
             Every project follows a systematic 6-stage engineering lifecycle ensuring zero blind spots and predictable post-handover reliability.
           </p>
         </motion.div>
@@ -94,16 +95,25 @@ export default function ProcessTimeline() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: '-30px' }}
               transition={{ duration: 0.45, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{ y: -4, borderColor: '#B4233C' }}
+              whileHover={{ y: -4 }}
               style={{
-                background: '#F6F7F8',
-                border: '1px solid #E5E7EB',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-light)',
                 borderRadius: 8,
                 padding: '22px 18px',
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
-                transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                transition: 'border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease',
+                cursor: 'default',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'var(--red-primary)'
+                e.currentTarget.style.boxShadow = 'var(--shadow-hover)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--border-light)'
+                e.currentTarget.style.boxShadow = 'none'
               }}
             >
               <div style={{
@@ -116,21 +126,21 @@ export default function ProcessTimeline() {
                   fontFamily: 'monospace',
                   fontSize: '0.85rem',
                   fontWeight: 800,
-                  color: '#B4233C',
-                  background: '#FAF4F5',
+                  color: 'var(--red-primary)',
+                  background: 'var(--red-light)',
                   padding: '2px 6px',
                   borderRadius: 4,
                   border: '1px solid rgba(180, 35, 60, 0.15)',
                 }}>
                   {step.step}
                 </span>
-                <step.icon size={18} color="#59636F" />
+                <step.icon size={18} color="var(--text-secondary)" />
               </div>
 
               <div style={{
                 fontSize: '0.875rem',
                 fontWeight: 800,
-                color: '#111827',
+                color: 'var(--text-primary)',
                 marginBottom: 6,
                 letterSpacing: '0.02em',
               }}>
@@ -139,7 +149,7 @@ export default function ProcessTimeline() {
 
               <div style={{
                 fontSize: '0.8rem',
-                color: '#59636F',
+                color: 'var(--text-secondary)',
                 lineHeight: 1.5,
               }}>
                 {step.desc}

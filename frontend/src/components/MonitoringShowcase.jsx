@@ -24,13 +24,13 @@ export default function MonitoringShowcase() {
   }, [])
 
   return (
-    <section id="monitoring-showcase" style={{ padding: '80px 0', background: '#F6F7F8', color: '#111827' }}>
+    <section id="monitoring-showcase" style={{ padding: '80px 0', background: 'var(--bg-surface)', color: 'var(--text-primary)', transition: 'background-color 0.3s ease' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{ color: '#B4233C', fontWeight: 700, fontSize: '0.8125rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
             Real-Time Telemetry
           </div>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, margin: '0 0 10px', color: '#111827', letterSpacing: '-0.02em' }}>Live Infrastructure Monitoring</h2>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800, margin: '0 0 10px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Live Infrastructure Monitoring</h2>
           <p style={{ color: '#59636F', fontSize: '1rem', maxWidth: 600, margin: '0 auto' }}>
             Live operational feeds across commercial sites, EPABX racks, and biometric terminals installed by OM Communication.
           </p>

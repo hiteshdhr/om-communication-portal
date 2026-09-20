@@ -20,7 +20,7 @@ function FAQItem({ q, a, index }) {
   return (
     <div
       style={{
-        borderBottom: '1px solid #E5E7EB',
+        borderBottom: '1px solid var(--border-light)',
         overflow: 'hidden',
       }}
     >
@@ -39,7 +39,7 @@ function FAQItem({ q, a, index }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           cursor: 'pointer',
-          color: open ? '#B4233C' : '#111827',
+          color: open ? 'var(--red-primary)' : 'var(--text-primary)',
           fontSize: '0.975rem',
           fontWeight: 700,
           fontFamily: "'Manrope', 'Inter', sans-serif",
@@ -52,7 +52,7 @@ function FAQItem({ q, a, index }) {
         <motion.div
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          style={{ flexShrink: 0, color: open ? '#B4233C' : '#9CA3AF' }}
+          style={{ flexShrink: 0, color: open ? 'var(--red-primary)' : 'var(--text-muted)' }}
         >
           <ChevronDown size={18} />
         </motion.div>
@@ -71,7 +71,7 @@ function FAQItem({ q, a, index }) {
             style={{ overflow: 'hidden' }}
           >
             <div style={{
-              color: '#59636F',
+              color: 'var(--text-secondary)',
               fontSize: '0.925rem',
               lineHeight: 1.7,
               padding: '0 0 16px',
@@ -93,14 +93,15 @@ export function ServiceCTA({ headline, sub, ctaText = 'Plan My System →', serv
       aria-label="Service consultation request"
       style={{
         padding: 'clamp(48px, 6vw, 80px) 0',
-        background: '#FAF4F5',
-        borderTop: '1px solid rgba(180, 35, 60, 0.15)',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-blush)',
+        borderTop: '1px solid var(--border-red)',
+        borderBottom: '1px solid var(--border-light)',
+        transition: 'background-color 0.3s ease',
       }}
     >
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
         <div style={{
-          background: '#FFFFFF',
+          background: 'var(--bg-card)',
           border: '1px solid rgba(180, 35, 60, 0.22)',
           borderRadius: 14,
           padding: 'clamp(36px, 6vw, 56px) clamp(20px, 4vw, 44px)',
@@ -117,7 +118,7 @@ export function ServiceCTA({ headline, sub, ctaText = 'Plan My System →', serv
             fontWeight: 900,
             letterSpacing: '-0.03em',
             margin: '0 0 12px',
-            color: '#111827',
+            color: 'var(--text-primary)',
             lineHeight: 1.15,
           }}>
             {headline || `Plan your ${serviceName} with our engineers.`}
@@ -218,7 +219,7 @@ export default function ServicePageLayout({
   } : null
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO title={seo.title} description={seo.description} canonical={seo.canonical} />
 
       {/* JSON-LD Schemas */}
@@ -267,7 +268,7 @@ export default function ServicePageLayout({
                   fontSize: 'clamp(2.2rem, 4.5vw, 3.4rem)',
                   fontWeight: 900,
                   letterSpacing: '-0.035em',
-                  color: '#111827',
+                  color: 'var(--text-primary)',
                   margin: '0 0 14px',
                   lineHeight: 1.1,
                 }}
@@ -324,7 +325,7 @@ export default function ServicePageLayout({
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
               fontWeight: 900,
-              color: '#111827',
+              color: 'var(--text-primary)',
               margin: '0 0 16px',
               letterSpacing: '-0.025em',
             }}>
@@ -354,7 +355,7 @@ export default function ServicePageLayout({
                 fontFamily: "'Manrope', 'Inter', sans-serif",
                 fontSize: 'clamp(1.4rem, 2.5vw, 1.9rem)',
                 fontWeight: 800,
-                color: '#111827',
+                color: 'var(--text-primary)',
                 margin: '0 0 12px',
               }}>
                 {whyNeeded.title || 'Why does a business need this system?'}
@@ -367,8 +368,8 @@ export default function ServicePageLayout({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
                   {whyNeeded.points.map((pt, idx) => (
                     <div key={idx} style={{
-                      background: '#FFFFFF',
-                      border: '1px solid #E5E7EB',
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-color)',
                       borderRadius: 8,
                       padding: '12px 14px',
                       display: 'flex',
@@ -410,7 +411,7 @@ export default function ServicePageLayout({
                       <b.icon size={18} color="#B4233C" />
                     </div>
                   )}
-                  <h3 style={{ fontSize: '0.975rem', fontWeight: 800, color: '#111827', margin: '0 0 6px' }}>
+                  <h3 style={{ fontSize: '0.975rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 6px' }}>
                     {b.title}
                   </h3>
                   <p style={{ color: '#59636F', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
@@ -464,8 +465,8 @@ export default function ServicePageLayout({
                   style={{
                     padding: '20px 16px',
                     borderRadius: 8,
-                    background: '#FFFFFF',
-                    border: '1px solid #E5E7EB',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
                   }}
                 >
                   <div style={{
@@ -480,7 +481,7 @@ export default function ServicePageLayout({
                   }}>
                     {p.step}
                   </div>
-                  <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#111827', margin: '0 0 4px' }}>
+                  <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px' }}>
                     {p.title}
                   </h3>
                   <p style={{ color: '#59636F', fontSize: '0.8rem', lineHeight: 1.5, margin: 0 }}>
@@ -512,7 +513,7 @@ export default function ServicePageLayout({
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
                     <FileText size={15} color="#B4233C" />
-                    <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#111827', margin: 0 }}>
+                    <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                       {c.title}
                     </h3>
                   </div>
@@ -543,7 +544,7 @@ export default function ServicePageLayout({
                   fontFamily: "'Manrope', 'Inter', sans-serif",
                   fontSize: '1.15rem',
                   fontWeight: 800,
-                  color: '#111827',
+                  color: 'var(--text-primary)',
                   margin: 0,
                 }}>
                   {maintenanceInfo.title || 'Ongoing Maintenance & Support'}
@@ -586,11 +587,11 @@ export default function ServicePageLayout({
                   style={{
                     padding: '16px 18px',
                     borderRadius: 8,
-                    border: '1px solid #E5E7EB',
-                    background: '#FFFFFF',
+                    border: '1px solid var(--border-color)',
+                    background: 'var(--bg-card)',
                   }}
                 >
-                  <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#111827', marginBottom: 4 }}>
+                  <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: 4 }}>
                     {app.label}
                   </div>
                   <div style={{ fontSize: '0.8rem', color: '#59636F', lineHeight: 1.5 }}>
@@ -616,7 +617,7 @@ export default function ServicePageLayout({
           }}>
             <MapPin size={20} color="#B4233C" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.875rem', fontWeight: 800, color: '#111827', marginBottom: 2 }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 2 }}>
                 Delhi-NCR Service &amp; On-Site Support
               </div>
               <div style={{ fontSize: '0.8rem', color: '#59636F', lineHeight: 1.45 }}>
@@ -637,8 +638,8 @@ export default function ServicePageLayout({
               Frequently Asked Questions
             </h2>
             <div style={{
-              background: '#FFFFFF',
-              border: '1px solid #E5E7EB',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
               borderRadius: 10,
               padding: '8px 24px',
             }}>
@@ -652,7 +653,7 @@ export default function ServicePageLayout({
         {/* ── 11. Related Services ── */}
         {relatedLinks && relatedLinks.length > 0 && (
           <section style={{ padding: 'clamp(36px, 4vw, 56px) 0' }} aria-labelledby="sp-related">
-            <h2 id="sp-related" style={{ fontSize: '0.95rem', fontWeight: 800, color: '#111827', marginBottom: 12 }}>
+            <h2 id="sp-related" style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 12 }}>
               Related Security &amp; Telecom Systems:
             </h2>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -666,9 +667,9 @@ export default function ServicePageLayout({
                     gap: 6,
                     padding: '6px 14px',
                     borderRadius: 6,
-                    border: '1px solid #D1D5DB',
-                    background: '#FFFFFF',
-                    color: '#374151',
+                    border: '1px solid var(--border-color)',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
                     fontSize: '0.825rem',
                     fontWeight: 600,
                     textDecoration: 'none',

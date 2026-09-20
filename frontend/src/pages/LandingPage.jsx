@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion'
 import {
   Camera, PhoneCall, DoorOpen, Fingerprint, Network, Wrench,
   Shield, CheckCircle2, ArrowRight, ChevronRight, Phone, MessageCircle, Clock, Settings
@@ -76,18 +76,153 @@ const EDITORIAL_STORIES = [
   },
 ]
 
-// ─── Component: Problem → Solution (Editorial Numbered Layout) ────────────────
+// Single Story Item with Viewport Reveal
+function StoryItem({ story, idx, prefersReducedMotion }) {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: '-60px' })
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+      transition={{ duration: prefersReducedMotion ? 0.15 : 0.5, delay: prefersReducedMotion ? 0 : 0.1 }}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: 'clamp(24px, 4vw, 48px)',
+        alignItems: 'center',
+        paddingBottom: 40,
+        borderBottom: idx < EDITORIAL_STORIES.length - 1 ? '1px solid var(--border-light)' : 'none',
+        position: 'relative',
+      }}
+    >
+      {/* Image Container */}
+      <motion.div
+        whileHover={prefersReducedMotion ? {} : { scale: 1.01 }}
+        style={{
+          borderRadius: 12,
+          overflow: 'hidden',
+          border: '1px solid var(--border-light)',
+          height: 280,
+          background: 'var(--bg-surface)',
+          order: idx % 2 === 1 ? 2 : 1,
+        }}
+        className="story-image-box"
+      >
+        <motion.img
+          initial={prefersReducedMotion ? {} : { scale: 1.03 }}
+          animate={isInView ? { scale: 1 } : { scale: 1.03 }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
+          src={story.image}
+          alt={story.alt}
+          loading="lazy"
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      </motion.div>
+
+      {/* Text Container */}
+      <div style={{ order: idx % 2 === 1 ? 1 : 2 }} className="story-text-box">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+          <span style={{
+            fontFamily: 'monospace',
+            fontSize: '0.85rem',
+            fontWeight: 800,
+            color: 'var(--red-primary)',
+            background: 'var(--red-light)',
+            padding: '2px 8px',
+            borderRadius: 4,
+            border: '1px solid var(--border-red)',
+          }}>
+            {story.num}
+          </span>
+          <span style={{
+            fontSize: '0.75rem',
+            fontWeight: 800,
+            color: 'var(--text-secondary)',
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+          }}>
+            {story.service}
+          </span>
+        </div>
+
+        <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 6 }}>
+          {story.problem}
+        </div>
+
+        <h3 style={{
+          fontFamily: "'Manrope', 'Inter', sans-serif",
+          fontSize: 'clamp(1.4rem, 2.5vw, 2rem)',
+          fontWeight: 900,
+          color: 'var(--text-primary)',
+          margin: '0 0 12px',
+          letterSpacing: '-0.025em',
+          lineHeight: 1.2,
+        }}>
+          {story.heading}
+        </h3>
+
+        <p style={{
+          color: 'var(--text-secondary)',
+          fontSize: '0.95rem',
+          lineHeight: 1.65,
+          margin: '0 0 20px',
+        }}>
+          {story.desc}
+        </p>
+
+        <Link
+          to={story.href}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            color: 'var(--red-primary)',
+            fontWeight: 700,
+            fontSize: '0.9rem',
+            textDecoration: 'none',
+          }}
+        >
+          {story.cta}
+        </Link>
+      </div>
+    </motion.div>
+  )
+}
+
+// ─── Component: Problem → Solution (Editorial Numbered Layout with Timeline) ──
 function EditorialProblemStories() {
+  const containerRef = useRef(null)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setPrefersReducedMotion(mediaQuery.matches)
+  }, [])
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  })
+
+  const scaleY = useTransform(scrollYProgress, [0.1, 0.85], [0, 1])
+
   return (
     <section
+      ref={containerRef}
       aria-labelledby="stories-heading"
       style={{
         padding: 'clamp(56px, 7vw, 96px) 0',
-        background: '#FFFFFF',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-white)',
+        borderBottom: '1px solid var(--border-light)',
+        position: 'relative',
+        transition: 'background-color 0.3s ease',
       }}
     >
-      <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)', position: 'relative' }}>
+        
+        {/* Section Header */}
         <div style={{ marginBottom: 48 }}>
           <div className="eyebrow">The Challenges We Solve</div>
           <h2
@@ -96,124 +231,64 @@ function EditorialProblemStories() {
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
               fontWeight: 900,
-              color: '#111827',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.03em',
               margin: '0 0 10px',
             }}
           >
             Your business shouldn't have blind spots.
           </h2>
-          <p style={{ color: '#59636F', fontSize: '1rem', margin: 0, maxWidth: 620 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0, maxWidth: 620 }}>
             Real-world security and telecommunication challenges solved with site-engineered hardware and clean installation.
           </p>
         </div>
 
-        {/* Stories List */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
-          {EDITORIAL_STORIES.map((story, idx) => (
-            <div
-              key={story.num}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: 'clamp(24px, 4vw, 48px)',
-                alignItems: 'center',
-                paddingBottom: 40,
-                borderBottom: idx < EDITORIAL_STORIES.length - 1 ? '1px solid #E5E7EB' : 'none',
-              }}
-            >
-              {/* Image Container */}
-              <div style={{
-                borderRadius: 12,
-                overflow: 'hidden',
-                border: '1px solid #E5E7EB',
-                height: 280,
-                background: '#F6F7F8',
-                order: idx % 2 === 1 ? 2 : 1,
-              }} className="story-image-box">
-                <img
-                  src={story.image}
-                  alt={story.alt}
-                  loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-
-              {/* Text Container */}
-              <div style={{ order: idx % 2 === 1 ? 1 : 2 }} className="story-text-box">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <span style={{
-                    fontFamily: 'monospace',
-                    fontSize: '0.85rem',
-                    fontWeight: 800,
-                    color: '#B4233C',
-                    background: '#FAF4F5',
-                    padding: '2px 8px',
-                    borderRadius: 4,
-                    border: '1px solid rgba(180, 35, 60, 0.15)',
-                  }}>
-                    {story.num}
-                  </span>
-                  <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
-                    color: '#6B7280',
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                  }}>
-                    {story.service}
-                  </span>
-                </div>
-
-                <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#4B5563', marginBottom: 6 }}>
-                  {story.problem}
-                </div>
-
-                <h3 style={{
-                  fontFamily: "'Manrope', 'Inter', sans-serif",
-                  fontSize: 'clamp(1.4rem, 2.5vw, 2rem)',
-                  fontWeight: 900,
-                  color: '#111827',
-                  margin: '0 0 12px',
-                  letterSpacing: '-0.025em',
-                  lineHeight: 1.2,
-                }}>
-                  {story.heading}
-                </h3>
-
-                <p style={{
-                  color: '#59636F',
-                  fontSize: '0.95rem',
-                  lineHeight: 1.65,
-                  margin: '0 0 20px',
-                }}>
-                  {story.desc}
-                </p>
-
-                <Link
-                  to={story.href}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    color: '#B4233C',
-                    fontWeight: 700,
-                    fontSize: '0.9rem',
-                    textDecoration: 'none',
-                  }}
-                >
-                  {story.cta}
-                </Link>
-              </div>
+        {/* Vertical Timeline Progress Bar Container */}
+        <div style={{ position: 'relative' }}>
+          {!prefersReducedMotion && (
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: -12,
+              width: 3,
+              background: 'var(--border-light)',
+              borderRadius: 2,
+              display: 'block',
+            }} className="timeline-line">
+              <motion.div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  background: 'var(--red-primary)',
+                  scaleY,
+                  transformOrigin: 'top',
+                  borderRadius: 2,
+                }}
+              />
             </div>
-          ))}
+          )}
+
+          {/* Stories List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+            {EDITORIAL_STORIES.map((story, idx) => (
+              <StoryItem
+                key={story.num}
+                story={story}
+                idx={idx}
+                prefersReducedMotion={prefersReducedMotion}
+              />
+            ))}
+          </div>
         </div>
+
       </div>
 
       <style>{`
         @media (max-width: 768px) {
           .story-image-box { order: 1 !important; height: 220px !important; }
           .story-text-box { order: 2 !important; }
+          .timeline-line { display: none !important; }
         }
       `}</style>
     </section>
@@ -226,7 +301,7 @@ function AMCSection() {
     { label: 'INSTALL', sub: 'Site-engineered installation to spec', icon: Wrench },
     { label: 'MAINTAIN', sub: 'Scheduled quarterly preventive audits', icon: CheckCircle2 },
     { label: 'MONITOR', sub: 'Voltage, lens & storage health checks', icon: Shield },
-    { label: 'SUPPORT', sub: 'Priority 2–4 hr emergency technician SLA', icon: Clock },
+    { label: 'SUPPORT', sub: 'Priority emergency technician dispatch', icon: Clock },
   ]
 
   return (
@@ -234,8 +309,9 @@ function AMCSection() {
       aria-labelledby="amc-heading"
       style={{
         padding: 'clamp(56px, 7vw, 88px) 0',
-        background: '#FAF4F5',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-blush)',
+        borderBottom: '1px solid var(--border-light)',
+        transition: 'background-color 0.3s ease',
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
@@ -247,15 +323,15 @@ function AMCSection() {
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
               fontWeight: 900,
-              color: '#111827',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.03em',
               margin: '0 0 10px',
             }}
           >
             Security doesn't end at installation.
           </h2>
-          <p style={{ color: '#59636F', fontSize: '1rem', maxWidth: 580, margin: '0 auto', lineHeight: 1.6 }}>
-            Dust accumulation, power surges, and cable oxidation cause 90% of sudden footage loss. Our structured AMC plans guarantee 99.8% recording uptime.
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: 580, margin: '0 auto', lineHeight: 1.6 }}>
+            Dust accumulation, power surges, and cable oxidation are primary causes of sudden footage loss. Our structured AMC plans deliver consistent recording reliability.
           </p>
         </div>
 
@@ -270,8 +346,8 @@ function AMCSection() {
             <div
               key={step.label}
               style={{
-                background: '#FFFFFF',
-                border: '1px solid #E5E7EB',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-light)',
                 borderRadius: 8,
                 padding: '24px 20px',
                 textAlign: 'center',
@@ -284,7 +360,7 @@ function AMCSection() {
                 width: 46,
                 height: 46,
                 borderRadius: '50%',
-                background: '#FAF4F5',
+                background: 'var(--red-light)',
                 border: '1px solid rgba(180, 35, 60, 0.25)',
                 display: 'flex',
                 alignItems: 'center',
@@ -293,10 +369,10 @@ function AMCSection() {
               }}>
                 <step.icon size={20} color="#B4233C" />
               </div>
-              <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#111827', letterSpacing: '0.04em', marginBottom: 4 }}>
+              <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-primary)', letterSpacing: '0.04em', marginBottom: 4 }}>
                 {step.label}
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#59636F', lineHeight: 1.4 }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                 {step.sub}
               </div>
             </div>
@@ -344,8 +420,9 @@ function FAQSection() {
       aria-labelledby="faq-heading"
       style={{
         padding: 'clamp(56px, 7vw, 88px) 0',
-        background: '#FFFFFF',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-white)',
+        borderBottom: '1px solid var(--border-light)',
+        transition: 'background-color 0.3s ease',
       }}
     >
       <div style={{ maxWidth: 880, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
@@ -357,7 +434,7 @@ function FAQSection() {
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
               fontWeight: 900,
-              color: '#111827',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.03em',
               margin: '0 0 8px',
             }}
@@ -373,10 +450,10 @@ function FAQSection() {
               <div
                 key={idx}
                 style={{
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid var(--border-light)',
                   borderRadius: 8,
                   overflow: 'hidden',
-                  background: isOpen ? '#F6F7F8' : '#FFFFFF',
+                  background: isOpen ? 'var(--bg-surface)' : 'var(--bg-card)',
                   padding: '16px 20px',
                   transition: 'background 0.15s',
                 }}
@@ -393,7 +470,7 @@ function FAQSection() {
                     cursor: 'pointer',
                     textAlign: 'left',
                     padding: 0,
-                    color: '#111827',
+                    color: 'var(--text-primary)',
                     fontSize: '0.975rem',
                     fontWeight: 700,
                     fontFamily: "'Manrope', 'Inter', sans-serif",
@@ -422,8 +499,8 @@ function FAQSection() {
                       <div style={{
                         marginTop: 10,
                         paddingTop: 10,
-                        borderTop: '1px solid #E5E7EB',
-                        color: '#59636F',
+                        borderTop: '1px solid var(--border-light)',
+                        color: 'var(--text-secondary)',
                         fontSize: '0.875rem',
                         lineHeight: 1.65,
                       }}>
@@ -448,12 +525,12 @@ function FinalCTA() {
       aria-labelledby="cta-heading"
       style={{
         padding: 'clamp(56px, 7vw, 96px) 0',
-        background: '#FAF4F5',
+        background: 'var(--bg-blush)',
       }}
     >
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
         <div style={{
-          background: '#FFFFFF',
+          background: 'var(--bg-card)',
           border: '1px solid rgba(180, 35, 60, 0.22)',
           borderRadius: 14,
           padding: 'clamp(36px, 6vw, 64px) clamp(20px, 4vw, 48px)',
@@ -471,14 +548,14 @@ function FinalCTA() {
               fontWeight: 900,
               letterSpacing: '-0.03em',
               margin: '0 0 14px',
-              color: '#111827',
+              color: 'var(--text-primary)',
               lineHeight: 1.1,
             }}
           >
             Plan your system with certified field engineers.
           </h2>
           <p style={{
-            color: '#59636F',
+            color: 'var(--text-secondary)',
             fontSize: '1rem',
             maxWidth: 540,
             margin: '0 auto 28px',
@@ -504,7 +581,7 @@ function FinalCTA() {
 // ─── Main Landing Page ────────────────────────────────────────────────────────
 export default function LandingPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', overflowX: 'hidden' }}>
       <SEO
         title="Om Communication Work | CCTV, EPABX, Biometric & Security Systems Delhi-NCR"
         description="Professional CCTV surveillance, EPABX intercom, video door phone, biometric access control, structured cabling, and turnkey AMC solutions across Delhi, Noida, Gurgaon, and Ghaziabad."

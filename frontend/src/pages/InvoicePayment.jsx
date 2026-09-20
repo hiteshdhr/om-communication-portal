@@ -88,7 +88,7 @@ export default function InvoicePayment() {
   }
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center' }}>
         <div style={{ width: 44, height: 44, border: '3px solid #E5E7EB', borderTopColor: '#B4233C', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
         <div style={{ color: '#59636F', fontSize: '0.9rem' }}>Loading invoice details...</div>
@@ -97,10 +97,10 @@ export default function InvoicePayment() {
   )
 
   if (error) return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <div style={{ padding: '48px', textAlign: 'center', maxWidth: 440, background: '#FFFFFF', borderRadius: 14, border: '1px solid #E5E7EB', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ padding: '48px', textAlign: 'center', maxWidth: 440, background: 'var(--bg-card)', borderRadius: 14, border: '1px solid var(--border-color)', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
         <AlertCircle size={40} color="#B4233C" style={{ marginBottom: 16 }} />
-        <h2 style={{ margin: '0 0 10px', color: '#111827', fontSize: '1.4rem', fontWeight: 800 }}>Invoice Not Found</h2>
+        <h2 style={{ margin: '0 0 10px', color: 'var(--text-primary)', fontSize: '1.4rem', fontWeight: 800 }}>Invoice Not Found</h2>
         <p style={{ color: '#59636F', marginBottom: 20 }}>{error}</p>
         <Link to="/" className="btn-secondary" style={{ display: 'inline-flex' }}>
           <ArrowLeft size={15} /> Return Home
@@ -121,7 +121,7 @@ export default function InvoicePayment() {
               <Shield size={18} color="#B4233C" />
             </div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#111827' }}>OM Communication</div>
+              <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)' }}>OM Communication</div>
               <div style={{ color: '#59636F', fontSize: '0.75rem' }}>Enterprise Security & Telecom</div>
             </div>
           </Link>
@@ -131,9 +131,9 @@ export default function InvoicePayment() {
         </div>
 
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{
-          background: '#FFFFFF',
+          background: 'var(--bg-card)',
           borderRadius: 14,
-          border: '1px solid #E5E7EB',
+          border: '1px solid var(--border-color)',
           boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
           padding: '36px 40px'
         }}>
@@ -141,7 +141,7 @@ export default function InvoicePayment() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
             <div>
               <div style={{ color: '#59636F', fontSize: '0.75rem', letterSpacing: '0.07em', textTransform: 'uppercase', marginBottom: 6, fontWeight: 700 }}>Tax Invoice</div>
-              <div style={{ fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>{invoice.invoiceNumber}</div>
+              <div style={{ fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>{invoice.invoiceNumber}</div>
               <div style={{ color: '#59636F', fontSize: '0.8125rem', marginTop: 4 }}>
                 Date: {new Date(invoice.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
               </div>
@@ -161,7 +161,7 @@ export default function InvoicePayment() {
           {/* Client Info */}
           <div style={{ background: '#F6F7F8', borderRadius: 10, padding: '16px 18px', marginBottom: 24, border: '1px solid #E5E7EB' }}>
             <div style={{ fontSize: '0.7rem', color: '#59636F', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6, fontWeight: 700 }}>Billed To</div>
-            <div style={{ fontWeight: 800, fontSize: '1rem', color: '#111827' }}>{invoice.clientName}</div>
+            <div style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-primary)' }}>{invoice.clientName}</div>
             {invoice.clientPhone && <div style={{ color: '#59636F', fontSize: '0.875rem', marginTop: 2 }}>{invoice.clientPhone}</div>}
             {invoice.clientEmail && <div style={{ color: '#59636F', fontSize: '0.875rem' }}>{invoice.clientEmail}</div>}
           </div>
@@ -179,10 +179,10 @@ export default function InvoicePayment() {
             <tbody>
               {invoice.items?.map((item, i) => (
                 <tr key={i}>
-                  <td style={{ fontWeight: 600, color: '#111827' }}>{item.description}</td>
+                  <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{item.description}</td>
                   <td style={{ textAlign: 'right', color: '#59636F' }}>{item.quantity}</td>
                   <td style={{ textAlign: 'right', color: '#59636F' }}>₹{Number(item.unitPrice).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
-                  <td style={{ textAlign: 'right', fontWeight: 700, color: '#111827' }}>₹{Number(item.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                  <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--text-primary)' }}>₹{Number(item.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                 </tr>
               ))}
             </tbody>
@@ -196,11 +196,11 @@ export default function InvoicePayment() {
             ].map(([label, val]) => (
               <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                 <span style={{ color: '#59636F', fontSize: '0.9rem' }}>{label}</span>
-                <span style={{ fontSize: '0.9rem', color: '#111827', fontWeight: 500 }}>₹{Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>₹{Number(val).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
             ))}
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 0', borderTop: '1px solid #E5E7EB', marginTop: 8 }}>
-              <span style={{ fontWeight: 800, fontSize: '1.05rem', color: '#111827' }}>Total Amount Due</span>
+              <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)' }}>Total Amount Due</span>
               <span style={{ fontWeight: 900, fontSize: '1.3rem', color: '#B4233C' }}>
                 ₹{Number(invoice.totalAmount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
               </span>

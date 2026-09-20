@@ -40,7 +40,7 @@ const bundles = [
 
 export default function SolutionsPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Turnkey Security & Infrastructure Solutions | OM Communication"
         description="Consolidate CCTV, EPABX intercoms, access control, and structured cabling into unified turnkey solution packages for residential, commercial, and industrial facilities in Delhi-NCR."
@@ -57,14 +57,14 @@ export default function SolutionsPage() {
       <Navbar />
 
       {/* ── Page Hero ── */}
-      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+      <section style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-light)', padding: 'clamp(32px, 5vw, 56px) 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Solutions' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
             <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Turnkey Integration
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Integrated Security &amp; Telecom Solutions
             </h1>
             <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
@@ -82,7 +82,7 @@ export default function SolutionsPage() {
           overflow: 'hidden',
           border: '1px solid #E5E7EB',
           marginBottom: 48,
-          background: '#F6F7F8',
+          background: 'var(--bg-surface)',
           boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
         }}>
           <img
@@ -121,7 +121,7 @@ export default function SolutionsPage() {
                 }}>
                   <b.icon size={24} color="#B4233C" />
                 </div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   {b.title}
                 </h2>
                 <div style={{ color: '#B4233C', fontSize: '0.8125rem', fontWeight: 600, marginBottom: 14 }}>
@@ -131,7 +131,7 @@ export default function SolutionsPage() {
                   {b.desc}
                 </p>
                 <div style={{
-                  background: '#F6F7F8',
+                  background: 'var(--bg-surface)',
                   borderRadius: 10,
                   padding: 16,
                   border: '1px solid #E5E7EB',
@@ -142,7 +142,7 @@ export default function SolutionsPage() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {b.components.map(comp => (
-                      <div key={comp} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: '#111827', fontWeight: 500 }}>
+                      <div key={comp} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: 'var(--text-primary)', fontWeight: 500 }}>
                         <CheckCircle2 size={14} color="#B4233C" style={{ flexShrink: 0 }} />
                         <span>{comp}</span>
                       </div>
@@ -167,24 +167,24 @@ export default function SolutionsPage() {
           padding: 36,
           borderRadius: 14,
           marginBottom: 48,
-          background: '#F6F7F8',
-          border: '1px solid #E5E7EB'
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-color)'
         }}>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#111827', textAlign: 'center', marginBottom: 28, letterSpacing: '-0.01em' }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', textAlign: 'center', marginBottom: 28, letterSpacing: '-0.01em' }}>
             The Turnkey Single-Vendor Advantage
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
-            <div style={{ background: '#FFFFFF', padding: 20, borderRadius: 10, border: '1px solid #E5E7EB' }}>
-              <h4 style={{ color: '#B4233C', fontSize: '0.98rem', fontWeight: 700, marginBottom: 8 }}>Zero Vendor Finger-Pointing</h4>
-              <p style={{ color: '#59636F', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>CCTV, intercoms, and cabling are managed by one accountable team — no passing blame when an issue arises.</p>
+            <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 10, border: '1px solid var(--border-color)' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: 4 }}>15+ Years Track Record</div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Hundreds of completed commercial &amp; residential security &amp; intercom projects across Delhi-NCR.</div>
             </div>
-            <div style={{ background: '#FFFFFF', padding: 20, borderRadius: 10, border: '1px solid #E5E7EB' }}>
-              <h4 style={{ color: '#B4233C', fontSize: '0.98rem', fontWeight: 700, marginBottom: 8 }}>Optimized Cable Pathways</h4>
-              <p style={{ color: '#59636F', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>We plan conduit routes for both data and telecom lines simultaneously, reducing labour time and wall drilling.</p>
+            <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 10, border: '1px solid var(--border-color)' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: 4 }}>End-to-End Execution</div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Site survey, wiring layout, equipment mounting, IP setup, and ongoing AMC maintenance.</div>
             </div>
-            <div style={{ background: '#FFFFFF', padding: 20, borderRadius: 10, border: '1px solid #E5E7EB' }}>
-              <h4 style={{ color: '#B4233C', fontSize: '0.98rem', fontWeight: 700, marginBottom: 8 }}>Unified AMC Contract</h4>
-              <p style={{ color: '#59636F', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>A single Annual Maintenance Contract covers all security, voice, and access systems under one scheduled service plan.</p>
+            <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 10, border: '1px solid var(--border-color)' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: 4 }}>Enterprise Brands</div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Authorized deployment of Hikvision, CP PLUS, Matrix, Matrix Comsec, and Panasonic hardware.</div>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function SolutionsPage() {
           padding: 40,
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10, letterSpacing: '-0.01em' }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
             Have an Engineered Requirement for Your Site?
           </h3>
           <p style={{ color: '#59636F', maxWidth: 540, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>

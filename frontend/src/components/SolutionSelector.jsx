@@ -56,7 +56,7 @@ const NEEDS = [
     desc: 'Scheduled preventive inspections, lens cleaning, power audits, and priority emergency technician dispatch.',
     href: '/services/amc',
     icon: Wrench,
-    tags: ['Quarterly Audits', 'Priority SLA', 'Preventive Care', 'Repairs'],
+    tags: ['Quarterly Audits', 'Priority Dispatch', 'Preventive Care', 'Repairs'],
   },
 ]
 
@@ -69,8 +69,9 @@ export default function SolutionSelector() {
       aria-labelledby="solution-selector-heading"
       style={{
         padding: 'clamp(56px, 7vw, 88px) 0',
-        background: '#FFFFFF',
-        borderBottom: '1px solid #E5E7EB',
+        background: 'var(--bg-white)',
+        borderBottom: '1px solid var(--border-light)',
+        transition: 'background-color 0.3s ease',
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
@@ -83,14 +84,14 @@ export default function SolutionSelector() {
               fontFamily: "'Manrope', 'Inter', sans-serif",
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
               fontWeight: 900,
-              color: '#111827',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.03em',
               margin: '0 0 10px',
             }}
           >
             What does your business need?
           </h2>
-          <p style={{ color: '#59636F', fontSize: '1rem', margin: 0, maxWidth: 620 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0, maxWidth: 620 }}>
             Select an operational objective to view the recommended engineering hardware and deployment workflow.
           </p>
         </div>
@@ -116,9 +117,9 @@ export default function SolutionSelector() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '14px 18px',
-                    background: isSelected ? '#FAF4F5' : '#FFFFFF',
-                    border: `1px solid ${isSelected ? 'rgba(180, 35, 60, 0.35)' : '#E5E7EB'}`,
-                    borderLeft: `4px solid ${isSelected ? '#B4233C' : '#E5E7EB'}`,
+                    background: isSelected ? 'var(--red-light)' : 'var(--bg-card)',
+                    border: `1px solid ${isSelected ? 'rgba(180, 35, 60, 0.35)' : 'var(--border-light)'}`,
+                    borderLeft: `4px solid ${isSelected ? 'var(--red-primary)' : 'var(--border-light)'}`,
                     borderRadius: 8,
                     cursor: 'pointer',
                     textAlign: 'left',
@@ -126,14 +127,14 @@ export default function SolutionSelector() {
                   }}
                   onMouseEnter={e => {
                     if (!isSelected) {
-                      e.currentTarget.style.background = '#F6F7F8'
-                      e.currentTarget.style.borderColor = '#CBD5E1'
+                      e.currentTarget.style.background = 'var(--bg-surface)'
+                      e.currentTarget.style.borderColor = 'var(--border-light)'
                     }
                   }}
                   onMouseLeave={e => {
                     if (!isSelected) {
-                      e.currentTarget.style.background = '#FFFFFF'
-                      e.currentTarget.style.borderColor = '#E5E7EB'
+                      e.currentTarget.style.background = 'var(--bg-card)'
+                      e.currentTarget.style.borderColor = 'var(--border-light)'
                     }
                   }}
                 >
@@ -142,7 +143,7 @@ export default function SolutionSelector() {
                       fontFamily: 'monospace',
                       fontSize: '0.85rem',
                       fontWeight: 800,
-                      color: isSelected ? '#B4233C' : '#9CA3AF',
+                      color: isSelected ? 'var(--red-primary)' : 'var(--text-muted)',
                     }}>
                       {item.num}
                     </span>
@@ -150,13 +151,13 @@ export default function SolutionSelector() {
                       <div style={{
                         fontSize: '0.95rem',
                         fontWeight: isSelected ? 800 : 700,
-                        color: isSelected ? '#111827' : '#374151',
+                        color: isSelected ? 'var(--text-primary)' : 'var(--text-primary)',
                       }}>
                         {item.intent}
                       </div>
                       <div style={{
                         fontSize: '0.78rem',
-                        color: isSelected ? '#B4233C' : '#6B7280',
+                        color: isSelected ? 'var(--red-primary)' : 'var(--text-muted)',
                         fontWeight: isSelected ? 600 : 400,
                       }}>
                         {item.service}
@@ -166,7 +167,7 @@ export default function SolutionSelector() {
 
                   <ArrowRight
                     size={16}
-                    color={isSelected ? '#B4233C' : '#9CA3AF'}
+                    color={isSelected ? 'var(--red-primary)' : 'var(--text-muted)'}
                     style={{
                       transform: isSelected ? 'translateX(3px)' : 'none',
                       transition: 'transform 0.2s',
@@ -186,8 +187,8 @@ export default function SolutionSelector() {
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.2 }}
               style={{
-                background: '#F6F7F8',
-                border: '1px solid #E5E7EB',
+                background: 'var(--bg-surface)',
+                border: '1px solid var(--border-light)',
                 borderRadius: 12,
                 padding: 'clamp(24px, 3.5vw, 36px)',
                 display: 'flex',
@@ -202,11 +203,11 @@ export default function SolutionSelector() {
                   gap: 6,
                   padding: '4px 10px',
                   borderRadius: 4,
-                  background: '#FAF4F5',
+                  background: 'var(--red-light)',
                   border: '1px solid rgba(180, 35, 60, 0.15)',
                   fontSize: '0.72rem',
                   fontWeight: 800,
-                  color: '#B4233C',
+                  color: 'var(--red-primary)',
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
                   marginBottom: 16,
@@ -218,7 +219,7 @@ export default function SolutionSelector() {
                   fontFamily: "'Manrope', 'Inter', sans-serif",
                   fontSize: '1.4rem',
                   fontWeight: 900,
-                  color: '#111827',
+                  color: 'var(--text-primary)',
                   margin: '0 0 12px',
                   letterSpacing: '-0.02em',
                 }}>
@@ -226,7 +227,7 @@ export default function SolutionSelector() {
                 </h3>
 
                 <p style={{
-                  color: '#59636F',
+                  color: 'var(--text-secondary)',
                   fontSize: '0.95rem',
                   lineHeight: 1.65,
                   margin: '0 0 24px',
@@ -239,7 +240,7 @@ export default function SolutionSelector() {
                   <div style={{
                     fontSize: '0.72rem',
                     fontWeight: 700,
-                    color: '#111827',
+                    color: 'var(--text-primary)',
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
                     marginBottom: 10,
@@ -256,14 +257,14 @@ export default function SolutionSelector() {
                           gap: 4,
                           padding: '4px 10px',
                           borderRadius: 4,
-                          background: '#FFFFFF',
-                          border: '1px solid #E5E7EB',
-                          color: '#374151',
+                          background: 'var(--bg-card)',
+                          border: '1px solid var(--border-light)',
+                          color: 'var(--text-primary)',
                           fontSize: '0.78rem',
                           fontWeight: 600,
                         }}
                       >
-                        <CheckCircle2 size={13} color="#B4233C" />
+                        <CheckCircle2 size={13} color="var(--red-primary)" />
                         {tag}
                       </span>
                     ))}

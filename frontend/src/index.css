@@ -44,7 +44,40 @@
   --danger:  #C93636;
   --warning: #B7791F;
   --info:    #3E6F8F;
+}
 
+/* ─── Dark Theme Tokens ─────────────────────────────────────────────────── */
+[data-theme='dark'] {
+  --bg-white:        #0F1115;
+  --bg-surface:      #15181D;
+  --bg-blush:        #1A1D24;
+  --bg-card:         #1B1F25;
+  --bg-charcoal:     #20252C;
+  --bg-charcoal-sub:  #282E37;
+
+  --text-primary:    #F5F7FA;
+  --text-secondary:  #A7B0BC;
+  --text-muted:      #86909E;
+  --text-faint:      #5E6875;
+  --text-on-dark:    #FFFFFF;
+  --text-on-dark-sub: #A7B0BC;
+
+  --red-primary:     #C43752;
+  --red-secondary:   #9F3046;
+  --red-light:       rgba(196, 55, 82, 0.15);
+  --red-glow:        rgba(196, 55, 82, 0.25);
+
+  --border-light:    #2A3038;
+  --border-subtle:   #232830;
+  --border-red:      rgba(196, 55, 82, 0.35);
+  --border-charcoal: #373E48;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:root {
   /* ── Typography Scale ── */
   --font-display: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -245,12 +278,12 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #FFFFFF;
+  background: var(--bg-card);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.9375rem;
-  border: 1px solid #D1D5DB;
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -293,7 +326,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Cards & Surfaces ───────────────────────────────────────────────────── */
 .clean-card {
-  background: #FFFFFF;
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
@@ -301,9 +334,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 .clean-card:hover {
   transform: translateY(-2px);
-  border-color: #CBD5E1;
+  border-color: var(--border-light);
   box-shadow: var(--shadow-hover);
 }
+
+/* ─── Section Backgrounds (Theme-Aware) ─────────────────────────────────────── */
+.section-white  { background: var(--bg-white);   }
+.section-surface { background: var(--bg-surface); }
+.section-blush  { background: var(--bg-blush);   }
+.page-root { min-height: 100vh; background: var(--bg-white); color: var(--text-primary); overflow-x: hidden; }
+.text-primary-color { color: var(--text-primary); }
+.text-secondary-color { color: var(--text-secondary); }
 
 .card-blush {
   background: var(--bg-blush);
@@ -315,14 +356,14 @@ h1, h2, h3, h4, h5, h6 {
 .form-input {
   width: 100%;
   padding: 11px 14px;
-  background: #FFFFFF;
-  border: 1px solid #D1D5DB;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-size: 0.9375rem;
   font-family: var(--font-body);
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
   min-height: 44px;
 }
 .form-input:focus {
@@ -379,5 +420,22 @@ h1, h2, h3, h4, h5, h6 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Admin Dashboard Mobile ─────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .mobile-admin-header { display: flex !important; }
+  .admin-sidebar {
+    display: none !important;
+    position: fixed !important;
+    top: 60px !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    z-index: 9999 !important;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.3) !important;
+  }
+  .admin-sidebar.mobile-open {
+    display: flex !important;
   }
 }

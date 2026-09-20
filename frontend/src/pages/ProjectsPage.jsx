@@ -30,7 +30,7 @@ const projects = [
     requirement: 'Need for high-definition 24/7 boundary surveillance, perimeter intrusion monitoring, and shift-based workforce time-attendance.',
     solution: 'Deployed a 48-channel IP surveillance network with 4MP smart infrared bullet cameras, industrial surge-suppressed server racks, and biometric attendance terminals.',
     servicesDeployed: ['4MP IP CCTV Surveillance', 'Perimeter IR Night Vision', 'Biometric Attendance Terminals', 'Heavy-Duty Metallic Conduit Wiring'],
-    outcome: '99.8% recording uptime maintained over 3+ consecutive years on AMC contract.'
+    outcome: 'Continuous recording reliability maintained over 3+ consecutive years on AMC contract.'
   },
   {
     title: 'Multi-Story Corporate Headquarters',
@@ -72,7 +72,7 @@ const projects = [
 
 export default function ProjectsPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Featured Projects & Infrastructure Deployments | OM Communication"
         description="Explore verified case studies of turnkey security, CCTV surveillance, EPABX society intercom overhauls, and access control deployments across Delhi-NCR."
@@ -89,14 +89,14 @@ export default function ProjectsPage() {
       <Navbar />
 
       {/* ── Page Hero ── */}
-      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+      <section style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-light)', padding: 'clamp(32px, 5vw, 56px) 0' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Projects' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
             <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Proven Execution Track Record
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Featured Deployments &amp; Field Case Studies
             </h1>
             <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
@@ -186,7 +186,7 @@ export default function ProjectsPage() {
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#B4233C', fontSize: '0.8125rem', fontWeight: 700, marginBottom: 6 }}>
                     <p.icon size={15} /> {p.sector} • {p.location}
                   </div>
-                  <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#111827', margin: 0, letterSpacing: '-0.01em' }}>
+                  <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.01em' }}>
                     {p.title}
                   </h2>
                 </div>
@@ -222,7 +222,7 @@ export default function ProjectsPage() {
                     <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#B4233C', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
                       The OM Communication Solution:
                     </div>
-                    <p style={{ color: '#111827', fontSize: '0.9rem', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
+                    <p style={{ color: 'var(--text-primary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
                       {p.solution}
                     </p>
                   </div>
@@ -230,10 +230,10 @@ export default function ProjectsPage() {
               </div>
 
               <div style={{
-                background: '#F6F7F8',
+                background: 'var(--bg-card)',
                 borderRadius: 10,
                 padding: '16px 20px',
-                border: '1px solid #E5E7EB',
+                border: '1px solid var(--border-color)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -247,7 +247,7 @@ export default function ProjectsPage() {
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {p.servicesDeployed.map(s => (
                       <span key={s} style={{
-                        background: '#FFFFFF',
+                        background: 'var(--bg-card)',
                         border: '1px solid #E5E7EB',
                         color: '#111827',
                         fontSize: '0.78rem',
@@ -277,7 +277,7 @@ export default function ProjectsPage() {
           padding: 40,
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#111827', marginBottom: 10, letterSpacing: '-0.01em' }}>
+          <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10, letterSpacing: '-0.01em' }}>
             Have a Similar Infrastructure Requirement?
           </h3>
           <p style={{ color: '#59636F', maxWidth: 560, margin: '0 auto 24px', fontSize: '0.95rem', lineHeight: 1.6 }}>

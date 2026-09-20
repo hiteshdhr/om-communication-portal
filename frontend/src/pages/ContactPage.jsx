@@ -49,7 +49,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#111827' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-white)', color: 'var(--text-primary)' }}>
       <SEO
         title="Contact Us & Book a Site Survey | OM Communication"
         description="Get in touch with OM Communication. Call +91 72177 15296, message via WhatsApp, or submit a request for an on-site security and intercom assessment across Delhi-NCR."
@@ -64,14 +64,14 @@ export default function ContactPage() {
       <Navbar />
 
       {/* ── Page Hero ── */}
-      <section style={{ background: '#F6F7F8', borderBottom: '1px solid #E5E7EB', padding: 'clamp(32px, 5vw, 56px) 0' }}>
+      <section style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-light)', padding: 'clamp(32px, 5vw, 56px) 0' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
           <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Contact & Survey' }]} />
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: 16 }}>
             <div style={{ color: '#B4233C', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
               Direct Engineering Contact
             </div>
-            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+            <h1 style={{ fontSize: 'clamp(2rem, 3.8vw, 3rem)', fontWeight: 900, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
               Get in Touch &amp; Book a Site Survey
             </h1>
             <p style={{ color: '#59636F', fontSize: '1.05rem', maxWidth: 720, lineHeight: 1.65, margin: 0 }}>
@@ -94,7 +94,7 @@ export default function ContactPage() {
               padding: 32,
               marginBottom: 24
             }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827', marginBottom: 20, letterSpacing: '-0.01em' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 20, letterSpacing: '-0.01em' }}>
                 Direct Communication Channels
               </h2>
 
@@ -133,9 +133,9 @@ export default function ContactPage() {
                     gap: 14,
                     padding: '16px',
                     borderRadius: 10,
-                    background: '#F0FDF4',
-                    border: '1px solid #BBF7D0',
-                    color: '#111827',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-primary)',
                     textDecoration: 'none',
                     transition: 'transform 0.2s'
                   }}
@@ -163,7 +163,7 @@ export default function ContactPage() {
               <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: 16 }}>
                 <strong>Primary Operations Hub:</strong> Delhi, Noida, Greater Noida, Ghaziabad (Indirapuram, Vaishali, Vasundhara), Gurugram, and Faridabad.
               </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, color: '#111827', fontWeight: 700, fontSize: '0.88rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.88rem' }}>
                 <Clock size={16} color="#B4233C" /> Working Hours
               </div>
               <p style={{ color: '#59636F', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>
@@ -186,7 +186,7 @@ export default function ContactPage() {
                 <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#F0FDF4', border: '2px solid #16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                   <CheckCircle2 size={32} color="#16A34A" />
                 </div>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#111827', marginBottom: 10 }}>Inquiry Submitted!</h3>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>Inquiry Submitted!</h3>
                 <p style={{ color: '#59636F', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: 24 }}>
                   Thank you, <strong>{form.clientName}</strong>. Our engineering team will review your requirement and reach out to you within 24 hours.
                 </p>
@@ -199,7 +199,7 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#111827', marginBottom: 6, letterSpacing: '-0.01em' }}>
+                <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6, letterSpacing: '-0.01em' }}>
                   Request an On-Site Survey
                 </h2>
                 <p style={{ color: '#59636F', fontSize: '0.88rem', marginBottom: 24 }}>
@@ -208,7 +208,7 @@ export default function ContactPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Full Name *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Full Name *</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Rajesh Sharma"
@@ -219,7 +219,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Phone Number *</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Phone Number *</label>
                     <input
                       className="form-input"
                       placeholder="+91 98765 43210"
@@ -230,7 +230,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Email Address</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Email Address</label>
                     <input
                       className="form-input"
                       type="email"
@@ -241,7 +241,7 @@ export default function ContactPage() {
                   </div>
 
                   <div style={{ gridColumn: 'span 2' }}>
-                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Company / Society / RWA Name</label>
+                    <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Company / Society / RWA Name</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Green Heights RWA or Industrial Plant"
@@ -252,7 +252,7 @@ export default function ContactPage() {
                 </div>
 
                 <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Property / Facility Type</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Property / Facility Type</label>
                   <select
                     className="form-input"
                     value={form.facilityType}
@@ -268,7 +268,7 @@ export default function ContactPage() {
                 </div>
 
                 <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Services Required</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Services Required</label>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 8 }}>
                     {['CCTV Surveillance', 'EPABX & Telecom', 'Video Door Phone', 'Biometric Access', 'AMC Maintenance', 'Structured Cabling'].map(svc => (
                       <button
@@ -295,7 +295,7 @@ export default function ContactPage() {
                 </div>
 
                 <div style={{ marginBottom: 24 }}>
-                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: '#111827', marginBottom: 6 }}>Project Details / Site Description</label>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Project Details / Site Description</label>
                   <textarea
                     className="form-input"
                     rows={3}
