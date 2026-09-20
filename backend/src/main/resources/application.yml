@@ -56,7 +56,7 @@ razorpay:
   key-secret: ${RAZORPAY_KEY_SECRET:rzp_test_key_secret}
 
 admin:
-  initial-password: ${ADMIN_INITIAL_PASSWORD:admin-dev-pass}
+  initial-password: ${ADMIN_INITIAL_PASSWORD:admin123}
 
 # ─── Server ───────────────────────────────────────────────────────────────────
 server:

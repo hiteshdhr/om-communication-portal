@@ -25,17 +25,16 @@ public class OmCommunicationPortalApplication {
                                 PasswordEncoder passwordEncoder,
                                 @Value("${admin.initial-password}") String initialPassword) {
         return args -> {
-            if (!userRepository.existsByUsername("admin")) {
-                User admin = new User();
-                admin.setUsername("admin");
-                admin.setPassword(passwordEncoder.encode(initialPassword));
-                admin.setEmail("admin@omcommunication.com");
-                admin.setRole("ROLE_ADMIN");
-                userRepository.save(admin);
-                System.out.println("✅ Initial admin user created: username 'admin'");
-            } else {
-                System.out.println("ℹ️  Admin user already exists, skipping seed.");
-            }
+            User admin = userRepository.findByUsername("admin").orElseGet(() -> {
+                User u = new User();
+                u.setUsername("admin");
+                u.setEmail("admin@omcommunication.com");
+                u.setRole("ROLE_ADMIN");
+                return u;
+            });
+            admin.setPassword(passwordEncoder.encode(initialPassword));
+            userRepository.save(admin);
+            System.out.println("✅ Admin user configured: username 'admin', password updated.");
         };
     }
 }

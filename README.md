@@ -139,7 +139,7 @@ npm run dev
 Upon initial backend launch with the `h2` profile, an initial administrator user is automatically bootstrapped:
 
 - **Admin Username:** `admin`
-- **Admin Password:** Configured in `application.yml` (`admin-dev-pass`) or printed in the terminal console logs upon startup.
+- **Admin Password:** `admin123` (configured in `application.yml` / `ADMIN_INITIAL_PASSWORD`).
 
 ---
 
