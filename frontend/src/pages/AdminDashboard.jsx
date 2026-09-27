@@ -439,6 +439,31 @@ function InvoiceModal({ onClose, onCreated }) {
   )
 }
 
+// ─── Navigation Structure ──────────────────────────────────────────────────────
+const NAV_GROUPS = [
+  {
+    title: 'OVERVIEW',
+    items: [
+      { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+    ]
+  },
+  {
+    title: 'OPERATIONS',
+    items: [
+      { id: 'leads', label: 'Leads & Enquiries', icon: Inbox },
+      { id: 'surveys', label: 'Site Surveys', icon: Wrench },
+      { id: 'tickets', label: 'Support Desk', icon: TicketIcon },
+      { id: 'invoices', label: 'Invoices', icon: ReceiptText },
+    ]
+  },
+  {
+    title: 'SYSTEM',
+    items: [
+      { id: 'settings', label: 'Settings & Log', icon: FileText },
+    ]
+  }
+]
+
 // ─── Main Admin Dashboard ──────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const { theme, toggleTheme } = useTheme()
@@ -457,7 +482,8 @@ export default function AdminDashboard() {
   const [surveyInquiry, setSurveyInquiry] = useState(null)
   const [quoteInquiry, setQuoteInquiry] = useState(null)
 
-  const tabs = navGroups.flatMap(g => g.items)
+  const navGroups = NAV_GROUPS
+  const tabs = NAV_GROUPS.flatMap(g => g.items)
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
@@ -469,11 +495,11 @@ export default function AdminDashboard() {
         api.get('/admin/tickets'),
         api.get('/admin/invoices'),
       ])
-      setMetrics(m.data)
-      setInquiries(inq.data)
-      setSurveys(surv.data || [])
-      setTickets(tick.data)
-      setInvoices(inv.data)
+      setMetrics(m.data || {})
+      setInquiries(Array.isArray(inq.data) ? inq.data : [])
+      setSurveys(Array.isArray(surv.data) ? surv.data : [])
+      setTickets(Array.isArray(tick.data) ? tick.data : [])
+      setInvoices(Array.isArray(inv.data) ? inv.data : [])
     } catch (err) {
       if (err.response?.status === 401) {
         toast.error('Session expired. Please log in.')
@@ -583,29 +609,7 @@ export default function AdminDashboard() {
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
-  const navGroups = [
-    {
-      title: 'OVERVIEW',
-      items: [
-        { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
-      ]
-    },
-    {
-      title: 'OPERATIONS',
-      items: [
-        { id: 'leads', label: 'Leads & Enquiries', icon: Inbox },
-        { id: 'surveys', label: 'Site Surveys', icon: Wrench },
-        { id: 'tickets', label: 'Support Desk', icon: TicketIcon },
-        { id: 'invoices', label: 'Invoices', icon: ReceiptText },
-      ]
-    },
-    {
-      title: 'SYSTEM',
-      items: [
-        { id: 'settings', label: 'Settings & Log', icon: FileText },
-      ]
-    }
-  ]
+
 
   const metricCards = [
     { label: 'Total Inquiries', value: metrics?.totalInquiries ?? '—', icon: Inbox, color: '#B4233C', sub: 'All time service leads' },
