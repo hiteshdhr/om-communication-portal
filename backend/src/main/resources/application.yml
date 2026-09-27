@@ -71,16 +71,16 @@ logging:
     org.springframework.security: WARN
 
 ---
-# ─── PostgreSQL Profile (Production — Requires Strict Env Vars) ────────────────
+# ─── PostgreSQL Profile (Production / Railway) ───────────────────────────────
 spring:
   config:
     activate:
       on-profile: postgres
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:railway}}
     driver-class-name: org.postgresql.Driver
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    username: ${SPRING_DATASOURCE_USERNAME:${PGUSER:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${PGPASSWORD:postgres}}
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -88,21 +88,19 @@ spring:
       idle-timeout: 300000
       max-lifetime: 1200000
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
   h2:
     console:
       enabled: false
 
-# Production override — require env vars without insecure fallbacks
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:om_comm_super_secret_jwt_key_2024_very_long_and_secure_key_here_min_256_bits}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID}
-  key-secret: ${RAZORPAY_KEY_SECRET}
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_key_id}
+  key-secret: ${RAZORPAY_KEY_SECRET:rzp_test_key_secret}
 
 admin:
   initial-password: ${ADMIN_INITIAL_PASSWORD:admin123}
