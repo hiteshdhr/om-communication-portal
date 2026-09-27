@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Camera, DoorOpen, PhoneCall, Fingerprint, Network, Wrench, ArrowRight, CheckCircle2 } from 'lucide-react'
@@ -76,7 +76,13 @@ export default function SolutionSelector() {
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
         {/* Header */}
-        <div style={{ marginBottom: 40 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55, ease: [0.2, 0.8, 0.2, 1] }}
+          style={{ marginBottom: 40 }}
+        >
           <div className="eyebrow">Direct Solution Finder</div>
           <h2
             id="solution-selector-heading"
@@ -94,7 +100,7 @@ export default function SolutionSelector() {
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0, maxWidth: 620 }}>
             Select an operational objective to view the recommended engineering hardware and deployment workflow.
           </p>
-        </div>
+        </motion.div>
 
         {/* Interactive Selector Layout */}
         <div style={{

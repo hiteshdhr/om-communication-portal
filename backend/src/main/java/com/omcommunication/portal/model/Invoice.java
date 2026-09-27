@@ -54,17 +54,49 @@ public class Invoice {
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<InvoiceItem> items = new ArrayList<>();
 
+    @Column(nullable = false)
+    private String documentType = "TAX_INVOICE"; // QUOTATION, TAX_INVOICE, BILL
+
+    private String subject;
+    
+    @Column(columnDefinition = "TEXT")
+    private String clientAddress;
+
+    private String clientGstin;
+
+    private Boolean gstEnabled = true;
+
+    @Column(precision = 5, scale = 2)
+    private BigDecimal gstRate = new BigDecimal("18.00");
+
+    @Column(columnDefinition = "TEXT")
+    private String termsAndConditions;
+
     // Getters & Setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
     public String getInvoiceNumber() { return invoiceNumber; }
     public void setInvoiceNumber(String invoiceNumber) { this.invoiceNumber = invoiceNumber; }
+    public String getDocumentType() { return documentType; }
+    public void setDocumentType(String documentType) { this.documentType = documentType; }
+    public String getSubject() { return subject; }
+    public void setSubject(String subject) { this.subject = subject; }
     public String getClientName() { return clientName; }
     public void setClientName(String clientName) { this.clientName = clientName; }
     public String getClientPhone() { return clientPhone; }
     public void setClientPhone(String clientPhone) { this.clientPhone = clientPhone; }
     public String getClientEmail() { return clientEmail; }
     public void setClientEmail(String clientEmail) { this.clientEmail = clientEmail; }
+    public String getClientAddress() { return clientAddress; }
+    public void setClientAddress(String clientAddress) { this.clientAddress = clientAddress; }
+    public String getClientGstin() { return clientGstin; }
+    public void setClientGstin(String clientGstin) { this.clientGstin = clientGstin; }
+    public Boolean getGstEnabled() { return gstEnabled; }
+    public void setGstEnabled(Boolean gstEnabled) { this.gstEnabled = gstEnabled; }
+    public BigDecimal getGstRate() { return gstRate; }
+    public void setGstRate(BigDecimal gstRate) { this.gstRate = gstRate; }
+    public String getTermsAndConditions() { return termsAndConditions; }
+    public void setTermsAndConditions(String termsAndConditions) { this.termsAndConditions = termsAndConditions; }
     public BigDecimal getSubtotal() { return subtotal; }
     public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
     public BigDecimal getTaxAmount() { return taxAmount; }

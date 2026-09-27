@@ -166,12 +166,6 @@ export default function Footer() {
                   +91 72177 15296
                 </a>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Phone size={15} color="#B4233C" style={{ flexShrink: 0 }} />
-                <a href="tel:+918802980922" style={{ color: '#D1D5DB', textDecoration: 'none' }}>
-                  +91 88029 80922
-                </a>
-              </div>
               <div style={{ marginTop: 6 }}>
                 <Link
                   to="/complaint"

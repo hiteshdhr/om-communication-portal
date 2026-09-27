@@ -16,6 +16,7 @@ import RealProjectsSection from '../components/RealProjectsSection'
 import ProcessTimeline from '../components/ProcessTimeline'
 import StickyMobileBar from '../components/StickyMobileBar'
 import { images } from '../assets/imageMap'
+import { EASE_STANDARD } from '../utils/motion'
 
 // ─── Data: Editorial Problem → Solution ───────────────────────────────────────
 const EDITORIAL_STORIES = [
@@ -223,7 +224,13 @@ function EditorialProblemStories() {
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)', position: 'relative' }}>
         
         {/* Section Header */}
-        <div style={{ marginBottom: 48 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.55, ease: [0.2, 0.8, 0.2, 1] }}
+          style={{ marginBottom: 48 }}
+        >
           <div className="eyebrow">The Challenges We Solve</div>
           <h2
             id="stories-heading"
@@ -241,7 +248,7 @@ function EditorialProblemStories() {
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0, maxWidth: 620 }}>
             Real-world security and telecommunication challenges solved with site-engineered hardware and clean installation.
           </p>
-        </div>
+        </motion.div>
 
         {/* Vertical Timeline Progress Bar Container */}
         <div style={{ position: 'relative' }}>
@@ -297,6 +304,18 @@ function EditorialProblemStories() {
 
 // ─── Component: AMC Section (Clean Light Layout) ──────────────────────────────
 function AMCSection() {
+  const sectionRef  = useRef(null)
+  const headerInView = useInView(sectionRef, { once: true, margin: '-60px' })
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setPrefersReducedMotion(mq.matches)
+    const h = (e) => setPrefersReducedMotion(e.matches)
+    mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [])
+
   const AMC_STEPS = [
     { label: 'INSTALL', sub: 'Site-engineered installation to spec', icon: Wrench },
     { label: 'MAINTAIN', sub: 'Scheduled quarterly preventive audits', icon: CheckCircle2 },
@@ -306,6 +325,7 @@ function AMCSection() {
 
   return (
     <section
+      ref={sectionRef}
       aria-labelledby="amc-heading"
       style={{
         padding: 'clamp(56px, 7vw, 88px) 0',
@@ -315,7 +335,13 @@ function AMCSection() {
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 44 }}>
+        {/* Section heading — fade + slide */}
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: prefersReducedMotion ? 0.15 : 0.55, ease: EASE_STANDARD }}
+          style={{ textAlign: 'center', marginBottom: 44 }}
+        >
           <div className="eyebrow" style={{ justifyContent: 'center' }}>Annual Maintenance Contracts</div>
           <h2
             id="amc-heading"
@@ -333,18 +359,25 @@ function AMCSection() {
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: 580, margin: '0 auto', lineHeight: 1.6 }}>
             Dust accumulation, power surges, and cable oxidation are primary causes of sudden footage loss. Our structured AMC plans deliver consistent recording reliability.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Process Steps Grid */}
+        {/* Process Steps Grid — staggered card reveal */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           gap: 16,
           marginBottom: 36,
         }}>
-          {AMC_STEPS.map((step) => (
-            <div
+          {AMC_STEPS.map((step, i) => (
+            <motion.div
               key={step.label}
+              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 22, scale: 0.98 }}
+              animate={headerInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+              transition={{
+                duration: prefersReducedMotion ? 0.15 : 0.5,
+                delay: prefersReducedMotion ? 0 : 0.15 + i * 0.075,
+                ease: EASE_STANDARD,
+              }}
               style={{
                 background: 'var(--bg-card)',
                 border: '1px solid var(--border-light)',
@@ -375,15 +408,20 @@ function AMCSection() {
               <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                 {step.sub}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
-        <div style={{ textAlign: 'center' }}>
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: prefersReducedMotion ? 0.1 : 0.45, delay: prefersReducedMotion ? 0 : 0.5, ease: EASE_STANDARD }}
+          style={{ textAlign: 'center' }}
+        >
           <Link to="/services/amc" className="btn-primary" style={{ fontSize: '0.9375rem', padding: '12px 28px' }}>
             Discuss Maintenance Support →
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
@@ -392,6 +430,18 @@ function AMCSection() {
 // ─── Component: FAQ Section ───────────────────────────────────────────────────
 function FAQSection() {
   const [openIdx, setOpenIdx] = useState(null)
+  const sectionRef = useRef(null)
+  const headerInView = useInView(sectionRef, { once: true, margin: '-60px' })
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setPrefersReducedMotion(mq.matches)
+    const h = (e) => setPrefersReducedMotion(e.matches)
+    mq.addEventListener('change', h)
+    return () => mq.removeEventListener('change', h)
+  }, [])
+
   const FAQS = [
     {
       q: 'How many CCTV cameras does a typical business facility need?',
@@ -417,6 +467,7 @@ function FAQSection() {
 
   return (
     <section
+      ref={sectionRef}
       aria-labelledby="faq-heading"
       style={{
         padding: 'clamp(56px, 7vw, 88px) 0',
@@ -426,7 +477,13 @@ function FAQSection() {
       }}
     >
       <div style={{ maxWidth: 880, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        {/* Section heading */}
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: prefersReducedMotion ? 0.15 : 0.55, ease: EASE_STANDARD }}
+          style={{ textAlign: 'center', marginBottom: 40 }}
+        >
           <div className="eyebrow" style={{ justifyContent: 'center' }}>Practical Guidance</div>
           <h2
             id="faq-heading"
@@ -441,14 +498,22 @@ function FAQSection() {
           >
             Frequently Asked Questions
           </h2>
-        </div>
+        </motion.div>
 
+        {/* FAQ items — staggered */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {FAQS.map((faq, idx) => {
             const isOpen = openIdx === idx
             return (
-              <div
+              <motion.div
                 key={idx}
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
+                animate={headerInView ? { opacity: 1, y: 0 } : {}}
+                transition={{
+                  duration: prefersReducedMotion ? 0.12 : 0.45,
+                  delay: prefersReducedMotion ? 0 : 0.1 + idx * 0.065,
+                  ease: EASE_STANDARD,
+                }}
                 style={{
                   border: '1px solid var(--border-light)',
                   borderRadius: 8,
@@ -509,7 +574,7 @@ function FAQSection() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             )
           })}
         </div>
@@ -520,8 +585,12 @@ function FAQSection() {
 
 // ─── Component: Final CTA ─────────────────────────────────────────────────────
 function FinalCTA() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+
   return (
     <section
+      ref={ref}
       aria-labelledby="cta-heading"
       style={{
         padding: 'clamp(56px, 7vw, 96px) 0',
@@ -529,14 +598,19 @@ function FinalCTA() {
       }}
     >
       <div style={{ maxWidth: 960, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
-        <div style={{
-          background: 'var(--bg-card)',
-          border: '1px solid rgba(180, 35, 60, 0.22)',
-          borderRadius: 14,
-          padding: 'clamp(36px, 6vw, 64px) clamp(20px, 4vw, 48px)',
-          textAlign: 'center',
-          boxShadow: '0 4px 20px rgba(180, 35, 60, 0.06)',
-        }}>
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.99 }}
+          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{ duration: 0.6, ease: EASE_STANDARD }}
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid rgba(180, 35, 60, 0.22)',
+            borderRadius: 14,
+            padding: 'clamp(36px, 6vw, 64px) clamp(20px, 4vw, 48px)',
+            textAlign: 'center',
+            boxShadow: '0 4px 20px rgba(180, 35, 60, 0.06)',
+          }}
+        >
           <div className="eyebrow" style={{ display: 'inline-flex', marginBottom: 12 }}>
             Turnkey Security &amp; Telecom Solutions
           </div>
@@ -572,7 +646,7 @@ function FinalCTA() {
               <Phone size={14} color="#B4233C" /> Call +91 72177 15296
             </a>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

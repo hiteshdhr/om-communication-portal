@@ -123,15 +123,20 @@ public class AdminController {
         try {
             Invoice created = invoiceService.createInvoice(invoice);
             return ResponseEntity.ok(created);
-        } catch (RazorpayException e) {
-            return ResponseEntity.status(502).body(Map.of("error", "Razorpay error: " + e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
 
-    // ─── Invoices ─────────────────────────────────────────────────────────────
-    // (Already has GET & POST above — adding DELETE below)
+    @PutMapping("/invoices/{id}")
+    public ResponseEntity<?> updateInvoice(@PathVariable UUID id, @RequestBody Invoice invoice) {
+        try {
+            Invoice updated = invoiceService.updateInvoice(id, invoice);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
 
     @DeleteMapping("/invoices/{id}")
     public ResponseEntity<?> deleteInvoice(@PathVariable UUID id) {

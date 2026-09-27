@@ -11,6 +11,7 @@ import {
 import api from '../api'
 import logo from '../assets/ocw-logo.png'
 import { useTheme } from '../utils/theme.jsx'
+import CreateDocumentModal from '../components/CreateDocumentModal'
 
 // ─── Helper Functions ──────────────────────────────────────────────────────────
 const fmtCurrency = v => `₹${Number(v || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
@@ -479,6 +480,9 @@ export default function AdminDashboard() {
   
   // Modals
   const [showInvoiceModal, setShowInvoiceModal] = useState(false)
+  const [showDocumentModal, setShowDocumentModal] = useState(false)
+  const [selectedDoc, setSelectedDoc] = useState(null)
+  const [docFilter, setDocFilter] = useState('ALL')
   const [surveyInquiry, setSurveyInquiry] = useState(null)
   const [quoteInquiry, setQuoteInquiry] = useState(null)
 
@@ -769,8 +773,8 @@ export default function AdminDashboard() {
               <RefreshCw size={14} /> Refresh Data
             </button>
             {activeTab === 'invoices' && (
-              <button onClick={() => setShowInvoiceModal(true)} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.8125rem' }}>
-                <Plus size={15} /> Create Invoice
+              <button onClick={() => { setSelectedDoc(null); setShowDocumentModal(true) }} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.8125rem' }}>
+                <Plus size={15} /> CREATE DOCUMENT +
               </button>
             )}
           </div>
@@ -1081,60 +1085,140 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* INVOICES TAB */}
+            {/* DOCUMENTS / INVOICES TAB */}
             {activeTab === 'invoices' && (
               <div className="glass-card" style={{ padding: 24 }}>
+                {/* Filter Bar */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {[
+                      { id: 'ALL', label: 'All Documents' },
+                      { id: 'QUOTATION', label: 'Quotations' },
+                      { id: 'TAX_INVOICE', label: 'Tax Invoices' },
+                      { id: 'BILL', label: 'Bills (Non-GST)' },
+                      { id: 'PENDING', label: 'Pending' },
+                      { id: 'PAID', label: 'Paid' },
+                    ].map(f => (
+                      <button
+                        key={f.id}
+                        onClick={() => setDocFilter(f.id)}
+                        style={{
+                          padding: '6px 14px',
+                          borderRadius: 6,
+                          fontSize: '0.8rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          background: docFilter === f.id ? 'var(--red-primary)' : 'rgba(255,255,255,0.06)',
+                          color: docFilter === f.id ? '#FFFFFF' : '#94A3B8',
+                          border: docFilter === f.id ? '1px solid var(--red-primary)' : '1px solid rgba(255,255,255,0.1)',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => { setSelectedDoc(null); setShowDocumentModal(true) }}
+                    className="btn-primary"
+                    style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+                  >
+                    <Plus size={14} /> CREATE DOCUMENT +
+                  </button>
+                </div>
+
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
-                        <th style={{ padding: '12px' }}>Invoice #</th>
-                        <th style={{ padding: '12px' }}>Client</th>
+                        <th style={{ padding: '12px' }}>Document #</th>
+                        <th style={{ padding: '12px' }}>Type</th>
+                        <th style={{ padding: '12px' }}>Customer / Company</th>
                         <th style={{ padding: '12px' }}>Amount</th>
+                        <th style={{ padding: '12px' }}>Date</th>
                         <th style={{ padding: '12px' }}>Status</th>
                         <th style={{ padding: '12px', textAlign: 'right' }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {invoices.map(inv => (
-                        <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                          <td style={{ padding: '14px 12px', fontFamily: 'monospace', fontWeight: 700, color: '#C5A03F' }}>{inv.invoiceNumber}</td>
-                          <td style={{ padding: '14px 12px' }}>
-                            <div style={{ fontWeight: 700 }}>{inv.clientName}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{inv.clientPhone}</div>
-                          </td>
-                          <td style={{ padding: '14px 12px', fontWeight: 700 }}>{fmtCurrency(inv.totalAmount)}</td>
-                          <td style={{ padding: '14px 12px' }}><StatusBadge value={inv.status} /></td>
-                          <td style={{ padding: '14px 12px', textAlign: 'right' }}>
-                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', alignItems: 'center' }}>
-                              <a
-                                href={`/pay/${inv.invoiceNumber}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{ color: '#06b6d4', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}
-                              >
-                                Open <ExternalLink size={12} />
-                              </a>
-                              <button
-                                onClick={() => sharePaymentLink(inv)}
-                                title="Share payment link via WhatsApp"
-                                style={{ padding: '4px 8px', borderRadius: 6, background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
-                              >
-                                <MessageCircle size={12} /> WA
-                              </button>
-                              {inv.status !== 'PAID' && (
-                                <button
-                                  onClick={() => deleteInvoice(inv.id)}
-                                  title="Delete Invoice"
-                                  style={{ padding: '4px 8px', borderRadius: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer' }}
-                                >
-                                  <Trash2 size={13} />
-                                </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                      {invoices
+                        .filter(inv => {
+                          if (docFilter === 'ALL') return true
+                          if (docFilter === 'QUOTATION') return inv.documentType === 'QUOTATION' || inv.invoiceNumber?.startsWith('OCW-Q-')
+                          if (docFilter === 'TAX_INVOICE') return inv.documentType === 'TAX_INVOICE' || inv.invoiceNumber?.startsWith('OCW-INV-') || !inv.documentType
+                          if (docFilter === 'BILL') return inv.documentType === 'BILL' || inv.invoiceNumber?.startsWith('OCW-B-')
+                          if (docFilter === 'PENDING') return inv.status === 'PENDING'
+                          if (docFilter === 'PAID') return inv.status === 'PAID'
+                          return true
+                        })
+                        .map(inv => {
+                          const isQuote = inv.documentType === 'QUOTATION' || inv.invoiceNumber?.startsWith('OCW-Q-')
+                          const isBill = inv.documentType === 'BILL' || inv.invoiceNumber?.startsWith('OCW-B-')
+                          const typeLabel = isQuote ? 'QUOTATION' : isBill ? 'BILL (NON-GST)' : 'TAX INVOICE'
+                          const typeBg = isQuote ? 'rgba(245, 158, 11, 0.15)' : isBill ? 'rgba(56, 189, 248, 0.15)' : 'rgba(180, 35, 60, 0.15)'
+                          const typeColor = isQuote ? '#F59E0B' : isBill ? '#38BDF8' : '#F87171'
+
+                          return (
+                            <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                              <td style={{ padding: '14px 12px', fontFamily: 'monospace', fontWeight: 700, color: '#C5A03F' }}>
+                                {inv.invoiceNumber}
+                              </td>
+                              <td style={{ padding: '14px 12px' }}>
+                                <span style={{ padding: '3px 8px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 800, background: typeBg, color: typeColor, border: `1px solid ${typeColor}40` }}>
+                                  {typeLabel}
+                                </span>
+                              </td>
+                              <td style={{ padding: '14px 12px' }}>
+                                <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{inv.clientName}</div>
+                                {inv.clientPhone && <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Ph: {inv.clientPhone}</div>}
+                              </td>
+                              <td style={{ padding: '14px 12px', fontWeight: 800, color: '#4ADE80' }}>
+                                {fmtCurrency(inv.totalAmount)}
+                              </td>
+                              <td style={{ padding: '14px 12px', color: '#94A3B8', fontSize: '0.8rem' }}>
+                                {fmtDate(inv.createdAt)}
+                              </td>
+                              <td style={{ padding: '14px 12px' }}>
+                                <StatusBadge value={inv.status} />
+                              </td>
+                              <td style={{ padding: '14px 12px', textAlign: 'right' }}>
+                                <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', alignItems: 'center' }}>
+                                  <button
+                                    onClick={() => { setSelectedDoc(inv); setShowDocumentModal(true) }}
+                                    title="View / Print Document"
+                                    style={{ padding: '4px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: '#FFFFFF', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                                  >
+                                    View
+                                  </button>
+                                  <button
+                                    onClick={() => { setSelectedDoc(inv); setShowDocumentModal(true) }}
+                                    title="Edit Document"
+                                    style={{ padding: '4px 8px', borderRadius: 6, background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.3)', color: '#60A5FA', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => sharePaymentLink(inv)}
+                                    title="Share Document via WhatsApp"
+                                    style={{ padding: '4px 8px', borderRadius: 6, background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.3)', color: '#25D366', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                                  >
+                                    <MessageCircle size={12} /> WA
+                                  </button>
+                                  {inv.status !== 'PAID' && (
+                                    <button
+                                      onClick={() => deleteInvoice(inv.id)}
+                                      title="Delete Document"
+                                      style={{ padding: '4px 8px', borderRadius: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer' }}
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )
+                        })}
                     </tbody>
                   </table>
                 </div>
@@ -1145,10 +1229,11 @@ export default function AdminDashboard() {
       </main>
 
       {/* MODALS */}
-      {showInvoiceModal && (
-        <InvoiceModal
-          onClose={() => setShowInvoiceModal(false)}
-          onCreated={() => fetchAll()}
+      {showDocumentModal && (
+        <CreateDocumentModal
+          initialData={selectedDoc}
+          onClose={() => { setShowDocumentModal(false); setSelectedDoc(null) }}
+          onSaved={() => fetchAll()}
         />
       )}
 
