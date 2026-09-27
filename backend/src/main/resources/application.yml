@@ -105,5 +105,5 @@ razorpay:
   key-secret: ${RAZORPAY_KEY_SECRET}
 
 admin:
-  initial-password: ${ADMIN_INITIAL_PASSWORD}
+  initial-password: ${ADMIN_INITIAL_PASSWORD:admin123}
 

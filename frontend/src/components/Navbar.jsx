@@ -74,35 +74,38 @@ export default function Navbar() {
 
   // ── Samsung-style scroll hide / reveal ──────────────────────────────────
   useEffect(() => {
+    lastScrollY.current = window.scrollY || document.documentElement.scrollTop || 0
+
     const handleScroll = () => {
       if (ticking.current) return
       ticking.current = true
+
       window.requestAnimationFrame(() => {
-        const currentY = window.scrollY
+        const currentY = window.scrollY || document.documentElement.scrollTop || 0
         const diff = currentY - lastScrollY.current
 
-        // Show header whenever near the top of the page
-        if (currentY < NAVBAR_HEIGHT) {
+        // Near top of page: always show header
+        if (currentY <= 20) {
           setHeaderVisible(true)
           setScrolled(false)
+          lastScrollY.current = currentY
         } else {
           setScrolled(true)
-          // Only react when movement exceeds threshold (prevents micro-jitter)
-          if (Math.abs(diff) >= SCROLL_THRESHOLD) {
+          // Only trigger state change & update baseline when total accumulated scroll movement >= 8px
+          if (Math.abs(diff) >= 8) {
             if (diff > 0) {
               // Scrolling DOWN — hide header
               setHeaderVisible(false)
-              // Close any open menus so they don't hover orphaned
               setSolutionsOpen(false)
               setIndustriesOpen(false)
             } else {
-              // Scrolling UP — show header
+              // Scrolling UP — reveal header
               setHeaderVisible(true)
             }
+            lastScrollY.current = currentY
           }
         }
 
-        lastScrollY.current = currentY
         ticking.current = false
       })
     }
