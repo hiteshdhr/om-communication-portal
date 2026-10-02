@@ -49,11 +49,11 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         });
     }
 
-    /** Login bucket: 5 attempts per 15 minutes per IP (brute-force protection) */
+    /** Login bucket: 15 attempts per 15 minutes per IP (brute-force protection) */
     private Bucket resolveLoginBucket(String ip) {
         return loginCache.computeIfAbsent(ip, k -> {
-            Refill refill = Refill.intervally(5, Duration.ofMinutes(15));
-            Bandwidth limit = Bandwidth.classic(5, refill);
+            Refill refill = Refill.intervally(15, Duration.ofMinutes(15));
+            Bandwidth limit = Bandwidth.classic(15, refill);
             return Bucket.builder().addLimit(limit).build();
         });
     }

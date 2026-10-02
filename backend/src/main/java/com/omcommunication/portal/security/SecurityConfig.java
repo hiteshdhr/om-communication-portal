@@ -92,13 +92,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // Exact trusted origins only — no wildcard patterns with credentials
         config.setAllowedOrigins(List.of(
             "http://localhost:5173",
             "http://localhost:3000",
             "https://omcommunicationworks.com",
             "https://www.omcommunicationworks.com",
-            frontendOrigin   // Set FRONTEND_ORIGIN in Railway to exact Cloudflare Pages URL
+            frontendOrigin
+        ));
+        config.setAllowedOriginPatterns(List.of(
+            "https://*.pages.dev",
+            "https://*.workers.dev"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));

@@ -20,12 +20,15 @@ api.interceptors.request.use(config => {
 
 // Handle 401 and 403 — both indicate the session is invalid or expired.
 // Clear the stored token and redirect to the admin login page.
+// DO NOT redirect when the request is to the login endpoint itself (/auth/login).
 api.interceptors.response.use(
   response => response,
   error => {
     const status = error.response?.status
-    if (status === 401 || status === 403) {
+    const isLoginRequest = error.config?.url?.includes('/auth/login')
+    if ((status === 401 || status === 403) && !isLoginRequest) {
       localStorage.removeItem('om_admin_token')
+      localStorage.removeItem('om_admin_user')
       window.location.href = '/admin/login'
     }
     return Promise.reject(error)

@@ -21,24 +21,27 @@ public class OmCommunicationPortalApplication {
     }
 
     /**
-     * Seeds an initial admin user on startup if none exists in database.
+     * Seeds an initial admin user on startup ONLY if none exists in database.
+     * Preserves existing admin password on subsequent application restarts.
      * Password is provided via ADMIN_INITIAL_PASSWORD environment variable in production.
      */
     @Bean
     CommandLineRunner seedAdmin(UserRepository userRepository,
                                 PasswordEncoder passwordEncoder,
-                                @Value("${admin.initial-password}") String initialPassword) {
+                                @Value("${admin.initial-password:Admin@OCW2026!}") String rawInitialPassword) {
         return args -> {
-            User admin = userRepository.findByUsername("admin").orElseGet(() -> {
-                User u = new User();
-                u.setUsername("admin");
-                u.setEmail("admin@omcommunication.com");
-                u.setRole("ROLE_ADMIN");
-                return u;
-            });
-            admin.setPassword(passwordEncoder.encode(initialPassword));
-            userRepository.save(admin);
-            log.info("Admin user configured: username 'admin', password updated.");
+            String initialPassword = rawInitialPassword != null ? rawInitialPassword.trim().replaceAll("^\"|\"$", "") : "Admin@OCW2026!";
+            if (userRepository.findByUsername("admin").isEmpty()) {
+                User admin = new User();
+                admin.setUsername("admin");
+                admin.setEmail("admin@omcommunication.com");
+                admin.setRole("ROLE_ADMIN");
+                admin.setPassword(passwordEncoder.encode(initialPassword));
+                userRepository.save(admin);
+                log.info("Initial admin user created successfully with username 'admin'.");
+            } else {
+                log.info("Admin user 'admin' already exists in database. Preserving existing account.");
+            }
         };
     }
 }

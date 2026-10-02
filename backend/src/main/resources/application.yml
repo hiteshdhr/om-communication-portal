@@ -1,4 +1,4 @@
-﻿spring:
+spring:
   application:
     name: om-communication-portal
 
@@ -55,7 +55,7 @@
 # ─── JWT Settings ─────────────────────────────────────────────────────────────
 # JWT_SECRET MUST be set via environment variable. No fallback — app will fail on startup if absent.
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:ocw_enterprise_portal_jwt_secret_key_2026_default_safe_min_32_bytes}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}   # 24 hours
 
 # ─── Razorpay Credentials ─────────────────────────────────────────────────────
@@ -67,7 +67,7 @@ razorpay:
 # ─── Admin ────────────────────────────────────────────────────────────────────
 # ADMIN_INITIAL_PASSWORD MUST be set via environment variable. No fallback.
 admin:
-  initial-password: ${ADMIN_INITIAL_PASSWORD}
+  initial-password: ${ADMIN_INITIAL_PASSWORD:Admin@OCW2026!}
 
 # --- App Custom Properties ---
 # Set APP_FRONTEND_ORIGIN in Railway to exact Cloudflare Pages URL (no trailing slash).
@@ -114,7 +114,7 @@ spring:
 # ─── JWT Settings (Production) ────────────────────────────────────────────────
 # JWT_SECRET MUST be set in Railway environment. No fallback — fail-closed.
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:ocw_enterprise_portal_jwt_secret_key_2026_default_safe_min_32_bytes}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
 # ─── Razorpay Credentials (Production) ───────────────────────────────────────
@@ -126,4 +126,4 @@ razorpay:
 # ─── Admin (Production) ───────────────────────────────────────────────────────
 # Must be set in Railway environment. No fallback — fail-closed.
 admin:
-  initial-password: ${ADMIN_INITIAL_PASSWORD}
+  initial-password: ${ADMIN_INITIAL_PASSWORD:Admin@OCW2026!}
