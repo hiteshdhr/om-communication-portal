@@ -1,6 +1,8 @@
 package com.omcommunication.portal.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,18 +24,29 @@ public class Invoice {
     @Column(nullable = false, unique = true)
     private String invoiceNumber; // e.g., OM-INV-2024-001
 
+    @NotBlank(message = "Client name is required")
+    @Size(max = 150, message = "Client name cannot exceed 150 characters")
     @Column(nullable = false)
     private String clientName;
 
+    @Size(max = 20, message = "Phone number cannot exceed 20 characters")
     private String clientPhone;
+    @Email(message = "Invalid email format")
+    @Size(max = 150, message = "Email cannot exceed 150 characters")
     private String clientEmail;
 
+    @NotNull(message = "Subtotal is required")
+    @DecimalMin(value = "0.00", message = "Subtotal cannot be negative")
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal subtotal = BigDecimal.ZERO;
 
+    @NotNull(message = "Tax amount is required")
+    @DecimalMin(value = "0.00", message = "Tax amount cannot be negative")
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal taxAmount = BigDecimal.ZERO;
 
+    @NotNull(message = "Total amount is required")
+    @DecimalMin(value = "0.01", message = "Total amount must be greater than zero")
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
@@ -51,9 +64,12 @@ public class Invoice {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Valid
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<InvoiceItem> items = new ArrayList<>();
 
+    @NotBlank(message = "Document type is required")
+    @Pattern(regexp = "QUOTATION|TAX_INVOICE|BILL", message = "Invalid document type")
     @Column(nullable = false)
     private String documentType = "TAX_INVOICE"; // QUOTATION, TAX_INVOICE, BILL
 

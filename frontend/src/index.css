@@ -441,3 +441,34 @@ h1, h2, h3, h4, h5, h6 {
     display: flex !important;
   }
 }
+
+/* ─── Print / Save as PDF ────────────────────────────────────────────────── */
+@media print {
+  /* Use visibility trick: hide entire page, then reveal only the A4 doc */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Reveal the A4 document and all its children */
+  .a4-document,
+  .a4-document * {
+    visibility: visible !important;
+  }
+
+  /* Position the document at the top-left of the page */
+  .a4-document {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* A4 page setup */
+  @page {
+    size: A4 portrait;
+    margin: 8mm;
+  }
+}

@@ -4,6 +4,8 @@ import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +14,14 @@ import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 
 @Service
 public class RazorpayService {
+
+    private static final Logger log = LoggerFactory.getLogger(RazorpayService.class);
 
     @Value("${razorpay.key-id}")
     private String keyId;
@@ -40,8 +45,13 @@ public class RazorpayService {
         orderRequest.put("receipt", "om_comm_" + System.currentTimeMillis());
         orderRequest.put("payment_capture", 1);
 
-        Order order = client.orders.create(orderRequest);
-        return order.get("id");
+        try {
+            Order order = client.orders.create(orderRequest);
+            return order.get("id");
+        } catch (RazorpayException e) {
+            log.error("Razorpay order creation failed for amount {} INR: {}", amountInRupees, e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -49,6 +59,8 @@ public class RazorpayService {
      *
      * The payload string for signature verification is:
      *   razorpay_order_id + "|" + razorpay_payment_id
+     *
+     * Uses constant-time comparison (MessageDigest.isEqual) to prevent timing attacks.
      *
      * @param orderId   Razorpay order ID
      * @param paymentId Razorpay payment ID from client
@@ -64,12 +76,17 @@ public class RazorpayService {
             mac.init(secretKeySpec);
             byte[] hmacBytes = mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
 
-            // Convert to hex string and compare
             String generatedSignature = HexFormat.of().formatHex(hmacBytes);
-            return generatedSignature.equalsIgnoreCase(signature);
+
+            // Constant-time comparison — prevents timing attacks
+            return MessageDigest.isEqual(
+                    generatedSignature.getBytes(StandardCharsets.UTF_8),
+                    signature.getBytes(StandardCharsets.UTF_8)
+            );
 
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new RuntimeException("HMAC-SHA256 signature verification failed", e);
+            log.error("HMAC-SHA256 signature verification failed: {}", e.getMessage());
+            throw new RuntimeException("Payment signature verification failed", e);
         }
     }
 }

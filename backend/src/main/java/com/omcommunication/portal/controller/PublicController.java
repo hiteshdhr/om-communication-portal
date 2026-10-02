@@ -2,6 +2,7 @@ package com.omcommunication.portal.controller;
 
 import com.omcommunication.portal.model.Inquiry;
 import com.omcommunication.portal.model.Invoice;
+import com.omcommunication.portal.model.InvoiceItem;
 import com.omcommunication.portal.model.Ticket;
 import com.omcommunication.portal.service.InquiryService;
 import com.omcommunication.portal.service.InvoiceService;
@@ -10,7 +11,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/public")
@@ -70,15 +74,52 @@ public class PublicController {
                 "priority", ticket.getPriority().name(),
                 "status", ticket.getStatus().name(),
                 "createdAt", ticket.getCreatedAt().toString(),
-                "assignedTechnician", ticket.getAssignedTechnician() != null ? ticket.getAssignedTechnician() : "Awaiting Assignment"
+                "assignedTechnician", ticket.getAssignedTechnician() != null
+                        ? ticket.getAssignedTechnician() : "Awaiting Assignment"
         ));
     }
 
-    // ─── Get Invoice for Payment Page ─────────────────────────────────────────
+    // ─── Get Invoice for Payment Page (PII-minimized) ─────────────────────────
+    // Returns only the fields needed to render the payment page.
+    // Does NOT expose: clientPhone, clientEmail, clientAddress, clientGstin,
+    // internal DB id, razorpayPaymentId, or razorpaySignature.
     @GetMapping("/invoices/{invoiceNumber}")
     public ResponseEntity<?> getInvoice(@PathVariable String invoiceNumber) {
         Invoice invoice = invoiceService.getByInvoiceNumber(invoiceNumber);
-        return ResponseEntity.ok(invoice);
+        // invoiceService throws RuntimeException("Invoice not found: ...") if absent;
+        // GlobalExceptionHandler maps that to HTTP 404.
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("invoiceNumber", invoice.getInvoiceNumber());
+        response.put("documentType", invoice.getDocumentType());
+        response.put("subject", invoice.getSubject() != null ? invoice.getSubject() : "");
+        response.put("clientName", invoice.getClientName() != null ? invoice.getClientName() : "");
+        response.put("status", invoice.getStatus() != null ? invoice.getStatus().name() : "PENDING");
+        response.put("gstEnabled", invoice.getGstEnabled());
+        response.put("gstRate", invoice.getGstRate());
+        response.put("subtotal", invoice.getSubtotal());
+        response.put("taxAmount", invoice.getTaxAmount());
+        response.put("totalAmount", invoice.getTotalAmount());
+        response.put("razorpayOrderId", invoice.getRazorpayOrderId());
+        response.put("createdAt", invoice.getCreatedAt() != null ? invoice.getCreatedAt().toString() : null);
+        response.put("termsAndConditions", invoice.getTermsAndConditions());
+
+        // Include line items (description and amounts only — no internal IDs)
+        if (invoice.getItems() != null) {
+            List<Map<String, Object>> items = invoice.getItems().stream().map(item -> {
+                Map<String, Object> it = new HashMap<>();
+                it.put("description", item.getDescription() != null ? item.getDescription() : "");
+                it.put("quantity", item.getQuantity());
+                it.put("unitPrice", item.getUnitPrice());
+                it.put("amount", item.getAmount());
+                return it;
+            }).collect(Collectors.toList());
+            response.put("items", items);
+        } else {
+            response.put("items", List.of());
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     // ─── Verify Razorpay Payment & Mark Invoice as PAID ──────────────────────

@@ -3,7 +3,9 @@ package com.omcommunication.portal.service;
 import com.omcommunication.portal.model.Invoice;
 import com.omcommunication.portal.model.InvoiceItem;
 import com.omcommunication.portal.repository.InvoiceRepository;
-import com.razorpay.RazorpayException;
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +21,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class InvoiceService {
 
-    private static final AtomicInteger COUNTER = new AtomicInteger(1000);
+    private static final Logger log = LoggerFactory.getLogger(InvoiceService.class);
+
+    /**
+     * Minimum start value. Seeded from DB on startup so counter survives restarts.
+     */
+    private static final int COUNTER_FLOOR = 1000;
+    private final AtomicInteger counter = new AtomicInteger(COUNTER_FLOOR);
 
     private final InvoiceRepository invoiceRepository;
     private final RazorpayService razorpayService;
@@ -29,14 +37,46 @@ public class InvoiceService {
         this.razorpayService = razorpayService;
     }
 
+    /**
+     * Seed the in-memory counter from the highest suffix found in existing
+     * document numbers so that JVM restarts cannot produce duplicates.
+     * Format: OCW-{TYPE}-{YEAR}-{NNNN}  — the last segment is the counter value.
+     */
+    @PostConstruct
+    void seedCounterFromDb() {
+        try {
+            List<String> numbers = invoiceRepository.findAllInvoiceNumbers();
+            int max = COUNTER_FLOOR;
+            for (String num : numbers) {
+                if (num == null) continue;
+                int lastDash = num.lastIndexOf('-');
+                if (lastDash >= 0 && lastDash < num.length() - 1) {
+                    try {
+                        int val = Integer.parseInt(num.substring(lastDash + 1));
+                        if (val > max) max = val;
+                    } catch (NumberFormatException ignored) {
+                        // Non-numeric suffix — skip
+                    }
+                }
+            }
+            counter.set(max);
+            log.info("Document counter seeded from DB: next value will be {}", max + 1);
+        } catch (Exception e) {
+            log.warn("Could not seed document counter from DB, starting at {}. Reason: {}",
+                    COUNTER_FLOOR, e.getMessage());
+        }
+    }
+
     private String generateInvoiceNumber(String documentType) {
         String year = DateTimeFormatter.ofPattern("yyyy").format(LocalDateTime.now());
-        int num = COUNTER.incrementAndGet();
-        String prefix = "OCW-INV-";
+        int num = counter.incrementAndGet();
+        String prefix;
         if ("QUOTATION".equalsIgnoreCase(documentType)) {
             prefix = "OCW-Q-";
         } else if ("BILL".equalsIgnoreCase(documentType)) {
             prefix = "OCW-B-";
+        } else {
+            prefix = "OCW-INV-";
         }
         return prefix + year + "-" + String.format("%04d", num);
     }
@@ -94,7 +134,8 @@ public class InvoiceService {
                 invoice.setRazorpayOrderId(razorpayOrderId);
             }
         } catch (Exception e) {
-            System.err.println("Razorpay Order Creation Warning: " + e.getMessage());
+            log.warn("Razorpay order creation skipped for document {}: {}",
+                    invoice.getInvoiceNumber(), e.getMessage());
         }
 
         return invoiceRepository.save(invoice);
@@ -104,6 +145,14 @@ public class InvoiceService {
     public Invoice updateInvoice(UUID id, Invoice updated) {
         Invoice existing = invoiceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Document not found with ID: " + id));
+
+        // Business logic guard: PAID and CANCELLED documents cannot be edited
+        if (existing.getStatus() == Invoice.Status.PAID) {
+            throw new RuntimeException("Cannot edit a PAID document. Cancel it first if changes are needed.");
+        }
+        if (existing.getStatus() == Invoice.Status.CANCELLED) {
+            throw new RuntimeException("Cannot edit a CANCELLED document.");
+        }
 
         existing.setClientName(updated.getClientName());
         existing.setClientPhone(updated.getClientPhone());
@@ -146,6 +195,11 @@ public class InvoiceService {
         return invoiceRepository.save(existing);
     }
 
+    public Invoice getById(UUID id) {
+        return invoiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Document not found with ID: " + id));
+    }
+
     public Invoice getByInvoiceNumber(String invoiceNumber) {
         return invoiceRepository.findByInvoiceNumber(invoiceNumber)
                 .orElseThrow(() -> new RuntimeException("Invoice not found: " + invoiceNumber));
@@ -159,6 +213,11 @@ public class InvoiceService {
     public Invoice verifyAndMarkPaid(String invoiceNumber, String orderId, String paymentId, String signature) {
         Invoice invoice = getByInvoiceNumber(invoiceNumber);
 
+        // Idempotency guard: prevent double-processing
+        if (invoice.getStatus() == Invoice.Status.PAID) {
+            return invoice; // Already paid — safe to return existing record
+        }
+
         if (!razorpayService.verifySignature(orderId, paymentId, signature)) {
             throw new RuntimeException("Invalid payment signature — potential fraud");
         }
@@ -171,17 +230,13 @@ public class InvoiceService {
     }
 
     public BigDecimal getTotalRevenue() {
-        return invoiceRepository.findAll().stream()
-                .filter(i -> i.getStatus() == Invoice.Status.PAID)
-                .map(Invoice::getTotalAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal result = invoiceRepository.sumTotalAmountByStatusPaid();
+        return result != null ? result : BigDecimal.ZERO;
     }
 
     public BigDecimal getOutstandingAmount() {
-        return invoiceRepository.findAll().stream()
-                .filter(i -> i.getStatus() == Invoice.Status.PENDING)
-                .map(Invoice::getTotalAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal result = invoiceRepository.sumTotalAmountByStatusPending();
+        return result != null ? result : BigDecimal.ZERO;
     }
 
     public void deleteInvoice(UUID id) {

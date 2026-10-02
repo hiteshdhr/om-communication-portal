@@ -2,6 +2,8 @@ package com.omcommunication.portal;
 
 import com.omcommunication.portal.model.User;
 import com.omcommunication.portal.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class OmCommunicationPortalApplication {
+
+    private static final Logger log = LoggerFactory.getLogger(OmCommunicationPortalApplication.class);
 
     public static void main(String[] args) {
         SpringApplication.run(OmCommunicationPortalApplication.class, args);
@@ -34,7 +38,7 @@ public class OmCommunicationPortalApplication {
             });
             admin.setPassword(passwordEncoder.encode(initialPassword));
             userRepository.save(admin);
-            System.out.println("✅ Admin user configured: username 'admin', password updated.");
+            log.info("Admin user configured: username 'admin', password updated.");
         };
     }
 }

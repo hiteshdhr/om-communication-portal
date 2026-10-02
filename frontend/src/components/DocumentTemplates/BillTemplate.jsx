@@ -10,12 +10,16 @@ export default function BillTemplate({ doc = {} }) {
   const totalAmount = Number(doc.totalAmount || doc.subtotal || 0)
   const totalQty = items.reduce((acc, it) => acc + (Number(it.quantity) || 1), 0)
 
+  // Exact border matching reference image
+  const outerBorder = '1.5px solid #B0B0B0'
+  const innerBorder = '1px solid #B0B0B0'
+  const pinkBg = '#FCE7F3'
+
   return (
     <div
       className="a4-document bill-doc"
       style={{
-        width: '100%',
-        maxWidth: '794px',
+        width: '794px',
         minHeight: '1123px',
         margin: '0 auto',
         padding: '24px',
@@ -23,142 +27,217 @@ export default function BillTemplate({ doc = {} }) {
         color: '#0F172A',
         fontFamily: "'Inter', Arial, sans-serif",
         boxSizing: 'border-box',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-        borderRadius: 4,
-        position: 'relative',
+        boxShadow: '0 2px 16px rgba(0,0,0,0.10)',
         fontSize: '12px',
         lineHeight: 1.4,
       }}
     >
-      {/* ── MAIN CONTAINER BORDER ────────────────────────────────────────── */}
-      <div style={{ border: '2px solid #0F172A', height: '100%', minHeight: '1050px', display: 'flex', flexDirection: 'column' }}>
-        
-        {/* ── TOP HEADER ──────────────────────────────────────────────────── */}
-        <div style={{ textAlign: 'center', padding: '16px 12px', borderBottom: '2px solid #0F172A' }}>
-          <h1 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#991B1B', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+      {/* ── OUTER BORDER CONTAINER ─────────────────────────────── */}
+      <div style={{
+        border: outerBorder,
+        minHeight: '1075px',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+
+        {/* ── COMPANY HEADER ────────────────────────────────────── */}
+        <div style={{
+          textAlign: 'center',
+          padding: '14px 16px 12px',
+          borderBottom: outerBorder,
+        }}>
+          <div style={{
+            fontSize: '18px',
+            fontWeight: 900,
+            color: '#CC1B1B',
+            letterSpacing: '0.03em',
+            textTransform: 'uppercase',
+            marginBottom: 3,
+          }}>
             OM COMMUNICATION WORKS
-          </h1>
-          <div style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>
+          </div>
+          <div style={{ fontSize: '12px', color: '#333333' }}>
             1/4007 Ram Nagar Shahdara, Delhi, 110032
           </div>
-          <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#0F172A', marginTop: 2 }}>
+          <div style={{ fontSize: '12px', color: '#333333', marginTop: 1 }}>
             PAN Number: COSPS8901L
-          </div>
-          <div style={{ fontSize: '11px', color: '#475569', marginTop: 2 }}>
-            Ph: +91 72177 15296, 9643610564 &nbsp;|&nbsp; Email: singhomkar053@gmail.com
           </div>
         </div>
 
-        {/* ── BILL TO & INVOICE NO / DATE HEADER BOX ──────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 260px', borderBottom: '2px solid #0F172A' }}>
-          <div style={{ padding: '12px 16px', borderRight: '2px solid #0F172A' }}>
-            <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#475569', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 4 }}>
+        {/* ── BILL TO / INVOICE META ────────────────────────────── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 260px',
+          borderBottom: outerBorder,
+          minHeight: '72px',
+        }}>
+          {/* Left: Bill To */}
+          <div style={{ padding: '10px 14px', borderRight: outerBorder }}>
+            <div style={{ fontSize: '10px', fontWeight: 700, color: '#555555', textTransform: 'uppercase', marginBottom: 3 }}>
               BILL TO
             </div>
-            <div style={{ fontWeight: 900, fontSize: '14px', color: '#0F172A', textTransform: 'uppercase' }}>
-              {doc.clientName || 'CUSTOMER NAME / ORGANIZATION'}
+            <div style={{ fontSize: '13px', fontWeight: 900, color: '#0F172A', textTransform: 'uppercase' }}>
+              {doc.clientName || 'CUSTOMER NAME'}
             </div>
             {doc.clientAddress && (
-              <div style={{ fontSize: '11.5px', color: '#334155', marginTop: 2, whiteSpace: 'pre-line' }}>
+              <div style={{ fontSize: '11.5px', color: '#333333', marginTop: 2, whiteSpace: 'pre-line' }}>
                 Address: {doc.clientAddress}
               </div>
             )}
             {doc.clientPhone && (
-              <div style={{ fontSize: '11px', color: '#475569' }}>
-                Ph: {doc.clientPhone}
-              </div>
+              <div style={{ fontSize: '11px', color: '#555555', marginTop: 1 }}>Ph: {doc.clientPhone}</div>
             )}
           </div>
 
-          <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <span style={{ fontWeight: 800, color: '#0F172A' }}>Invoice No.</span>
-              <span style={{ fontWeight: 900, color: '#991B1B', fontSize: '13px' }}>{doc.invoiceNumber || 'OCW-B-2026-001'}</span>
+          {/* Right: Invoice No. + Invoice Date */}
+          <div style={{ padding: '10px 14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+            <div style={{ borderRight: innerBorder, paddingRight: 10 }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: '#555555', marginBottom: 4 }}>Invoice No.</div>
+              <div style={{ fontSize: '14px', fontWeight: 900, color: '#0F172A' }}>
+                {doc.invoiceNumber || 'OCW-B-2026-001'}
+              </div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontWeight: 800, color: '#0F172A' }}>Invoice Date</span>
-              <span style={{ fontWeight: 700, color: '#0F172A' }}>{dateStr}</span>
+            <div style={{ paddingLeft: 10 }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: '#555555', marginBottom: 4 }}>Invoice Date</div>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>{dateStr}</div>
             </div>
           </div>
         </div>
 
-        {/* ── TABLE AREA ──────────────────────────────────────────────────── */}
+        {/* ── TABLE SECTION (fills remaining height) ────────────── */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-            <thead>
-              <tr style={{ background: '#FCE7F3', borderBottom: '2px solid #0F172A' }}>
-                <th style={{ padding: '8px 6px', borderRight: '1px solid #0F172A', width: '45px', textAlign: 'center', fontWeight: 800 }}>S.NO.</th>
-                <th style={{ padding: '8px 10px', borderRight: '1px solid #0F172A', textAlign: 'left', fontWeight: 800 }}>ITEMS</th>
-                <th style={{ padding: '8px 6px', borderRight: '1px solid #0F172A', width: '70px', textAlign: 'center', fontWeight: 800 }}>QTY.</th>
-                <th style={{ padding: '8px 10px', borderRight: '1px solid #0F172A', width: '90px', textAlign: 'right', fontWeight: 800 }}>RATE</th>
-                <th style={{ padding: '8px 10px', width: '110px', textAlign: 'right', fontWeight: 800 }}>AMOUNT</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, idx) => {
-                const amt = Number(item.amount || (item.quantity * item.unitPrice) || 0)
-                return (
-                  <tr key={idx} style={{ borderBottom: '1px solid #E2E8F0' }}>
-                    <td style={{ padding: '10px 6px', borderRight: '1px solid #0F172A', textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>
-                      {idx + 1}
-                    </td>
-                    <td style={{ padding: '10px 10px', borderRight: '1px solid #0F172A', fontWeight: 600, verticalAlign: 'top', textTransform: 'uppercase' }}>
-                      {item.description}
-                    </td>
-                    <td style={{ padding: '10px 6px', borderRight: '1px solid #0F172A', textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>
-                      {item.quantity} {item.unit ? item.unit.toUpperCase() : 'NOS'}
-                    </td>
-                    <td style={{ padding: '10px 10px', borderRight: '1px solid #0F172A', textAlign: 'right', verticalAlign: 'top', fontWeight: 600 }}>
-                      {Number(item.unitPrice || 0).toLocaleString('en-IN')}
-                    </td>
-                    <td style={{ padding: '10px 10px', textAlign: 'right', verticalAlign: 'top', fontWeight: 700 }}>
-                      {amt.toLocaleString('en-IN')}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
 
-          {/* Spacer to push total row to bottom */}
-          <div style={{ flex: 1, minHeight: '140px' }} />
+          {/* Table Header */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '50px 1fr 80px 90px 110px',
+            background: pinkBg,
+            borderBottom: outerBorder,
+          }}>
+            {[
+              { label: 'S.NO.', align: 'center', borderRight: true },
+              { label: 'ITEMS', align: 'center', borderRight: true },
+              { label: 'QTY.', align: 'center', borderRight: true },
+              { label: 'RATE', align: 'center', borderRight: true },
+              { label: 'AMOUNT', align: 'right', borderRight: false },
+            ].map((col) => (
+              <div
+                key={col.label}
+                style={{
+                  padding: '8px 6px',
+                  fontWeight: 800,
+                  fontSize: '11.5px',
+                  textAlign: col.align,
+                  borderRight: col.borderRight ? innerBorder : 'none',
+                }}
+              >
+                {col.label}
+              </div>
+            ))}
+          </div>
 
-          {/* TOTAL ROW */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', borderTop: '2px solid #0F172A', fontSize: '12px' }}>
-            <tbody>
-              <tr style={{ background: '#FCE7F3' }}>
-                <td style={{ padding: '8px 10px', borderRight: '1px solid #0F172A', textAlign: 'right', fontWeight: 900, fontSize: '12.5px' }}>
-                  TOTAL
-                </td>
-                <td style={{ padding: '8px 6px', borderRight: '1px solid #0F172A', width: '70px', textAlign: 'center', fontWeight: 900 }}>
-                  {totalQty}
-                </td>
-                <td style={{ padding: '8px 10px', borderRight: '1px solid #0F172A', width: '90px' }} />
-                <td style={{ padding: '8px 10px', width: '110px', textAlign: 'right', fontWeight: 900, fontSize: '13px', color: '#0F172A' }}>
-                  ₹ {totalAmount.toLocaleString('en-IN')}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {/* Table Rows */}
+          <div style={{ flex: 1 }}>
+            {items.map((item, idx) => {
+              const amt = Number(item.amount || ((item.quantity || 1) * (item.unitPrice || 0)) || 0)
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '50px 1fr 80px 90px 110px',
+                    borderBottom: innerBorder,
+                    minHeight: '34px',
+                  }}
+                >
+                  <div style={{ padding: '8px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 600, verticalAlign: 'top', alignSelf: 'start', paddingTop: 10 }}>
+                    {idx + 1}
+                  </div>
+                  <div style={{ padding: '8px 10px', borderRight: innerBorder, fontWeight: 500, textTransform: 'uppercase', wordBreak: 'break-word', paddingTop: 10 }}>
+                    {item.description}
+                  </div>
+                  <div style={{ padding: '8px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 600, paddingTop: 10 }}>
+                    {item.quantity} NOS
+                  </div>
+                  <div style={{ padding: '8px 6px', borderRight: innerBorder, textAlign: 'right', fontWeight: 500, paddingTop: 10 }}>
+                    {Number(item.unitPrice || 0).toLocaleString('en-IN')}
+                  </div>
+                  <div style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600, paddingTop: 10 }}>
+                    {amt.toLocaleString('en-IN')}
+                  </div>
+                </div>
+              )
+            })}
+
+            {/* Empty spacer rows to fill page height (like the reference) */}
+            <div style={{ flex: 1, minHeight: `${Math.max(280, 280 - items.length * 34)}px` }} />
+          </div>
+
+          {/* ── TOTAL ROW ─────────────────────────────────────────── */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '50px 1fr 80px 90px 110px',
+            background: pinkBg,
+            borderTop: outerBorder,
+            borderBottom: outerBorder,
+          }}>
+            <div style={{ padding: '8px 6px', borderRight: innerBorder }} />
+            <div style={{ padding: '8px 10px', borderRight: innerBorder, textAlign: 'right', fontWeight: 800, fontSize: '12px' }}>
+              TOTAL
+            </div>
+            <div style={{ padding: '8px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 800, fontSize: '12px' }}>
+              {totalQty}
+            </div>
+            <div style={{ padding: '8px 6px', borderRight: innerBorder }} />
+            <div style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, fontSize: '13px', color: '#0F172A' }}>
+              ₹ {totalAmount.toLocaleString('en-IN')}
+            </div>
+          </div>
+
+          {/* Extra pink row below total (matches reference) */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '50px 1fr 80px 90px 110px',
+            background: pinkBg,
+            borderBottom: outerBorder,
+            height: '20px',
+          }}>
+            <div style={{ borderRight: innerBorder }} />
+            <div style={{ borderRight: innerBorder }} />
+            <div style={{ borderRight: innerBorder }} />
+            <div style={{ borderRight: innerBorder }} />
+            <div />
+          </div>
         </div>
 
-        {/* ── AMOUNT IN WORDS BOX ─────────────────────────────────────────── */}
-        <div style={{ borderTop: '2px solid #0F172A', padding: '10px 14px', background: '#FFFFFF' }}>
-          <div style={{ fontSize: '11px', fontWeight: 800, color: '#334155' }}>
+        {/* ── AMOUNT IN WORDS ───────────────────────────────────── */}
+        <div style={{ padding: '8px 14px 10px', borderBottom: outerBorder }}>
+          <div style={{ fontSize: '11px', fontWeight: 700, color: '#333333', marginBottom: 2 }}>
             TotalAmount(inwords)
           </div>
-          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#0F172A', marginTop: 2, textTransform: 'capitalize' }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 400, color: '#0F172A', textTransform: 'capitalize' }}>
             {numberToWordsINR(totalAmount)}
           </div>
         </div>
 
-        {/* ── SIGNATURE BOX ───────────────────────────────────────────────── */}
-        <div style={{ borderTop: '2px solid #0F172A', padding: '16px 14px', textAlign: 'center', background: '#FFFFFF' }}>
-          <div style={{ margin: '0 auto 6px', width: '160px', borderBottom: '1px dashed #64748B' }} />
-          <div style={{ fontSize: '11.5px', fontWeight: 800, color: '#0F172A' }}>
-            AuthorisedSignatory For OM COMMUNICATIONWORKS
+        {/* ── SIGNATURE BOX ─────────────────────────────────────── */}
+        <div style={{
+          padding: '10px 14px 14px',
+          minHeight: '90px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            {/* Signature space */}
+            <div style={{ height: '42px' }} />
+            <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#0F172A', textAlign: 'center' }}>
+              AuthorisedSignatoryFor OM<br />COMMUNICATION WORKS
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   )

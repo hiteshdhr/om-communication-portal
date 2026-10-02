@@ -1,6 +1,13 @@
-spring:
+﻿spring:
   application:
     name: om-communication-portal
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+  web:
+    resources:
+      add-mappings: false
 
   # ─── Default Profile: H2 (Local Development) ──────────────────────────────────
   profiles:
@@ -45,18 +52,28 @@ spring:
           starttls:
             enable: false
 
-# ─── JWT Settings (Dev Default) ───────────────────────────────────────────────
+# ─── JWT Settings ─────────────────────────────────────────────────────────────
+# JWT_SECRET MUST be set via environment variable. No fallback — app will fail on startup if absent.
 jwt:
-  secret: ${JWT_SECRET:om_comm_super_secret_jwt_key_2024_very_long_and_secure_key_here_min_256_bits}
+  secret: ${JWT_SECRET}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}   # 24 hours
 
-# ─── Razorpay Credentials (Dev Default) ───────────────────────────────────────
+# ─── Razorpay Credentials ─────────────────────────────────────────────────────
+# RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET MUST be set via environment variable. No fallback.
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID:rzp_test_key_id}
-  key-secret: ${RAZORPAY_KEY_SECRET:rzp_test_key_secret}
+  key-id: ${RAZORPAY_KEY_ID}
+  key-secret: ${RAZORPAY_KEY_SECRET}
 
+# ─── Admin ────────────────────────────────────────────────────────────────────
+# ADMIN_INITIAL_PASSWORD MUST be set via environment variable. No fallback.
 admin:
-  initial-password: ${ADMIN_INITIAL_PASSWORD:admin123}
+  initial-password: ${ADMIN_INITIAL_PASSWORD}
+
+# --- App Custom Properties ---
+# Set APP_FRONTEND_ORIGIN in Railway to exact Cloudflare Pages URL (no trailing slash).
+# Used by SecurityConfig for CORS allowed origins.
+app:
+  frontend-origin: ${APP_FRONTEND_ORIGIN:http://localhost:5173}
 
 # ─── Server ───────────────────────────────────────────────────────────────────
 server:
@@ -94,14 +111,19 @@ spring:
     console:
       enabled: false
 
+# ─── JWT Settings (Production) ────────────────────────────────────────────────
+# JWT_SECRET MUST be set in Railway environment. No fallback — fail-closed.
 jwt:
-  secret: ${JWT_SECRET:om_comm_super_secret_jwt_key_2024_very_long_and_secure_key_here_min_256_bits}
+  secret: ${JWT_SECRET}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
+# ─── Razorpay Credentials (Production) ───────────────────────────────────────
+# Must be set in Railway environment. No fallback — fail-closed.
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID:rzp_test_key_id}
-  key-secret: ${RAZORPAY_KEY_SECRET:rzp_test_key_secret}
+  key-id: ${RAZORPAY_KEY_ID}
+  key-secret: ${RAZORPAY_KEY_SECRET}
 
+# ─── Admin (Production) ───────────────────────────────────────────────────────
+# Must be set in Railway environment. No fallback — fail-closed.
 admin:
-  initial-password: ${ADMIN_INITIAL_PASSWORD:admin123}
-
+  initial-password: ${ADMIN_INITIAL_PASSWORD}

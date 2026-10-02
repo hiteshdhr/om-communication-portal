@@ -2,10 +2,23 @@ package com.omcommunication.portal.repository;
 
 import com.omcommunication.portal.model.Invoice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
     Optional<Invoice> findByInvoiceNumber(String invoiceNumber);
     boolean existsByInvoiceNumber(String invoiceNumber);
+
+    /** Returns all invoice numbers so the counter can be seeded from the DB at startup. */
+    @Query("SELECT i.invoiceNumber FROM Invoice i WHERE i.invoiceNumber IS NOT NULL")
+    List<String> findAllInvoiceNumbers();
+
+    @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = com.omcommunication.portal.model.Invoice.Status.PAID")
+    BigDecimal sumTotalAmountByStatusPaid();
+
+    @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = com.omcommunication.portal.model.Invoice.Status.PENDING")
+    BigDecimal sumTotalAmountByStatusPending();
 }

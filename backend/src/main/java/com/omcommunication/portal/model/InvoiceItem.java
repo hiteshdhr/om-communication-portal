@@ -2,6 +2,7 @@ package com.omcommunication.portal.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -18,15 +19,23 @@ public class InvoiceItem {
     @JsonIgnore
     private Invoice invoice;
 
+    @NotBlank(message = "Item description is required")
+    @Size(max = 500, message = "Item description cannot exceed 500 characters")
     @Column(nullable = false)
     private String description;
 
+    @NotNull(message = "Item quantity is required")
+    @Min(value = 1, message = "Item quantity must be at least 1")
     @Column(nullable = false)
     private Integer quantity;
 
+    @NotNull(message = "Unit price is required")
+    @DecimalMin(value = "0.00", message = "Unit price cannot be negative")
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal unitPrice;
 
+    @NotNull(message = "Item amount is required")
+    @DecimalMin(value = "0.00", message = "Item amount cannot be negative")
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal amount; // = quantity * unitPrice
 

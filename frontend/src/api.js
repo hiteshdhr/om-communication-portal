@@ -18,11 +18,13 @@ api.interceptors.request.use(config => {
   return config
 })
 
-// Handle 401 — redirect to admin login
+// Handle 401 and 403 — both indicate the session is invalid or expired.
+// Clear the stored token and redirect to the admin login page.
 api.interceptors.response.use(
   response => response,
   error => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status
+    if (status === 401 || status === 403) {
       localStorage.removeItem('om_admin_token')
       window.location.href = '/admin/login'
     }

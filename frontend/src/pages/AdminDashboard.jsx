@@ -1,12 +1,13 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+﻿import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import {
   LogOut, TrendingUp, AlertTriangle, FileText, DollarSign,
-  Plus, X, MessageCircle, ExternalLink, Trash2,
+  Plus, X, MessageCircle, Trash2,
   LayoutDashboard, Inbox, TicketIcon, ReceiptText, RefreshCw, Wrench,
-  Calendar, Printer, Menu, Sun, Moon
+  Calendar, Printer, Menu, Sun, Moon, Settings, ClipboardList,
+  CheckCircle2, Clock, AlertCircle, Building2, CreditCard, Mail, Database
 } from 'lucide-react'
 import api from '../api'
 import logo from '../assets/ocw-logo.png'
@@ -454,13 +455,13 @@ const NAV_GROUPS = [
       { id: 'leads', label: 'Leads & Enquiries', icon: Inbox },
       { id: 'surveys', label: 'Site Surveys', icon: Wrench },
       { id: 'tickets', label: 'Support Desk', icon: TicketIcon },
-      { id: 'invoices', label: 'Invoices', icon: ReceiptText },
+      { id: 'invoices', label: 'Documents', icon: FileText },
     ]
   },
   {
     title: 'SYSTEM',
     items: [
-      { id: 'settings', label: 'Settings & Log', icon: FileText },
+      { id: 'settings', label: 'Settings & Log', icon: Settings },
     ]
   }
 ]
@@ -477,9 +478,12 @@ export default function AdminDashboard() {
   const [invoices, setInvoices] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [settingsData, setSettingsData] = useState(null)
+  const [auditLogs, setAuditLogs] = useState([])
+  const [auditFilter, setAuditFilter] = useState('')
+  const [settingsLoading, setSettingsLoading] = useState(false)
   
   // Modals
-  const [showInvoiceModal, setShowInvoiceModal] = useState(false)
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [selectedDoc, setSelectedDoc] = useState(null)
   const [docFilter, setDocFilter] = useState('ALL')
@@ -491,13 +495,29 @@ export default function AdminDashboard() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
+    // Use independent calls so one failure does not destroy the entire dashboard.
+    const safeGet = async (url, fallback) => {
+      try {
+        const res = await api.get(url)
+        return res
+      } catch (err) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          toast.error('Session expired. Please log in.')
+          localStorage.removeItem('om_admin_token')
+          navigate('/admin/login')
+          throw err
+        }
+        return { data: fallback }
+      }
+    }
+
     try {
       const [m, inq, surv, tick, inv] = await Promise.all([
-        api.get('/admin/dashboard/metrics'),
-        api.get('/admin/inquiries'),
-        api.get('/admin/site-surveys').catch(() => ({ data: [] })),
-        api.get('/admin/tickets'),
-        api.get('/admin/invoices'),
+        safeGet('/admin/dashboard/metrics', {}),
+        safeGet('/admin/inquiries', []),
+        safeGet('/admin/site-surveys', []),
+        safeGet('/admin/tickets', []),
+        safeGet('/admin/invoices', []),
       ])
       setMetrics(m.data || {})
       setInquiries(Array.isArray(inq.data) ? inq.data : [])
@@ -505,13 +525,7 @@ export default function AdminDashboard() {
       setTickets(Array.isArray(tick.data) ? tick.data : [])
       setInvoices(Array.isArray(inv.data) ? inv.data : [])
     } catch (err) {
-      if (err.response?.status === 401) {
-        toast.error('Session expired. Please log in.')
-        localStorage.removeItem('om_admin_token')
-        navigate('/admin/login')
-      } else {
-        toast.error('Failed to load dashboard data.')
-      }
+      // safeGet already handled 401/403 above; other errors here are navigation-related
     } finally {
       setLoading(false)
     }
@@ -596,21 +610,39 @@ export default function AdminDashboard() {
     }
   }
 
-  async function deleteInvoice(id) {
-    if (!window.confirm('Delete this invoice? (PAID invoices cannot be deleted)')) return
+  async function deleteInvoice(id, doc) {
+    const docLabel = doc ? `${doc.documentType?.replace('_', ' ')} — ${doc.invoiceNumber} (${doc.clientName})` : 'this document'
+    if (!window.confirm(`DELETE ${docLabel}?\n\nThis action cannot be undone. PAID documents cannot be deleted.\n\nClick OK to confirm deletion.`)) return
     try {
       await api.delete(`/admin/invoices/${id}`)
       setInvoices(prev => prev.filter(i => i.id !== id))
-      toast.success('Invoice deleted.')
+      toast.success('Document deleted successfully.')
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to delete invoice.')
+      toast.error(err.response?.data?.error || 'Failed to delete document. PAID documents cannot be deleted.')
     }
   }
 
   function sharePaymentLink(inv) {
     const link = `${window.location.origin}/pay/${inv.invoiceNumber}`
-    const msg = `*Invoice from Om Communication Work*\n\nInvoice No: ${inv.invoiceNumber}\nClient: ${inv.clientName}\nAmount Due: ${fmtCurrency(inv.totalAmount)}\n\nPay securely online:\n${link}\n\n— Om Communication Work | +91 72177 15296`
+    const docTitle = inv.documentType === 'QUOTATION' ? 'Quotation' : inv.documentType === 'BILL' ? 'Bill' : 'Invoice'
+    const msg = `*${docTitle} from Om Communication Works*\n\n${docTitle} No: ${inv.invoiceNumber}\nClient: ${inv.clientName}\nAmount: ${fmtCurrency(inv.totalAmount)}\n\nView document:\n${link}\n\n— Om Communication Works | +91 72177 15296`
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
+  }
+
+  async function fetchSettings() {
+    setSettingsLoading(true)
+    try {
+      const [settRes, logRes] = await Promise.all([
+        api.get('/admin/settings'),
+        api.get('/admin/audit-logs?limit=100'),
+      ])
+      setSettingsData(settRes.data)
+      setAuditLogs(Array.isArray(logRes.data) ? logRes.data : [])
+    } catch (err) {
+      toast.error('Failed to load settings.')
+    } finally {
+      setSettingsLoading(false)
+    }
   }
 
 
@@ -774,7 +806,12 @@ export default function AdminDashboard() {
             </button>
             {activeTab === 'invoices' && (
               <button onClick={() => { setSelectedDoc(null); setShowDocumentModal(true) }} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.8125rem' }}>
-                <Plus size={15} /> CREATE DOCUMENT +
+                <Plus size={15} /> Create Document
+              </button>
+            )}
+            {activeTab === 'settings' && (
+              <button onClick={fetchSettings} className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.8125rem' }}>
+                <RefreshCw size={14} /> Refresh
               </button>
             )}
           </div>
@@ -1207,7 +1244,7 @@ export default function AdminDashboard() {
                                   </button>
                                   {inv.status !== 'PAID' && (
                                     <button
-                                      onClick={() => deleteInvoice(inv.id)}
+                                      onClick={() => deleteInvoice(inv.id, inv)}
                                       title="Delete Document"
                                       style={{ padding: '4px 8px', borderRadius: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer' }}
                                     >
@@ -1224,6 +1261,228 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
+
+            {/* SETTINGS & LOG TAB */}
+            {activeTab === 'settings' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+                {/* Load button if not loaded */}
+                {!settingsData && !settingsLoading && (
+                  <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
+                    <Settings size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
+                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', marginBottom: 8 }}>Settings & Activity Log</div>
+                    <div style={{ color: '#94A3B8', fontSize: '0.875rem', marginBottom: 20 }}>Load current application settings and admin activity log.</div>
+                    <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>
+                      <RefreshCw size={15} /> Load Settings & Log
+                    </button>
+                  </div>
+                )}
+
+                {settingsLoading && (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#94A3B8' }}>Loading settings...</div>
+                )}
+
+                {settingsData && (
+                  <>
+                    {/* ── SECTION A: SETTINGS ── */}
+                    <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                        <Building2 size={20} color="#C5A03F" />
+                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Business Information</h3>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                        {[
+                          ['Business Name', settingsData.businessName],
+                          ['Address', settingsData.businessAddress],
+                          ['Phone', settingsData.businessPhone],
+                          ['Email', settingsData.businessEmail],
+                          ['GSTIN', settingsData.gstin],
+                          ['PAN', settingsData.pan],
+                        ].map(([label, value]) => (
+                          <div key={label} style={{ background: 'rgba(255,255,255,0.04)', padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
+                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
+                            <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#FFFFFF' }}>{value || '—'}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                        <FileText size={20} color="#60A5FA" />
+                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Document Numbering Configuration</h3>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+                        {[
+                          ['Quotation Prefix', settingsData.quotationPrefix, '#F59E0B'],
+                          ['Tax Invoice Prefix', settingsData.invoicePrefix, '#F87171'],
+                          ['Bill Prefix', settingsData.billPrefix, '#38BDF8'],
+                          ['Default GST Rate', `${settingsData.defaultGstRate}%`, '#4ADE80'],
+                        ].map(([label, value, color]) => (
+                          <div key={label} style={{ background: 'rgba(255,255,255,0.04)', padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
+                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 800, color: color || '#FFFFFF', fontFamily: 'monospace' }}>{value}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                        <CreditCard size={20} color="#818CF8" />
+                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Integration Status</h3>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Razorpay Payment Gateway</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{
+                              padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
+                              background: settingsData.razorpayStatus?.includes('Configured') && !settingsData.razorpayStatus?.includes('Not') ? 'rgba(34,197,94,0.15)' : 'rgba(251,191,36,0.15)',
+                              color: settingsData.razorpayStatus?.includes('Configured') && !settingsData.razorpayStatus?.includes('Not') ? '#4ADE80' : '#FBBF24',
+                              border: '1px solid currentColor',
+                            }}>
+                              {settingsData.razorpayStatus}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Key: {settingsData.razorpayKeyIdPrefix} — Secret: Environment Managed</div>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Email / SMTP</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{
+                              padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
+                              background: settingsData.emailStatus === 'Configured' ? 'rgba(34,197,94,0.15)' : 'rgba(148,163,184,0.15)',
+                              color: settingsData.emailStatus === 'Configured' ? '#4ADE80' : '#94A3B8',
+                              border: '1px solid currentColor',
+                            }}>
+                              {settingsData.emailStatus}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Host: {settingsData.emailHost} — Password: Environment Managed</div>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Database</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, background: 'rgba(34,197,94,0.15)', color: '#4ADE80', border: '1px solid #4ADE80' }}>
+                              {settingsData.databaseStatus}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Credentials: Environment Managed</div>
+                        </div>
+                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>JWT Authentication</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, background: 'rgba(34,197,94,0.15)', color: '#4ADE80', border: '1px solid #4ADE80' }}>
+                              Active
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Secret: Environment Managed — Expiry: 24 hours</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                        <Database size={20} color="#94A3B8" />
+                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Application Statistics</h3>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+                        {[
+                          ['Total Documents', settingsData.totalDocuments, '#F87171'],
+                          ['Total Leads', settingsData.totalLeads, '#60A5FA'],
+                          ['Total Tickets', settingsData.totalTickets, '#FBBF24'],
+                          ['Total Revenue', fmtCurrency(settingsData.totalRevenue), '#4ADE80'],
+                        ].map(([label, value, color]) => (
+                          <div key={label} style={{ background: 'rgba(255,255,255,0.04)', padding: '12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
+                            <div style={{ fontSize: '1.4rem', fontWeight: 900, color }}>{value}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: 3 }}>{label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* ── SECTION B: AUDIT LOG ── */}
+                    <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <ClipboardList size={20} color="#C5A03F" />
+                          <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Admin Activity Log</h3>
+                          <span style={{ padding: '2px 8px', borderRadius: 10, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(197,160,63,0.15)', color: '#C5A03F' }}>
+                            {auditLogs.length} entries
+                          </span>
+                        </div>
+                        <input
+                          placeholder="Filter by action, entity, or ref..."
+                          value={auditFilter}
+                          onChange={e => setAuditFilter(e.target.value)}
+                          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 6, padding: '6px 12px', color: '#FFFFFF', fontSize: '0.8rem', outline: 'none', width: 260 }}
+                        />
+                      </div>
+
+                      {auditLogs.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '32px 0', color: '#64748B' }}>
+                          <ClipboardList size={32} style={{ marginBottom: 10, opacity: 0.4 }} />
+                          <div style={{ fontWeight: 600 }}>No activity recorded yet.</div>
+                          <div style={{ fontSize: '0.8rem', marginTop: 6 }}>Admin actions (document creation, deletion, status changes) will appear here going forward.</div>
+                        </div>
+                      ) : (
+                        <div style={{ overflowX: 'auto' }}>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
+                                <th style={{ padding: '10px 12px' }}>Date & Time</th>
+                                <th style={{ padding: '10px 12px' }}>Action</th>
+                                <th style={{ padding: '10px 12px' }}>Entity</th>
+                                <th style={{ padding: '10px 12px' }}>Reference</th>
+                                <th style={{ padding: '10px 12px' }}>Detail</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {auditLogs
+                                .filter(log => !auditFilter ||
+                                  log.action?.toLowerCase().includes(auditFilter.toLowerCase()) ||
+                                  log.entityType?.toLowerCase().includes(auditFilter.toLowerCase()) ||
+                                  log.entityRef?.toLowerCase().includes(auditFilter.toLowerCase()) ||
+                                  log.detail?.toLowerCase().includes(auditFilter.toLowerCase())
+                                )
+                                .map(log => {
+                                  const actionColor = log.action?.includes('DELETED') ? '#f87171'
+                                    : log.action?.includes('CREATED') ? '#4ADE80'
+                                    : log.action?.includes('STATUS') ? '#60A5FA'
+                                    : '#FBBF24'
+                                  return (
+                                    <tr key={log.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                      <td style={{ padding: '10px 12px', color: '#64748B', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
+                                        {log.timestamp ? new Date(log.timestamp).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
+                                      </td>
+                                      <td style={{ padding: '10px 12px' }}>
+                                        <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 800, background: `${actionColor}15`, color: actionColor, border: `1px solid ${actionColor}35`, whiteSpace: 'nowrap' }}>
+                                          {log.action?.replace(/_/g, ' ')}
+                                        </span>
+                                      </td>
+                                      <td style={{ padding: '10px 12px', color: '#94A3B8', fontSize: '0.78rem' }}>
+                                        {log.entityType || '—'}
+                                      </td>
+                                      <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#C5A03F', fontSize: '0.78rem' }}>
+                                        {log.entityRef || '—'}
+                                      </td>
+                                      <td style={{ padding: '10px 12px', color: '#CBD5E1', fontSize: '0.8rem', maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {log.detail || '—'}
+                                      </td>
+                                    </tr>
+                                  )
+                                })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
           </>
         )}
       </main>
