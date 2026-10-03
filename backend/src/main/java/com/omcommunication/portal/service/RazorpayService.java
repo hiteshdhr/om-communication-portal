@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -36,8 +37,12 @@ public class RazorpayService {
     public String createOrder(BigDecimal amountInRupees) throws RazorpayException {
         RazorpayClient client = new RazorpayClient(keyId, keySecret);
 
-        // Razorpay expects amount in paise (1 INR = 100 paise)
-        int amountInPaise = amountInRupees.multiply(BigDecimal.valueOf(100)).intValue();
+        // Razorpay expects amount in paise (1 INR = 100 paise). Use long to avoid
+        // int overflow — int paise wraps above ~₹2.14 crore.
+        long amountInPaise = amountInRupees
+                .movePointRight(2)
+                .setScale(0, RoundingMode.HALF_UP)
+                .longValueExact();
 
         JSONObject orderRequest = new JSONObject();
         orderRequest.put("amount", amountInPaise);
@@ -68,6 +73,10 @@ public class RazorpayService {
      * @return true if signature is authentic
      */
     public boolean verifySignature(String orderId, String paymentId, String signature) {
+        // Null-safe: missing fields can never be a valid signature.
+        if (orderId == null || paymentId == null || signature == null) {
+            return false;
+        }
         try {
             String payload = orderId + "|" + paymentId;
             Mac mac = Mac.getInstance("HmacSHA256");

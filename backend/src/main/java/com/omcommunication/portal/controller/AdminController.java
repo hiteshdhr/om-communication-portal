@@ -10,6 +10,8 @@ import com.omcommunication.portal.service.InquiryService;
 import com.omcommunication.portal.service.InvoiceService;
 import com.omcommunication.portal.service.SiteSurveyService;
 import com.omcommunication.portal.service.TicketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
@@ -23,6 +25,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
+
+    private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
     private final InquiryService inquiryService;
     private final InvoiceService invoiceService;
@@ -150,7 +154,8 @@ public class AdminController {
                             + " | Amount: ₹" + created.getTotalAmount(), "ADMIN");
             return ResponseEntity.ok(created);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+            log.error("Failed to create document", e);
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to create document. Please try again."));
         }
     }
 
@@ -162,8 +167,13 @@ public class AdminController {
                     updated.getDocumentType() + " updated for client: " + updated.getClientName()
                             + " | Amount: ₹" + updated.getTotalAmount(), "ADMIN");
             return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            // Business-rule failures (e.g. "Cannot edit a PAID document") carry a
+            // safe, developer-authored message and are a client error (400).
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+            log.error("Failed to update document", e);
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to update document. Please try again."));
         }
     }
 

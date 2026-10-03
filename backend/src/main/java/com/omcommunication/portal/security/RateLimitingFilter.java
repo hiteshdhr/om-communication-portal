@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,18 +25,31 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     private final Map<String, Bucket> loginCache = new ConcurrentHashMap<>();
 
     /**
-     * Extract the client IP, honouring the X-Forwarded-For header set by Railway's reverse proxy.
-     * Only the FIRST address in the header is used (the real client IP).
-     * Falls back to getRemoteAddr() when the header is absent.
+     * Number of trusted reverse proxies between the client and this app.
+     * Railway terminates TLS and adds exactly one hop, so the default is 1.
+     * Set APP_TRUSTED_PROXY_COUNT to match the real deployment topology.
+     */
+    @Value("${app.trusted-proxy-count:1}")
+    private int trustedProxyCount;
+
+    /**
+     * Extract the client IP from X-Forwarded-For in a spoof-resistant way.
      *
-     * NOTE: This is safe because Railway terminates TLS and sets X-Forwarded-For itself.
-     * Do NOT trust X-Forwarded-For in environments where the proxy is not controlled.
+     * X-Forwarded-For grows left→right as each proxy APPENDS the address it
+     * received the request from, so the right-most entries are the ones added by
+     * OUR trusted proxies and the left-most entries are attacker-controllable.
+     * We therefore count `trustedProxyCount` hops in from the right rather than
+     * blindly trusting the first entry (which a client can forge to rotate past
+     * the rate limit). Falls back to getRemoteAddr() when the header is absent.
      */
     private String extractClientIp(HttpServletRequest request) {
         String xForwardedFor = request.getHeader("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isBlank()) {
-            // Take the first IP only; strip spaces
-            return xForwardedFor.split(",")[0].trim();
+            String[] parts = xForwardedFor.split(",");
+            int idx = parts.length - Math.max(1, trustedProxyCount);
+            if (idx < 0) idx = 0;
+            String ip = parts[idx].trim();
+            if (!ip.isEmpty()) return ip;
         }
         return request.getRemoteAddr();
     }

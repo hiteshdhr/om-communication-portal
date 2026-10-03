@@ -1,9 +1,10 @@
 package com.omcommunication.portal.service;
 
+import com.omcommunication.portal.model.DocumentCounter;
 import com.omcommunication.portal.model.Invoice;
 import com.omcommunication.portal.model.InvoiceItem;
+import com.omcommunication.portal.repository.DocumentCounterRepository;
 import com.omcommunication.portal.repository.InvoiceRepository;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -16,60 +17,72 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class InvoiceService {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceService.class);
 
-    /**
-     * Minimum start value. Seeded from DB on startup so counter survives restarts.
-     */
-    private static final int COUNTER_FLOOR = 1000;
-    private final AtomicInteger counter = new AtomicInteger(COUNTER_FLOOR);
+    /** Minimum start value for the shared document sequence. */
+    private static final long COUNTER_FLOOR = 1000;
+    /** Single-row key for the persistent document counter. */
+    private static final String SEQ_ID = "DOCUMENT_SEQ";
 
     private final InvoiceRepository invoiceRepository;
     private final RazorpayService razorpayService;
+    private final DocumentCounterRepository documentCounterRepository;
 
-    public InvoiceService(InvoiceRepository invoiceRepository, RazorpayService razorpayService) {
+    public InvoiceService(InvoiceRepository invoiceRepository,
+                          RazorpayService razorpayService,
+                          DocumentCounterRepository documentCounterRepository) {
         this.invoiceRepository = invoiceRepository;
         this.razorpayService = razorpayService;
+        this.documentCounterRepository = documentCounterRepository;
     }
 
     /**
-     * Seed the in-memory counter from the highest suffix found in existing
-     * document numbers so that JVM restarts cannot produce duplicates.
-     * Format: OCW-{TYPE}-{YEAR}-{NNNN}  — the last segment is the counter value.
+     * Return the next document sequence value from the database, under a
+     * pessimistic write lock so concurrent creations (even across instances)
+     * cannot mint duplicates. Called inside the @Transactional createInvoice.
+     * The row is lazily seeded from the highest existing document number the
+     * first time it is needed, preserving continuity with pre-existing records.
      */
-    @PostConstruct
-    void seedCounterFromDb() {
+    private long nextSequence() {
+        DocumentCounter counter = documentCounterRepository.findByIdForUpdate(SEQ_ID)
+                .orElseGet(() -> documentCounterRepository.save(
+                        new DocumentCounter(SEQ_ID, seedFromExistingMax())));
+        long next = counter.getCounterValue() + 1;
+        counter.setCounterValue(next);
+        documentCounterRepository.save(counter);
+        return next;
+    }
+
+    /** Highest numeric suffix across existing document numbers, or the floor. */
+    private long seedFromExistingMax() {
+        long max = COUNTER_FLOOR;
         try {
-            List<String> numbers = invoiceRepository.findAllInvoiceNumbers();
-            int max = COUNTER_FLOOR;
-            for (String num : numbers) {
+            for (String num : invoiceRepository.findAllInvoiceNumbers()) {
                 if (num == null) continue;
                 int lastDash = num.lastIndexOf('-');
                 if (lastDash >= 0 && lastDash < num.length() - 1) {
                     try {
-                        int val = Integer.parseInt(num.substring(lastDash + 1));
+                        long val = Long.parseLong(num.substring(lastDash + 1));
                         if (val > max) max = val;
                     } catch (NumberFormatException ignored) {
                         // Non-numeric suffix — skip
                     }
                 }
             }
-            counter.set(max);
-            log.info("Document counter seeded from DB: next value will be {}", max + 1);
         } catch (Exception e) {
-            log.warn("Could not seed document counter from DB, starting at {}. Reason: {}",
+            log.warn("Could not seed document counter from existing numbers, starting at {}. Reason: {}",
                     COUNTER_FLOOR, e.getMessage());
         }
+        return max;
     }
 
     private String generateInvoiceNumber(String documentType) {
         String year = DateTimeFormatter.ofPattern("yyyy").format(LocalDateTime.now());
-        int num = counter.incrementAndGet();
+        long num = nextSequence();
         String prefix;
         if ("QUOTATION".equalsIgnoreCase(documentType)) {
             prefix = "OCW-Q-";
@@ -218,7 +231,21 @@ public class InvoiceService {
             return invoice; // Already paid — safe to return existing record
         }
 
-        if (!razorpayService.verifySignature(orderId, paymentId, signature)) {
+        // Bind the payment to THIS invoice's own Razorpay order. This prevents an
+        // attacker from replaying a genuinely-valid (order, payment, signature)
+        // triple from a cheap document against an expensive one: the stored order
+        // id must match, and the signature is verified against the stored order id
+        // (not the client-supplied one). The order was created server-side with the
+        // invoice total, so the paid amount is bound to the document total.
+        String expectedOrderId = invoice.getRazorpayOrderId();
+        if (expectedOrderId == null || expectedOrderId.isBlank()) {
+            throw new RuntimeException("No payment order is associated with this document.");
+        }
+        if (orderId == null || !expectedOrderId.equals(orderId)) {
+            throw new RuntimeException("Payment order does not belong to this document.");
+        }
+
+        if (!razorpayService.verifySignature(expectedOrderId, paymentId, signature)) {
             throw new RuntimeException("Invalid payment signature — potential fraud");
         }
 
