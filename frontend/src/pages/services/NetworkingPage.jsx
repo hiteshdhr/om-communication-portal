@@ -26,7 +26,7 @@ const benefits = [
   {
     icon: Cable,
     title: 'Comprehensive Port & Cable Labeling',
-    desc: 'Every wall faceplate, patch panel port, and network drop is systematically labeled per EIA/TIA-606 standards, reducing future troubleshooting time by 80%.',
+    desc: 'Every wall faceplate, patch panel port, and network drop is systematically labeled per EIA/TIA-606 standards, so future troubleshooting, moves and additions are fast and error-free.',
   },
   {
     icon: Network,
@@ -157,7 +157,7 @@ export default function NetworkingPage() {
         title: 'Why unstructured, ad-hoc network wiring cripples operations',
         text: 'Unorganized tangle of loose cables without proper conduit leads to unexpected network drops, severe cross-talk, hardware overheating, and hours of costly downtime during minor troubleshooting. Engineered structured cabling delivers:',
         points: [
-          'Guaranteed Gigabit transmission speeds with zero electromagnetic signal interference',
+          'Gigabit-ready structured cabling with proper shielding and power separation to minimise electromagnetic interference',
           'Meticulously organized server racks and labeled ports enabling instant maintenance',
           'Stable, high-wattage PoE delivery to CCTV cameras, biometric readers, and Wi-Fi APs',
           'Long-term modular scalability allowing rapid addition of new workstations and hardware',

@@ -101,7 +101,7 @@ const applications = [
   { label: 'Residential Societies & Apartments', desc: 'Gate guard to flat intercom, inter-flat communication, clubhouse and maintenance desk lines.' },
   { label: 'Corporate Offices & Call Centers', desc: 'Departmental extensions, reception call distribution, executive direct lines, and IVR routing.' },
   { label: 'Manufacturing Facilities & Factories', desc: 'Intercom linking shop floor, inventory warehouse, security cabins, and administrative offices.' },
-  { label: 'Hospitals & Healthcare Clinics', desc: 'Nurse call stations, doctor desk extensions, pharmacy coordination, and emergency emergency lines.' },
+  { label: 'Hospitals & Healthcare Clinics', desc: 'Nurse call stations, doctor desk extensions, pharmacy coordination, and emergency lines.' },
   { label: 'Hotels & Hospitality', desc: 'Guest room telephone extensions, room service routing, reception billing PBX integration.' },
   { label: 'Educational Institutions & Schools', desc: 'Staff room, administration, principal office, and campus entry security intercom lines.' },
 ]

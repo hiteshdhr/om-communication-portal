@@ -50,6 +50,8 @@ const industryLinks = [
 // ─── Constants ───────────────────────────────────────────────────────────────
 const NAVBAR_HEIGHT   = 68
 const SCROLL_SOLID_AT = 40   // px from top before header becomes solid
+const SCROLL_HIDE_AFTER = 160 // px — only start hiding the header past this depth
+const SCROLL_DELTA      = 6   // px — ignore tiny scroll jitter before reacting
 const HOVER_OPEN_DELAY  = 180  // ms before mega-menu opens on hover
 const HOVER_CLOSE_DELAY = 120  // ms after cursor leaves before closing
 
@@ -87,6 +89,8 @@ export default function Navbar() {
 
   // Scroll state — controls transparent vs solid appearance only
   const [scrolled, setScrolled] = useState(false)
+  // Hide-on-scroll-down / reveal-on-scroll-up (Samsung-style header)
+  const [hidden, setHidden] = useState(false)
 
   // Hover intent timers
   const openTimerRef  = useRef(null)
@@ -94,6 +98,7 @@ export default function Navbar() {
 
   // Scroll bookkeeping
   const ticking = useRef(false)
+  const lastScrollY = useRef(0)
 
   // Reduced-motion detection
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
@@ -126,10 +131,11 @@ export default function Navbar() {
     setMobileMenuOpen(false)
   }, [location.pathname])
 
-  // ── Scroll handler — appearance only (transparent → solid) ──────────────
+  // ── Scroll handler — appearance (transparent → solid) + hide/reveal ──────
   useEffect(() => {
-    // Initialize immediately
-    setScrolled((window.scrollY || document.documentElement.scrollTop || 0) > SCROLL_SOLID_AT)
+    const startY = window.scrollY || document.documentElement.scrollTop || 0
+    setScrolled(startY > SCROLL_SOLID_AT)
+    lastScrollY.current = startY
 
     const handleScroll = () => {
       if (ticking.current) return
@@ -137,6 +143,16 @@ export default function Navbar() {
       window.requestAnimationFrame(() => {
         const y = window.scrollY || document.documentElement.scrollTop || 0
         setScrolled(y > SCROLL_SOLID_AT)
+
+        // Direction-based hide/reveal with a small delta so it does not flicker.
+        const prev = lastScrollY.current
+        if (Math.abs(y - prev) > SCROLL_DELTA) {
+          if (y > prev && y > SCROLL_HIDE_AFTER) setHidden(true)   // scrolling down
+          else if (y < prev) setHidden(false)                     // scrolling up
+          lastScrollY.current = y
+        }
+        if (y <= SCROLL_HIDE_AFTER) setHidden(false)              // always show near top
+
         ticking.current = false
       })
     }
@@ -217,6 +233,10 @@ export default function Navbar() {
   const solutionsOpen  = activeMenu === 'solutions'
   const industriesOpen = activeMenu === 'industries'
   const isMenuOpen     = solutionsOpen || industriesOpen
+
+  // Slide the header up only while genuinely scrolling down — never while a
+  // menu is open, and never when the user prefers reduced motion.
+  const headerHidden = hidden && !isMenuOpen && !mobileMenuOpen && !prefersReducedMotion
 
   // On homepage at top: transparent overlay EXCEPT when mega-menu is open.
   // When mega-menu is open, header transitions to white/surface so header + mega-menu merge as ONE unified surface.
@@ -309,8 +329,13 @@ export default function Navbar() {
           WebkitBackdropFilter: headerBackdrop,
           borderBottom: headerBorder,
           boxShadow: headerShadow,
-          /* Always visible — no hide/reveal transform */
+          // Samsung-style: slide up on scroll-down, slide back on scroll-up.
+          // Use `none` (not translateY(0)) when visible so the header never
+          // becomes a containing block for its fixed descendants (mega menu).
+          transform: headerHidden ? 'translateY(-100%)' : 'none',
+          willChange: 'transform',
           transition: [
+            'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
             'background 0.35s ease',
             'backdrop-filter 0.35s ease',
             'border-color 0.35s ease',
