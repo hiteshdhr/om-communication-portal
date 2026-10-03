@@ -464,6 +464,14 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
+    /* Force backgrounds/colors (pink bill header, red title bar) to print */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Belt-and-braces: never print anything explicitly marked no-print */
+  .no-print {
+    display: none !important;
   }
 
   /* A4 page setup */

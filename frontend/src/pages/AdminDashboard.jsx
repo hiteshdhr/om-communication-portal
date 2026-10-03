@@ -1,12 +1,12 @@
-﻿import { useEffect, useState, useCallback, useRef } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import {
   LogOut, TrendingUp, AlertTriangle, FileText, DollarSign,
   Plus, X, MessageCircle, Trash2,
-  LayoutDashboard, Inbox, TicketIcon, ReceiptText, RefreshCw, Wrench,
-  Calendar, Printer, Menu, Sun, Moon, Settings, ClipboardList,
+  LayoutDashboard, Inbox, TicketIcon, RefreshCw, Wrench,
+  Calendar, Menu, Sun, Moon, Settings, ClipboardList,
   CheckCircle2, Clock, AlertCircle, Building2, CreditCard, Mail, Database
 } from 'lucide-react'
 import api from '../api'
@@ -144,303 +144,6 @@ function ScheduleSurveyModal({ inquiry, onClose, onCreated }) {
   )
 }
 
-// ─── Modal: Quotation Generator & Printable PDF ────────────────────────────────
-function QuotationModal({ inquiry, onClose }) {
-  const quoteRef = useRef()
-  const quoteNumber = `OCW-Q-2026-${Math.floor(100000 + Math.random() * 900000)}`
-  const [items, setItems] = useState([
-    { description: 'CCTV High-Definition IP Surveillance Package (Cameras, NVR, Storage & PoE Switches)', quantity: 1, unitPrice: 32000 },
-    { description: 'Concealed ISI PVC Conduit Piping & Structured D-Link CAT6 Cabling (per site measurements)', quantity: 1, unitPrice: 14500 },
-    { description: 'Installation, Server Rack Mounting, Testing & Mobile Configuration', quantity: 1, unitPrice: 8500 }
-  ])
-
-  const addItem = () => setItems(prev => [...prev, { description: '', quantity: 1, unitPrice: 0 }])
-  const removeItem = (idx) => setItems(prev => prev.filter((_, i) => i !== idx))
-  const updateItem = (idx, field, val) => {
-    setItems(prev => {
-      const copy = [...prev]
-      copy[idx] = { ...copy[idx], [field]: val }
-      return copy
-    })
-  }
-
-  const subtotal = items.reduce((s, it) => s + (Number(it.quantity) || 0) * (Number(it.unitPrice) || 0), 0)
-  const gst = subtotal * 0.18
-  const total = subtotal + gst
-
-  const handlePrint = () => {
-    window.print()
-  }
-
-  const handleWhatsApp = () => {
-    const msg = `*OFFICIAL QUOTATION — OM COMMUNICATION WORK*\n\nQuote No: ${quoteNumber}\nClient: ${inquiry?.clientName}\nFacility: ${inquiry?.facilityType}\nTotal Amount: ${fmtCurrency(total)} (incl. 18% GST)\n\n*Terms:* 75% Advance, 25% on completion | 1-Year On-Site Hardware Warranty.\n\n— Om Communication Work | +91 72177 15296`
-    window.open(`https://wa.me/${inquiry?.phone?.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank')
-  }
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        className="glass-card" style={{ maxWidth: 840, width: '100%', padding: '32px', maxHeight: '92vh', overflowY: 'auto', background: '#07152B' }}>
-        
-        {/* Actions Bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(197,160,63,0.2)' }}>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={handlePrint} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.8125rem' }}>
-              <Printer size={15} /> Print / Save as PDF
-            </button>
-            <button onClick={handleWhatsApp} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.8125rem', color: '#25D366' }}>
-              <MessageCircle size={15} /> Share via WhatsApp
-            </button>
-          </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8' }}><X size={20} /></button>
-        </div>
-
-        {/* Printable Quotation Document */}
-        <div ref={quoteRef} style={{ background: '#FFFFFF', color: '#040C1A', padding: '36px', borderRadius: 12, boxShadow: '0 4px 24px rgba(0,0,0,0.3)', fontFamily: "'Inter', sans-serif" }}>
-          {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #C5A03F', paddingBottom: 20, marginBottom: 24 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <img src={logo} alt="Logo" style={{ width: 56, height: 56, objectFit: 'contain' }} />
-              <div>
-                <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#040C1A', letterSpacing: '-0.02em' }}>OM COMMUNICATION WORK</div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#C5A03F', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Enterprise Security & Telecom Solutions</div>
-                <div style={{ fontSize: '0.72rem', color: '#475569', marginTop: 2 }}>GSTIN: 07COSPS8901L2ZO | Ph: +91 72177 15296</div>
-              </div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#C5A03F' }}>QUOTATION</div>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#040C1A', marginTop: 4 }}>{quoteNumber}</div>
-              <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Date: {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
-            </div>
-          </div>
-
-          {/* Client & Scope Details */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24, fontSize: '0.85rem' }}>
-            <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 8, border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 6 }}>Quotation Issued To:</div>
-              <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '0.95rem' }}>{inquiry?.clientName}</div>
-              {inquiry?.companyName && <div style={{ color: '#475569', fontWeight: 600 }}>{inquiry?.companyName}</div>}
-              <div style={{ color: '#475569' }}>Phone: {inquiry?.phone}</div>
-              {inquiry?.email && <div style={{ color: '#475569' }}>Email: {inquiry?.email}</div>}
-            </div>
-
-            <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 8, border: '1px solid #E2E8F0' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 6 }}>Project Details:</div>
-              <div><strong>Facility:</strong> {inquiry?.facilityType}</div>
-              <div><strong>Services:</strong> {inquiry?.servicesRequired?.join(', ')}</div>
-              <div><strong>Quote Validity:</strong> 30 Days from issue</div>
-            </div>
-          </div>
-
-          {/* Editable Line Items Table */}
-          <div style={{ marginBottom: 20 }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-              <thead>
-                <tr style={{ background: '#0B1E38', color: '#FFFFFF', textAlign: 'left' }}>
-                  <th style={{ padding: '10px 12px' }}>Scope of Work / Item Description</th>
-                  <th style={{ padding: '10px 12px', width: 60, textAlign: 'center' }}>Qty</th>
-                  <th style={{ padding: '10px 12px', width: 120, textAlign: 'right' }}>Rate (₹)</th>
-                  <th style={{ padding: '10px 12px', width: 120, textAlign: 'right' }}>Amount (₹)</th>
-                  <th style={{ width: 30 }} className="no-print"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((it, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #E2E8F0' }}>
-                    <td style={{ padding: '8px 12px' }}>
-                      <input
-                        style={{ width: '100%', border: 'none', background: 'transparent', font: 'inherit', color: '#0F172A' }}
-                        value={it.description}
-                        onChange={e => updateItem(i, 'description', e.target.value)}
-                      />
-                    </td>
-                    <td style={{ padding: '8px 12px', textAlign: 'center' }}>
-                      <input
-                        type="number"
-                        min="1"
-                        style={{ width: 45, textAlign: 'center', border: '1px solid #CBD5E1', borderRadius: 4, padding: 4 }}
-                        value={it.quantity}
-                        onChange={e => updateItem(i, 'quantity', e.target.value)}
-                      />
-                    </td>
-                    <td style={{ padding: '8px 12px', textAlign: 'right' }}>
-                      <input
-                        type="number"
-                        style={{ width: 90, textAlign: 'right', border: '1px solid #CBD5E1', borderRadius: 4, padding: 4 }}
-                        value={it.unitPrice}
-                        onChange={e => updateItem(i, 'unitPrice', e.target.value)}
-                      />
-                    </td>
-                    <td style={{ padding: '8px 12px', textAlign: 'right', fontWeight: 700 }}>
-                      {fmtCurrency((Number(it.quantity) || 0) * (Number(it.unitPrice) || 0))}
-                    </td>
-                    <td className="no-print" style={{ padding: '8px 4px' }}>
-                      <button onClick={() => removeItem(i)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer' }}><Trash2 size={13} /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="no-print" style={{ marginTop: 10 }}>
-              <button onClick={addItem} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', fontSize: '0.75rem', background: '#F1F5F9', border: '1px solid #CBD5E1', borderRadius: 6, cursor: 'pointer', fontWeight: 600 }}>
-                <Plus size={12} /> Add Scope Line Item
-              </button>
-            </div>
-          </div>
-
-          {/* Totals & Commercial Terms */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 20, paddingTop: 14, borderTop: '2px solid #E2E8F0' }}>
-            <div style={{ fontSize: '0.75rem', color: '#475569', lineHeight: 1.6 }}>
-              <div style={{ fontWeight: 800, color: '#0F172A', textTransform: 'uppercase', marginBottom: 4 }}>Standard Commercial Terms:</div>
-              <div>• 75% Advance payment along with official Purchase Order / Work Order.</div>
-              <div>• 25% Balance payment immediately upon successful installation and testing.</div>
-              <div>• Cabling & PVC conduit piping billed on actual site measurements.</div>
-              <div>• 1-Year Comprehensive On-Site Warranty on all active hardware components.</div>
-            </div>
-
-            <div style={{ background: '#F8FAFC', padding: 14, borderRadius: 8, fontSize: '0.85rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                <span style={{ color: '#64748b' }}>Subtotal:</span>
-                <span style={{ fontWeight: 600 }}>{fmtCurrency(subtotal)}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ color: '#64748b' }}>GST (18%):</span>
-                <span style={{ fontWeight: 600 }}>{fmtCurrency(gst)}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8, borderTop: '1px solid #CBD5E1', fontSize: '1rem', fontWeight: 900, color: '#0B1E38' }}>
-                <span>Total Amount:</span>
-                <span style={{ color: '#C5A03F' }}>{fmtCurrency(total)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Authorized Signatory */}
-          <div style={{ marginTop: 36, display: 'flex', justifyContent: 'flex-end', textAlign: 'center' }}>
-            <div>
-              <div style={{ height: 40 }}></div>
-              <div style={{ borderTop: '1px solid #0F172A', paddingTop: 4, fontSize: '0.75rem', fontWeight: 700, color: '#0F172A' }}>
-                Authorized Signatory
-              </div>
-              <div style={{ fontSize: '0.7rem', color: '#64748b' }}>Om Communication Work</div>
-            </div>
-          </div>
-        </div>
-
-      </motion.div>
-    </div>
-  )
-}
-
-// ─── Modal: Create Invoice ─────────────────────────────────────────────────────
-function InvoiceModal({ onClose, onCreated }) {
-  const [form, setForm] = useState({ clientName: '', clientPhone: '', clientEmail: '', items: [{ description: '', quantity: 1, unitPrice: '' }] })
-  const [loading, setLoading] = useState(false)
-
-  function addItem() { setForm(f => ({ ...f, items: [...f.items, { description: '', quantity: 1, unitPrice: '' }] })) }
-  function removeItem(i) { setForm(f => ({ ...f, items: f.items.filter((_, idx) => idx !== i) })) }
-  function updateItem(i, field, val) {
-    setForm(f => { const items = [...f.items]; items[i] = { ...items[i], [field]: val }; return { ...f, items } })
-  }
-
-  const subtotal = form.items.reduce((s, it) => s + (Number(it.unitPrice) || 0) * (Number(it.quantity) || 0), 0)
-  const gst = subtotal * 0.18
-  const total = subtotal + gst
-
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (!form.clientName) { toast.error('Client name is required.'); return }
-    setLoading(true)
-    try {
-      const payload = {
-        ...form,
-        items: form.items.map(it => ({
-          description: it.description,
-          quantity: parseInt(it.quantity),
-          unitPrice: parseFloat(it.unitPrice),
-          amount: parseFloat(it.unitPrice) * parseInt(it.quantity)
-        }))
-      }
-      const { data } = await api.post('/admin/invoices', payload)
-      toast.success(`Invoice ${data.invoiceNumber} created!`)
-      onCreated(data)
-      onClose()
-    } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to create invoice.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-      <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        className="glass-card" style={{ maxWidth: 720, width: '100%', padding: '36px', maxHeight: '90vh', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-          <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Create Invoice</h2>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: 4 }}><X size={22} /></button>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
-            {[['clientName', 'Client Name *', 'text', 'Full name'], ['clientPhone', 'Phone', 'tel', '+91 98765 43210'], ['clientEmail', 'Email', 'email', 'client@company.com']].map(([k, l, t, ph]) => (
-              <div key={k} style={{ gridColumn: k === 'clientName' ? 'span 2' : 'span 1' }}>
-                <label className="form-label">{l}</label>
-                <input className="form-input" type={t} placeholder={ph} value={form[k]}
-                  onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))} />
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <label className="form-label" style={{ marginBottom: 0 }}>Line Items</label>
-              <button type="button" onClick={addItem} style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(0,102,255,0.12)', color: '#60a5fa', border: '1px solid rgba(0,102,255,0.25)', borderRadius: 8, padding: '6px 12px', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: 600 }}>
-                <Plus size={14} /> Add Item
-              </button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {form.items.map((item, i) => (
-                <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 80px 120px auto', gap: 10, alignItems: 'center' }}>
-                  <input className="form-input" placeholder="Item description" value={item.description}
-                    onChange={e => updateItem(i, 'description', e.target.value)} />
-                  <input className="form-input" type="number" min="1" placeholder="Qty" value={item.quantity}
-                    onChange={e => updateItem(i, 'quantity', e.target.value)} style={{ textAlign: 'center' }} />
-                  <input className="form-input" type="number" min="0" placeholder="Unit price" value={item.unitPrice}
-                    onChange={e => updateItem(i, 'unitPrice', e.target.value)} />
-                  <button type="button" onClick={() => removeItem(i)} disabled={form.items.length === 1}
-                    style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', borderRadius: 8, padding: '10px', cursor: form.items.length === 1 ? 'not-allowed' : 'pointer', opacity: form.items.length === 1 ? 0.4 : 1 }}>
-                    <Trash2 size={15} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Totals Summary */}
-          <div style={{ background: 'rgba(11,25,44,0.7)', borderRadius: 12, padding: '16px 18px', marginBottom: 24, border: '1px solid rgba(255,255,255,0.07)' }}>
-            {[['Subtotal', subtotal], ['GST 18%', gst]].map(([l, v]) => (
-              <div key={l} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: '0.9rem' }}>
-                <span style={{ color: '#94A3B8' }}>{l}</span>
-                <span>{fmtCurrency(v)}</span>
-              </div>
-            ))}
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.08)', fontWeight: 800, fontSize: '1.0625rem' }}>
-              <span>Total</span><span style={{ color: '#C5A03F' }}>{fmtCurrency(total)}</span>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button type="button" onClick={onClose} className="btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>Cancel</button>
-            <button type="submit" disabled={loading} className="btn-primary" style={{ flex: 2, justifyContent: 'center' }}>
-              <ReceiptText size={16} /> {loading ? 'Creating Invoice...' : 'Create Invoice'}
-            </button>
-          </div>
-        </form>
-      </motion.div>
-    </div>
-  )
-}
-
 // ─── Navigation Structure ──────────────────────────────────────────────────────
 const NAV_GROUPS = [
   {
@@ -482,19 +185,23 @@ export default function AdminDashboard() {
   const [auditLogs, setAuditLogs] = useState([])
   const [auditFilter, setAuditFilter] = useState('')
   const [settingsLoading, setSettingsLoading] = useState(false)
-  
+  // True when one or more dashboard API calls fail for a non-auth reason
+  // (e.g. backend down, DB error). Surfaced as a banner instead of silently
+  // rendering empty/placeholder metrics.
+  const [loadError, setLoadError] = useState(false)
+
   // Modals
   const [showDocumentModal, setShowDocumentModal] = useState(false)
   const [selectedDoc, setSelectedDoc] = useState(null)
   const [docFilter, setDocFilter] = useState('ALL')
   const [surveyInquiry, setSurveyInquiry] = useState(null)
-  const [quoteInquiry, setQuoteInquiry] = useState(null)
 
   const navGroups = NAV_GROUPS
   const tabs = NAV_GROUPS.flatMap(g => g.items)
 
   const fetchAll = useCallback(async () => {
     setLoading(true)
+    let anyError = false
     // Use independent calls so one failure does not destroy the entire dashboard.
     const safeGet = async (url, fallback) => {
       try {
@@ -507,6 +214,9 @@ export default function AdminDashboard() {
           navigate('/admin/login')
           throw err
         }
+        // Non-auth failure (backend/network/DB) — record it so the UI can
+        // show a real error state rather than a misleading empty dashboard.
+        anyError = true
         return { data: fallback }
       }
     }
@@ -519,6 +229,7 @@ export default function AdminDashboard() {
         safeGet('/admin/tickets', []),
         safeGet('/admin/invoices', []),
       ])
+      setLoadError(anyError)
       setMetrics(m.data || {})
       setInquiries(Array.isArray(inq.data) ? inq.data : [])
       setSurveys(Array.isArray(surv.data) ? surv.data : [])
@@ -620,6 +331,24 @@ export default function AdminDashboard() {
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to delete document. PAID documents cannot be deleted.')
     }
+  }
+
+  // Open the unified Document creation modal (QUOTATION) pre-filled from a lead.
+  // Routes the "Quote" action through the single Document Management workflow
+  // so quotations are real, persisted documents (no separate print-only generator).
+  function openQuoteForLead(inq) {
+    const subjectParts = inq?.servicesRequired?.length
+      ? `QUOTATION FOR ${inq.servicesRequired.join(', ').toUpperCase()}`
+      : 'QUOTATION FOR SECURITY & TELECOM SYSTEM'
+    setSelectedDoc({
+      documentType: 'QUOTATION',
+      clientName: inq?.clientName || '',
+      clientPhone: inq?.phone || '',
+      clientEmail: inq?.email || '',
+      clientAddress: inq?.address || '',
+      subject: subjectParts,
+    })
+    setShowDocumentModal(true)
   }
 
   function sharePaymentLink(inv) {
@@ -821,6 +550,21 @@ export default function AdminDashboard() {
           <div style={{ textAlign: 'center', padding: '60px 0', color: '#94A3B8' }}>Loading dashboard data...</div>
         ) : (
           <>
+            {/* Real error banner — shown when a dashboard API call failed for a
+                non-auth reason, so an empty dashboard is never mistaken for "no data". */}
+            {loadError && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', marginBottom: 20, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: 10 }}>
+                <AlertTriangle size={20} color="#F87171" />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, color: '#F87171', fontSize: '0.9rem' }}>Some dashboard data failed to load.</div>
+                  <div style={{ color: '#FCA5A5', fontSize: '0.8rem', marginTop: 2 }}>Figures shown may be incomplete. Check your connection or the server, then retry.</div>
+                </div>
+                <button onClick={fetchAll} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
+                  <RefreshCw size={14} /> Retry
+                </button>
+              </div>
+            )}
+
             {/* OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <div>
@@ -871,7 +615,7 @@ export default function AdminDashboard() {
                             <td style={{ padding: '12px' }}><StatusBadge value={inq.status} /></td>
                             <td style={{ padding: '12px', textAlign: 'right' }}>
                               <button
-                                onClick={() => setQuoteInquiry(inq)}
+                                onClick={() => openQuoteForLead(inq)}
                                 style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(197,160,63,0.15)', border: '1px solid rgba(197,160,63,0.3)', color: '#FBF6E0', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
                               >
                                 Prepare Quote
@@ -951,7 +695,7 @@ export default function AdminDashboard() {
                                 Survey
                               </button>
                               <button
-                                onClick={() => setQuoteInquiry(inq)}
+                                onClick={() => openQuoteForLead(inq)}
                                 title="Create Formal Quotation"
                                 style={{ padding: '5px 10px', borderRadius: 6, background: 'rgba(197,160,63,0.15)', border: '1px solid rgba(197,160,63,0.3)', color: '#FBF6E0', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
                               >
@@ -1501,13 +1245,6 @@ export default function AdminDashboard() {
           inquiry={surveyInquiry}
           onClose={() => setSurveyInquiry(null)}
           onCreated={() => { fetchAll(); setActiveTab('surveys') }}
-        />
-      )}
-
-      {quoteInquiry && (
-        <QuotationModal
-          inquiry={quoteInquiry}
-          onClose={() => setQuoteInquiry(null)}
         />
       )}
 

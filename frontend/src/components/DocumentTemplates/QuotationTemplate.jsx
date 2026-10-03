@@ -129,12 +129,15 @@ export default function QuotationTemplate({ doc = {} }) {
         <tbody>
           {items.map((item, idx) => {
             const amt = Number(item.amount || ((item.quantity || 1) * (item.unitPrice || 0)) || 0)
+            // Alternating row emphasis to match the reference: every second
+            // line's description is rendered in the brand firebrick red.
+            const descColor = idx % 2 === 1 ? '#B22222' : '#000000'
             return (
               <tr key={idx} style={{ borderBottom: '1.5px solid #000000' }}>
-                <td style={{ padding: '8px 6px', borderRight: '2px solid #000000', textAlign: 'left', fontWeight: 700, verticalAlign: 'top' }}>
+                <td style={{ padding: '8px 6px', borderRight: '2px solid #000000', textAlign: 'left', fontWeight: 700, verticalAlign: 'top', color: descColor }}>
                   {idx + 1}.
                 </td>
-                <td style={{ padding: '8px 8px', borderRight: '2px solid #000000', fontWeight: 700, verticalAlign: 'top', textTransform: 'uppercase', wordBreak: 'break-word' }}>
+                <td style={{ padding: '8px 8px', borderRight: '2px solid #000000', fontWeight: 700, verticalAlign: 'top', textTransform: 'uppercase', wordBreak: 'break-word', color: descColor }}>
                   {item.description}
                 </td>
                 <td style={{ padding: '8px 6px', borderRight: '2px solid #000000', textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>

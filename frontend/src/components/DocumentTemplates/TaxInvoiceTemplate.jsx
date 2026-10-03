@@ -150,19 +150,19 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
               const amt = Number(item.amount || ((item.quantity || 1) * (item.unitPrice || 0)) || 0)
               return (
                 <tr key={idx} style={{ borderBottom: '1px solid #E2E8F0' }}>
-                  <td style={{ padding: '9px 6px', borderRight: border, textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>
+                  <td style={{ padding: '7px 6px', borderRight: border, textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>
                     {idx + 1}
                   </td>
-                  <td style={{ padding: '9px 10px', borderRight: border, fontWeight: 600, verticalAlign: 'top', textTransform: 'uppercase', wordBreak: 'break-word' }}>
+                  <td style={{ padding: '7px 10px', borderRight: border, fontWeight: 600, verticalAlign: 'top', textTransform: 'uppercase', wordBreak: 'break-word', lineHeight: 1.35 }}>
                     {item.description}
                   </td>
-                  <td style={{ padding: '9px 6px', borderRight: border, textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>
+                  <td style={{ padding: '7px 6px', borderRight: border, textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>
                     {item.quantity} {item.unit ? item.unit.toUpperCase() : 'NOS'}
                   </td>
-                  <td style={{ padding: '9px 10px', borderRight: border, textAlign: 'right', verticalAlign: 'top', fontWeight: 600 }}>
+                  <td style={{ padding: '7px 10px', borderRight: border, textAlign: 'right', verticalAlign: 'top', fontWeight: 600 }}>
                     {Number(item.unitPrice || 0).toLocaleString('en-IN')}
                   </td>
-                  <td style={{ padding: '9px 10px', textAlign: 'right', verticalAlign: 'top', fontWeight: 700 }}>
+                  <td style={{ padding: '7px 10px', textAlign: 'right', verticalAlign: 'top', fontWeight: 700 }}>
                     {amt.toLocaleString('en-IN')}
                   </td>
                 </tr>

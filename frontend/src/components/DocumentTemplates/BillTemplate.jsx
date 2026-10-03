@@ -147,30 +147,46 @@ export default function BillTemplate({ doc = {} }) {
                     display: 'grid',
                     gridTemplateColumns: '50px 1fr 80px 90px 110px',
                     borderBottom: innerBorder,
-                    minHeight: '34px',
+                    minHeight: '30px',
+                    alignItems: 'start',
                   }}
                 >
-                  <div style={{ padding: '8px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 600, verticalAlign: 'top', alignSelf: 'start', paddingTop: 10 }}>
+                  <div style={{ padding: '7px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 600 }}>
                     {idx + 1}
                   </div>
-                  <div style={{ padding: '8px 10px', borderRight: innerBorder, fontWeight: 500, textTransform: 'uppercase', wordBreak: 'break-word', paddingTop: 10 }}>
+                  <div style={{ padding: '7px 10px', borderRight: innerBorder, fontWeight: 500, textTransform: 'uppercase', wordBreak: 'break-word', lineHeight: 1.35 }}>
                     {item.description}
                   </div>
-                  <div style={{ padding: '8px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 600, paddingTop: 10 }}>
+                  <div style={{ padding: '7px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 600 }}>
                     {item.quantity} NOS
                   </div>
-                  <div style={{ padding: '8px 6px', borderRight: innerBorder, textAlign: 'right', fontWeight: 500, paddingTop: 10 }}>
+                  <div style={{ padding: '7px 6px', borderRight: innerBorder, textAlign: 'right', fontWeight: 500 }}>
                     {Number(item.unitPrice || 0).toLocaleString('en-IN')}
                   </div>
-                  <div style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 600, paddingTop: 10 }}>
+                  <div style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 600 }}>
                     {amt.toLocaleString('en-IN')}
                   </div>
                 </div>
               )
             })}
 
-            {/* Empty spacer rows to fill page height (like the reference) */}
-            <div style={{ flex: 1, minHeight: `${Math.max(280, 280 - items.length * 34)}px` }} />
+            {/* Ruled filler: extends the column grid to the bottom of the page
+                exactly like the reference bill, so the table reads as one
+                continuous ruled block (vertical separators continue through the
+                empty area) rather than a borderless void. flex:1 makes it grow
+                to fill whatever height remains above the TOTAL row. */}
+            <div style={{
+              flex: 1,
+              minHeight: '200px',
+              display: 'grid',
+              gridTemplateColumns: '50px 1fr 80px 90px 110px',
+            }}>
+              <div style={{ borderRight: innerBorder }} />
+              <div style={{ borderRight: innerBorder }} />
+              <div style={{ borderRight: innerBorder }} />
+              <div style={{ borderRight: innerBorder }} />
+              <div />
+            </div>
           </div>
 
           {/* ── TOTAL ROW ─────────────────────────────────────────── */}
@@ -213,7 +229,7 @@ export default function BillTemplate({ doc = {} }) {
         {/* ── AMOUNT IN WORDS ───────────────────────────────────── */}
         <div style={{ padding: '8px 14px 10px', borderBottom: outerBorder }}>
           <div style={{ fontSize: '11px', fontWeight: 700, color: '#333333', marginBottom: 2 }}>
-            TotalAmount(inwords)
+            Total Amount (In Words):
           </div>
           <div style={{ fontSize: '12.5px', fontWeight: 400, color: '#0F172A', textTransform: 'capitalize' }}>
             {numberToWordsINR(totalAmount)}
@@ -222,18 +238,22 @@ export default function BillTemplate({ doc = {} }) {
 
         {/* ── SIGNATURE BOX ─────────────────────────────────────── */}
         <div style={{
-          padding: '10px 14px 14px',
-          minHeight: '90px',
+          padding: '12px 18px 16px',
+          minHeight: '96px',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
+          alignItems: 'flex-end',
           justifyContent: 'flex-end',
         }}>
-          <div style={{ textAlign: 'center' }}>
-            {/* Signature space */}
-            <div style={{ height: '42px' }} />
-            <div style={{ fontSize: '11.5px', fontWeight: 700, color: '#0F172A', textAlign: 'center' }}>
-              AuthorisedSignatoryFor OM<br />COMMUNICATION WORKS
+          <div style={{ textAlign: 'center', minWidth: 200 }}>
+            <div style={{ fontSize: '11px', fontWeight: 600, color: '#475569', marginBottom: 2 }}>For</div>
+            <div style={{ fontSize: '12.5px', fontWeight: 900, color: '#0F172A', textTransform: 'uppercase', marginBottom: 36 }}>
+              OM COMMUNICATION WORKS
+            </div>
+            <div style={{ borderTop: '1px solid #334155', paddingTop: 5 }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase' }}>
+                Authorised Signatory
+              </div>
             </div>
           </div>
         </div>
