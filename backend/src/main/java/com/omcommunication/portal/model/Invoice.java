@@ -45,8 +45,13 @@ public class Invoice {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal taxAmount = BigDecimal.ZERO;
 
+    // NOTE: subtotal, taxAmount and totalAmount are computed server-side in
+    // InvoiceService from the line items AFTER request binding, so the inbound
+    // payload never carries them. They must therefore only be guarded as
+    // non-negative (0.00), not > 0 — a 0.01 floor here rejected every create/
+    // update request before the real total was ever calculated.
     @NotNull(message = "Total amount is required")
-    @DecimalMin(value = "0.01", message = "Total amount must be greater than zero")
+    @DecimalMin(value = "0.00", message = "Total amount cannot be negative")
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
