@@ -3,6 +3,8 @@ package com.omcommunication.portal.controller;
 import com.omcommunication.portal.model.User;
 import com.omcommunication.portal.repository.UserRepository;
 import com.omcommunication.portal.security.JwtTokenProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -37,7 +41,13 @@ public class AuthController {
         User user = userRepository.findByUsername(username)
                 .orElse(null);
 
-        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+        if (user == null) {
+            log.warn("[Auth] Login attempt for unknown username: '{}'", username);
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+        }
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            log.warn("[Auth] Login attempt for '{}': password mismatch (BCrypt check failed)", username);
             return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
         }
 

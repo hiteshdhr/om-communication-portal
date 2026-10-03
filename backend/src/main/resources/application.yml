@@ -85,6 +85,8 @@ server:
 logging:
   level:
     com.omcommunication: INFO
+    com.omcommunication.portal.controller.AuthController: WARN
+    com.omcommunication.portal.OmCommunicationPortalApplication: INFO
     org.springframework.security: WARN
 
 ---
