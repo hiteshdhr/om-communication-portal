@@ -24,6 +24,9 @@ public class User {
     @Column(nullable = false)
     private String role; // ROLE_ADMIN, ROLE_CLIENT
 
+    @Column(nullable = false)
+    private int tokenVersion = 0;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -40,4 +43,6 @@ public class User {
     public void setRole(String role) { this.role = role; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public int getTokenVersion() { return tokenVersion; }
+    public void setTokenVersion(int tokenVersion) { this.tokenVersion = tokenVersion; }
 }

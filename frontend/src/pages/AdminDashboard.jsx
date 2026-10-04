@@ -7,7 +7,8 @@ import {
   Plus, X, MessageCircle, Trash2,
   LayoutDashboard, Inbox, TicketIcon, RefreshCw, Wrench,
   Calendar, Menu, Sun, Moon, Settings, ClipboardList,
-  CheckCircle2, Clock, AlertCircle, Building2, CreditCard, Mail, Database
+  CheckCircle2, Clock, AlertCircle, Building2, CreditCard, Mail, Database,
+  Shield, Key, Eye, EyeOff, ChevronRight, UserCircle, Search, Filter
 } from 'lucide-react'
 import api from '../api'
 import logo from '../assets/ocw-logo.png'
@@ -185,6 +186,16 @@ export default function AdminDashboard() {
   const [auditLogs, setAuditLogs] = useState([])
   const [auditFilter, setAuditFilter] = useState('')
   const [settingsLoading, setSettingsLoading] = useState(false)
+  const [settingsTab, setSettingsTab] = useState('business')
+  const [showChangePwd, setShowChangePwd] = useState(false)
+  const [changePwdForm, setChangePwdForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [changePwdLoading, setChangePwdLoading] = useState(false)
+  const [showPwdCurrent, setShowPwdCurrent] = useState(false)
+  const [showPwdNew, setShowPwdNew] = useState(false)
+  const [showPwdConfirm, setShowPwdConfirm] = useState(false)
+  const [selectedLogEntry, setSelectedLogEntry] = useState(null)
+  const [logActionFilter, setLogActionFilter] = useState('')
+  const [logTextFilter, setLogTextFilter] = useState('')
   const [sectionErrors, setSectionErrors] = useState({
     metrics: false,
     inquiries: false,
@@ -381,6 +392,45 @@ export default function AdminDashboard() {
     const docTitle = inv.documentType === 'QUOTATION' ? 'Quotation' : inv.documentType === 'BILL' ? 'Bill' : 'Invoice'
     const msg = `*${docTitle} from Om Communication Works*\n\n${docTitle} No: ${inv.invoiceNumber}\nClient: ${inv.clientName}\nAmount: ${fmtCurrency(inv.totalAmount)}\n\nView document:\n${link}\n\n— Om Communication Works | +91 72177 15296`
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
+  }
+
+  async function changePassword() {
+    if (!changePwdForm.currentPassword || !changePwdForm.newPassword || !changePwdForm.confirmPassword) {
+      toast.error('All password fields are required.'); return
+    }
+    if (changePwdForm.newPassword !== changePwdForm.confirmPassword) {
+      toast.error('New passwords do not match.'); return
+    }
+    if (changePwdForm.newPassword.length < 8) {
+      toast.error('New password must be at least 8 characters.'); return
+    }
+    setChangePwdLoading(true)
+    try {
+      await api.post('/admin/change-password', {
+        currentPassword: changePwdForm.currentPassword,
+        newPassword: changePwdForm.newPassword
+      })
+      toast.success('Password changed successfully.')
+      setShowChangePwd(false)
+      setChangePwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to change password.')
+    } finally {
+      setChangePwdLoading(false)
+    }
+  }
+
+  async function logoutAllSessions() {
+    if (!window.confirm('This will revoke ALL active sessions including this one. You will be logged out immediately. Continue?')) return
+    try {
+      await api.post('/admin/logout-all-sessions')
+      toast.success('All sessions revoked.')
+      localStorage.removeItem('om_admin_token')
+      localStorage.removeItem('om_admin_user')
+      navigate('/admin/login')
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to revoke sessions.')
+    }
   }
 
   async function fetchSettings() {
@@ -1079,211 +1129,271 @@ export default function AdminDashboard() {
 
             {/* SETTINGS & LOG TAB */}
             {activeTab === 'settings' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
 
-                {/* Load button if not loaded */}
-                {!settingsData && !settingsLoading && (
-                  <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
-                    <Settings size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
-                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', marginBottom: 8 }}>Settings & Activity Log</div>
-                    <div style={{ color: '#94A3B8', fontSize: '0.875rem', marginBottom: 20 }}>Load current application settings and admin activity log.</div>
-                    <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>
-                      <RefreshCw size={15} /> Load Settings & Log
+                {/* Inner Tab Bar */}
+                <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--border)', marginBottom: 24, overflowX: 'auto' }}>
+                  {[
+                    { key: 'business', label: 'Business Settings', icon: Building2 },
+                    { key: 'document', label: 'Document Settings', icon: FileText },
+                    { key: 'account', label: 'Account & Security', icon: Shield },
+                    { key: 'log', label: 'Activity Log', icon: ClipboardList },
+                  ].map(({ key, label, icon: Icon }) => (
+                    <button key={key} onClick={() => { setSettingsTab(key); if ((key === 'business' || key === 'document') && !settingsData) fetchSettings() }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'none', border: 'none', cursor: 'pointer', borderBottom: settingsTab === key ? '2px solid #B4233C' : '2px solid transparent', color: settingsTab === key ? '#FFFFFF' : '#64748B', fontWeight: settingsTab === key ? 700 : 400, fontSize: '0.875rem', whiteSpace: 'nowrap', transition: 'all 0.15s' }}>
+                      <Icon size={15} /> {label}
                     </button>
+                  ))}
+                </div>
+
+                {/* ── BUSINESS SETTINGS ── */}
+                {settingsTab === 'business' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    {!settingsData && !settingsLoading && (
+                      <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
+                        <Building2 size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>Load Business Settings</div>
+                        <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>Load Settings</button>
+                      </div>
+                    )}
+                    {settingsLoading && <div className="glass-card" style={{ padding: 32, textAlign: 'center', color: '#94A3B8' }}>Loading…</div>}
+                    {settingsData && (
+                      <>
+                        <div className="glass-card" style={{ padding: 24 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                            <Building2 size={18} color="#B4233C" />
+                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Business Information</span>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 16 }}>
+                            {[
+                              ['Business Name', settingsData.businessName],
+                              ['Address', settingsData.businessAddress],
+                              ['Phone', settingsData.businessPhone],
+                              ['Email', settingsData.businessEmail],
+                              ['GSTIN', settingsData.gstin],
+                              ['PAN', settingsData.pan],
+                            ].map(([label, value]) => (
+                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
+                                <div style={{ fontSize: '0.9375rem', fontWeight: 600, color: '#E2E8F0' }}>{value || '—'}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="glass-card" style={{ padding: 24 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                            <Database size={18} color="#60A5FA" />
+                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Integration Status</span>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                            {[
+                              { label: 'Razorpay Payment', status: settingsData.razorpayStatus, sub: `Key: ${settingsData.razorpayKeyIdPrefix} — Secret: Environment Managed`, icon: CreditCard },
+                              { label: 'Email (SMTP)', status: settingsData.emailStatus, sub: `Host: ${settingsData.emailHost} — Password: Environment Managed`, icon: Mail },
+                              { label: 'PostgreSQL Database', status: settingsData.databaseStatus, sub: 'Connection via Railway — Credentials: Environment Managed', icon: Database },
+                            ].map(({ label, status, sub, icon: Icon }) => {
+                              const ok = status === 'Configured' || status === 'Connected'
+                              return (
+                                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 14, background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
+                                  <Icon size={18} color={ok ? '#4ADE80' : '#FBBF24'} style={{ flexShrink: 0 }} />
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.875rem' }}>{label}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 2 }}>{sub}</div>
+                                  </div>
+                                  <span style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: ok ? 'rgba(34,197,94,0.15)' : 'rgba(251,191,36,0.15)', color: ok ? '#4ADE80' : '#FBBF24' }}>{status}</span>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
 
-                {settingsLoading && (
-                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#94A3B8' }}>Loading settings...</div>
+                {/* ── DOCUMENT SETTINGS ── */}
+                {settingsTab === 'document' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    {!settingsData && !settingsLoading && (
+                      <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
+                        <FileText size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
+                        <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>Load Settings</button>
+                      </div>
+                    )}
+                    {settingsLoading && <div className="glass-card" style={{ padding: 32, textAlign: 'center', color: '#94A3B8' }}>Loading…</div>}
+                    {settingsData && (
+                      <>
+                        <div className="glass-card" style={{ padding: 24 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                            <FileText size={18} color="#F59E0B" />
+                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Document Numbering</span>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 14 }}>
+                            {[
+                              ['Quotation Prefix', settingsData.quotationPrefix, '#F59E0B'],
+                              ['Tax Invoice Prefix', settingsData.invoicePrefix, '#F87171'],
+                              ['Bill Prefix', settingsData.billPrefix, '#38BDF8'],
+                              ['Default GST Rate', `${settingsData.defaultGstRate}%`, '#4ADE80'],
+                            ].map(([label, value, color]) => (
+                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>{label}</div>
+                                <code style={{ fontSize: '1rem', fontWeight: 700, color }}>{value}</code>
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{ marginTop: 16, background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>Default Terms & Conditions</div>
+                            <div style={{ fontSize: '0.875rem', color: '#E2E8F0' }}>{settingsData.defaultTerms}</div>
+                          </div>
+                        </div>
+
+                        <div className="glass-card" style={{ padding: 24 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                            <TrendingUp size={18} color="#4ADE80" />
+                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>App Statistics</span>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 14 }}>
+                            {[
+                              ['Total Documents', settingsData.totalDocuments, '#F87171'],
+                              ['Total Leads', settingsData.totalLeads, '#60A5FA'],
+                              ['Total Tickets', settingsData.totalTickets, '#FBBF24'],
+                              ['Total Revenue', fmtCurrency(settingsData.totalRevenue), '#4ADE80'],
+                            ].map(([label, value, color]) => (
+                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '14px 16px', textAlign: 'center' }}>
+                                <div style={{ fontSize: '1.375rem', fontWeight: 800, color }}>{value}</div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>{label}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 )}
 
-                {settingsData && (
-                  <>
-                    {/* ── SECTION A: SETTINGS ── */}
-                    <div className="glass-card" style={{ padding: 24 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                        <Building2 size={20} color="#C5A03F" />
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Business Information</h3>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                        {[
-                          ['Business Name', settingsData.businessName],
-                          ['Address', settingsData.businessAddress],
-                          ['Phone', settingsData.businessPhone],
-                          ['Email', settingsData.businessEmail],
-                          ['GSTIN', settingsData.gstin],
-                          ['PAN', settingsData.pan],
-                        ].map(([label, value]) => (
-                          <div key={label} style={{ background: 'rgba(255,255,255,0.04)', padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
-                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
-                            <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#FFFFFF' }}>{value || '—'}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="glass-card" style={{ padding: 24 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                        <FileText size={20} color="#60A5FA" />
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Document Numbering Configuration</h3>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-                        {[
-                          ['Quotation Prefix', settingsData.quotationPrefix, '#F59E0B'],
-                          ['Tax Invoice Prefix', settingsData.invoicePrefix, '#F87171'],
-                          ['Bill Prefix', settingsData.billPrefix, '#38BDF8'],
-                          ['Default GST Rate', `${settingsData.defaultGstRate}%`, '#4ADE80'],
-                        ].map(([label, value, color]) => (
-                          <div key={label} style={{ background: 'rgba(255,255,255,0.04)', padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
-                            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 800, color: color || '#FFFFFF', fontFamily: 'monospace' }}>{value}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="glass-card" style={{ padding: 24 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                        <CreditCard size={20} color="#818CF8" />
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Integration Status</h3>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
-                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Razorpay Payment Gateway</div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{
-                              padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
-                              background: settingsData.razorpayStatus?.includes('Configured') && !settingsData.razorpayStatus?.includes('Not') ? 'rgba(34,197,94,0.15)' : 'rgba(251,191,36,0.15)',
-                              color: settingsData.razorpayStatus?.includes('Configured') && !settingsData.razorpayStatus?.includes('Not') ? '#4ADE80' : '#FBBF24',
-                              border: '1px solid currentColor',
-                            }}>
-                              {settingsData.razorpayStatus}
-                            </span>
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Key: {settingsData.razorpayKeyIdPrefix} — Secret: Environment Managed</div>
+                {/* ── ACCOUNT & SECURITY ── */}
+                {settingsTab === 'account' && (() => {
+                  const storedUser = (() => { try { return JSON.parse(localStorage.getItem('om_admin_user') || '{}') } catch { return {} } })()
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      {/* Admin Account Info */}
+                      <div className="glass-card" style={{ padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                          <UserCircle size={18} color="#60A5FA" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Admin Account</span>
                         </div>
-                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
-                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Email / SMTP</div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{
-                              padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
-                              background: settingsData.emailStatus === 'Configured' ? 'rgba(34,197,94,0.15)' : 'rgba(148,163,184,0.15)',
-                              color: settingsData.emailStatus === 'Configured' ? '#4ADE80' : '#94A3B8',
-                              border: '1px solid currentColor',
-                            }}>
-                              {settingsData.emailStatus}
-                            </span>
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Host: {settingsData.emailHost} — Password: Environment Managed</div>
-                        </div>
-                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
-                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Database</div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, background: 'rgba(34,197,94,0.15)', color: '#4ADE80', border: '1px solid #4ADE80' }}>
-                              {settingsData.databaseStatus}
-                            </span>
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Credentials: Environment Managed</div>
-                        </div>
-                        <div style={{ background: 'rgba(255,255,255,0.04)', padding: '14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)' }}>
-                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>JWT Authentication</div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span style={{ padding: '3px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700, background: 'rgba(34,197,94,0.15)', color: '#4ADE80', border: '1px solid #4ADE80' }}>
-                              Active
-                            </span>
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 6 }}>Secret: Environment Managed — Expiry: 24 hours</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 14 }}>
+                          {[
+                            ['Username', storedUser.username || '—'],
+                            ['Email', storedUser.email || '—'],
+                            ['Role', storedUser.role || 'ROLE_ADMIN'],
+                          ].map(([label, value]) => (
+                            <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
+                              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
+                              <div style={{ fontSize: '0.9375rem', fontWeight: 600, color: '#E2E8F0' }}>{value}</div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    </div>
 
-                    <div className="glass-card" style={{ padding: 24 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                        <Database size={20} color="#94A3B8" />
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Application Statistics</h3>
+                      {/* Password Management */}
+                      <div className="glass-card" style={{ padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                          <Key size={18} color="#C5A03F" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Password Management</span>
+                        </div>
+                        <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: 16 }}>Change your admin password. You must provide your current password to confirm the change.</p>
+                        <button onClick={() => setShowChangePwd(true)} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px' }}>
+                          <Key size={15} /> Change Password
+                        </button>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-                        {[
-                          ['Total Documents', settingsData.totalDocuments, '#F87171'],
-                          ['Total Leads', settingsData.totalLeads, '#60A5FA'],
-                          ['Total Tickets', settingsData.totalTickets, '#FBBF24'],
-                          ['Total Revenue', fmtCurrency(settingsData.totalRevenue), '#4ADE80'],
-                        ].map(([label, value, color]) => (
-                          <div key={label} style={{ background: 'rgba(255,255,255,0.04)', padding: '12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
-                            <div style={{ fontSize: '1.4rem', fontWeight: 900, color }}>{value}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: 3 }}>{label}</div>
+
+                      {/* Session Management */}
+                      <div className="glass-card" style={{ padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                          <Shield size={18} color="#F87171" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Session Management</span>
+                        </div>
+                        <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: 4 }}>
+                          Sessions are authenticated via JWT tokens valid for 24 hours. "Logout All Sessions" invalidates all tokens immediately — including this one — by incrementing a server-side version counter.
+                        </p>
+                        <p style={{ color: '#94A3B8', fontSize: '0.8125rem', marginBottom: 18 }}>Use this if your credentials were compromised or you logged in from an untrusted device.</p>
+                        <button onClick={logoutAllSessions} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: 'rgba(180,35,60,0.15)', border: '1px solid rgba(180,35,60,0.4)', borderRadius: 8, color: '#F87171', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
+                          <LogOut size={15} /> Logout All Sessions
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })()}
+
+                {/* ── ACTIVITY LOG ── */}
+                {settingsTab === 'log' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    {auditLogs.length === 0 && !settingsLoading && (
+                      <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
+                        <ClipboardList size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>Activity Log</div>
+                        <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>Load Log</button>
+                      </div>
+                    )}
+                    {settingsLoading && <div className="glass-card" style={{ padding: 32, textAlign: 'center', color: '#94A3B8' }}>Loading…</div>}
+                    {auditLogs.length > 0 && (
+                      <div className="glass-card" style={{ padding: 24 }}>
+                        {/* Filters */}
+                        <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: '0 0 auto' }}>
+                            <Filter size={14} color="#64748B" />
+                            <select value={logActionFilter} onChange={e => setLogActionFilter(e.target.value)}
+                              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text-primary)', padding: '6px 10px', fontSize: '0.8125rem' }}>
+                              <option value="">All Types</option>
+                              {['INVOICE', 'INQUIRY', 'TICKET', 'SURVEY', 'USER', 'DOCUMENT'].map(t => <option key={t} value={t}>{t}</option>)}
+                            </select>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* ── SECTION B: AUDIT LOG ── */}
-                    <div className="glass-card" style={{ padding: 24 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <ClipboardList size={20} color="#C5A03F" />
-                          <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800 }}>Admin Activity Log</h3>
-                          <span style={{ padding: '2px 8px', borderRadius: 10, fontSize: '0.72rem', fontWeight: 700, background: 'rgba(197,160,63,0.15)', color: '#C5A03F' }}>
-                            {auditLogs.length} entries
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: '1 1 200px', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px' }}>
+                            <Search size={14} color="#64748B" />
+                            <input value={logTextFilter} onChange={e => setLogTextFilter(e.target.value)} placeholder="Search actions, refs, details…"
+                              style={{ background: 'none', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: '0.8125rem', width: '100%' }} />
+                          </div>
+                          <span style={{ color: '#64748B', fontSize: '0.8125rem' }}>
+                            {auditLogs.filter(l => (!logActionFilter || (l.entityType || '').toUpperCase().includes(logActionFilter)) && (!logTextFilter || JSON.stringify(l).toLowerCase().includes(logTextFilter.toLowerCase()))).length} entries
                           </span>
                         </div>
-                        <input
-                          placeholder="Filter by action, entity, or ref..."
-                          value={auditFilter}
-                          onChange={e => setAuditFilter(e.target.value)}
-                          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 6, padding: '6px 12px', color: '#FFFFFF', fontSize: '0.8rem', outline: 'none', width: 260 }}
-                        />
-                      </div>
 
-                      {auditLogs.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '32px 0', color: '#64748B' }}>
-                          <ClipboardList size={32} style={{ marginBottom: 10, opacity: 0.4 }} />
-                          <div style={{ fontWeight: 600 }}>No activity recorded yet.</div>
-                          <div style={{ fontSize: '0.8rem', marginTop: 6 }}>Admin actions (document creation, deletion, status changes) will appear here going forward.</div>
-                        </div>
-                      ) : (
+                        {/* Log Table */}
                         <div style={{ overflowX: 'auto' }}>
-                          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
                             <thead>
-                              <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
-                                <th style={{ padding: '10px 12px' }}>Date & Time</th>
-                                <th style={{ padding: '10px 12px' }}>Action</th>
-                                <th style={{ padding: '10px 12px' }}>Entity</th>
-                                <th style={{ padding: '10px 12px' }}>Reference</th>
-                                <th style={{ padding: '10px 12px' }}>Detail</th>
+                              <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                                {['WHEN', 'WHO', 'WHAT', 'WHICH', 'RESULT / DETAIL'].map(h => (
+                                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: '#64748B', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{h}</th>
+                                ))}
                               </tr>
                             </thead>
                             <tbody>
                               {auditLogs
-                                .filter(log => !auditFilter ||
-                                  log.action?.toLowerCase().includes(auditFilter.toLowerCase()) ||
-                                  log.entityType?.toLowerCase().includes(auditFilter.toLowerCase()) ||
-                                  log.entityRef?.toLowerCase().includes(auditFilter.toLowerCase()) ||
-                                  log.detail?.toLowerCase().includes(auditFilter.toLowerCase())
-                                )
-                                .map(log => {
-                                  const actionColor = log.action?.includes('DELETED') ? '#f87171'
-                                    : log.action?.includes('CREATED') ? '#4ADE80'
-                                    : log.action?.includes('STATUS') ? '#60A5FA'
-                                    : '#FBBF24'
+                                .filter(l => (!logActionFilter || (l.entityType || '').toUpperCase().includes(logActionFilter)) && (!logTextFilter || JSON.stringify(l).toLowerCase().includes(logTextFilter.toLowerCase())))
+                                .map(entry => {
+                                  const badgeColor = {
+                                    DOCUMENT_CREATED: '#4ADE80', DOCUMENT_UPDATED: '#60A5FA', DOCUMENT_DELETED: '#F87171',
+                                    STATUS_CHANGED: '#F59E0B', SURVEY_SCHEDULED: '#A78BFA', SURVEY_UPDATED: '#60A5FA',
+                                    TICKET_UPDATED: '#38BDF8', TICKET_DELETED: '#F87171',
+                                    INQUIRY_DELETED: '#F87171',
+                                    PASSWORD_CHANGED: '#C5A03F', LOGOUT_ALL_SESSIONS: '#F87171',
+                                    ADMIN_LOGIN: '#4ADE80',
+                                  }[entry.action] || '#94A3B8'
                                   return (
-                                    <tr key={log.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                      <td style={{ padding: '10px 12px', color: '#64748B', fontSize: '0.78rem', whiteSpace: 'nowrap' }}>
-                                        {log.timestamp ? new Date(log.timestamp).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
-                                      </td>
+                                    <tr key={entry.id} onClick={() => setSelectedLogEntry(entry)} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer', transition: 'background 0.1s' }}
+                                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                      <td style={{ padding: '10px 12px', color: '#94A3B8', whiteSpace: 'nowrap' }}>{new Date(entry.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</td>
+                                      <td style={{ padding: '10px 12px', color: '#E2E8F0', fontWeight: 600 }}>{entry.performedBy || 'SYSTEM'}</td>
                                       <td style={{ padding: '10px 12px' }}>
-                                        <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: '0.7rem', fontWeight: 800, background: `${actionColor}15`, color: actionColor, border: `1px solid ${actionColor}35`, whiteSpace: 'nowrap' }}>
-                                          {log.action?.replace(/_/g, ' ')}
-                                        </span>
+                                        <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: badgeColor + '26', color: badgeColor }}>{entry.action}</span>
                                       </td>
-                                      <td style={{ padding: '10px 12px', color: '#94A3B8', fontSize: '0.78rem' }}>
-                                        {log.entityType || '—'}
-                                      </td>
-                                      <td style={{ padding: '10px 12px', fontFamily: 'monospace', color: '#C5A03F', fontSize: '0.78rem' }}>
-                                        {log.entityRef || '—'}
-                                      </td>
-                                      <td style={{ padding: '10px 12px', color: '#CBD5E1', fontSize: '0.8rem', maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                        {log.detail || '—'}
+                                      <td style={{ padding: '10px 12px', color: '#CBD5E1' }}><span style={{ fontWeight: 600 }}>{entry.entityType}</span>{entry.entityRef ? <span style={{ color: '#64748B' }}> · {entry.entityRef}</span> : ''}</td>
+                                      <td style={{ padding: '10px 12px', color: '#94A3B8', maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {entry.detail}
+                                        <ChevronRight size={12} color="#475569" style={{ marginLeft: 4, verticalAlign: 'middle' }} />
                                       </td>
                                     </tr>
                                   )
@@ -1291,16 +1401,96 @@ export default function AdminDashboard() {
                             </tbody>
                           </table>
                         </div>
-                      )}
-                    </div>
-                  </>
+                      </div>
+                    )}
+                  </div>
                 )}
+
               </div>
             )}
 
           </>
         )}
       </main>
+
+      {/* MODALS */}
+
+      {/* Change Password Modal */}
+      {showChangePwd && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+          onClick={e => { if (e.target === e.currentTarget) { setShowChangePwd(false); setChangePwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) } }}>
+          <div className="glass-card" style={{ width: '100%', maxWidth: 440, padding: 28, borderRadius: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Key size={18} color="#C5A03F" />
+                <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Change Password</span>
+              </div>
+              <button onClick={() => { setShowChangePwd(false); setChangePwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B', padding: 4 }}><X size={18} /></button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {[
+                { key: 'currentPassword', label: 'Current Password', show: showPwdCurrent, toggle: () => setShowPwdCurrent(v => !v) },
+                { key: 'newPassword', label: 'New Password', show: showPwdNew, toggle: () => setShowPwdNew(v => !v) },
+                { key: 'confirmPassword', label: 'Confirm New Password', show: showPwdConfirm, toggle: () => setShowPwdConfirm(v => !v) },
+              ].map(({ key, label, show, toggle }) => (
+                <div key={key}>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>{label}</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 0, background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+                    <input
+                      type={show ? 'text' : 'password'}
+                      value={changePwdForm[key]}
+                      onChange={e => setChangePwdForm(f => ({ ...f, [key]: e.target.value }))}
+                      autoComplete={key === 'currentPassword' ? 'current-password' : 'new-password'}
+                      style={{ flex: 1, background: 'none', border: 'none', outline: 'none', padding: '10px 14px', color: 'var(--text-primary)', fontSize: '0.9375rem' }}
+                    />
+                    <button type="button" onClick={toggle} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 12px', color: '#64748B' }}>
+                      {show ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {changePwdForm.newPassword && changePwdForm.confirmPassword && changePwdForm.newPassword !== changePwdForm.confirmPassword && (
+              <div style={{ marginTop: 10, fontSize: '0.8125rem', color: '#F87171' }}>Passwords do not match.</div>
+            )}
+            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+              <button onClick={() => { setShowChangePwd(false); setChangePwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }}
+                className="btn-secondary" style={{ flex: 1, padding: '10px 0' }}>Cancel</button>
+              <button onClick={changePassword} disabled={changePwdLoading}
+                className="btn-primary" style={{ flex: 1, padding: '10px 0', opacity: changePwdLoading ? 0.6 : 1 }}>
+                {changePwdLoading ? 'Saving…' : 'Change Password'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Log Detail Drawer */}
+      {selectedLogEntry && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 900, display: 'flex', justifyContent: 'flex-end' }}
+          onClick={e => { if (e.target === e.currentTarget) setSelectedLogEntry(null) }}>
+          <div className="glass-card" style={{ width: '100%', maxWidth: 420, height: '100%', borderRadius: '14px 0 0 14px', padding: 24, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Log Entry Detail</span>
+              <button onClick={() => setSelectedLogEntry(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B', padding: 4 }}><X size={18} /></button>
+            </div>
+            {[
+              ['WHEN', new Date(selectedLogEntry.timestamp).toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'medium' })],
+              ['WHO', selectedLogEntry.performedBy || 'SYSTEM'],
+              ['WHAT (Action)', selectedLogEntry.action],
+              ['WHICH (Entity Type)', selectedLogEntry.entityType || '—'],
+              ['WHICH (Reference)', selectedLogEntry.entityRef || '—'],
+              ['RESULT / DETAIL', selectedLogEntry.detail || '—'],
+            ].map(([label, value]) => (
+              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 14px' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>{label}</div>
+                <div style={{ fontSize: '0.9rem', color: '#E2E8F0', wordBreak: 'break-word' }}>{String(value)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* MODALS */}
       {showDocumentModal && (

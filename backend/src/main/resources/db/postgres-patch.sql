@@ -22,3 +22,6 @@ CREATE TABLE IF NOT EXISTS document_counters (
     id            VARCHAR(255) PRIMARY KEY,
     counter_value BIGINT       NOT NULL DEFAULT 0
 );
+
+-- users: token_version counter for server-side JWT revocation (Logout All Sessions)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS token_version INT NOT NULL DEFAULT 0;

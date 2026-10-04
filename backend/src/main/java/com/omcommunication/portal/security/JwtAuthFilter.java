@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.omcommunication.portal.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,10 +27,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public JwtAuthFilter(JwtTokenProvider jwtTokenProvider) {
+    public JwtAuthFilter(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -42,10 +45,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (token != null) {
             if (jwtTokenProvider.validateToken(token)) {
-                // Valid token — set authentication
+                // Valid signature — check tokenVersion against DB to support Logout All Sessions
                 String username = jwtTokenProvider.getUsernameFromToken(token);
-                String role = jwtTokenProvider.getRoleFromToken(token);
+                int tokenVersionInJwt = jwtTokenProvider.getTokenVersionFromToken(token);
 
+                var userOpt = userRepository.findByUsername(username);
+                if (userOpt.isEmpty() || userOpt.get().getTokenVersion() != tokenVersionInJwt) {
+                    log.debug("Token version mismatch or unknown user for '{}' — session revoked", username);
+                    sendUnauthorized(response, "Session has been revoked. Please log in again.");
+                    return;
+                }
+
+                String role = jwtTokenProvider.getRoleFromToken(token);
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
                                 username,

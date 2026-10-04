@@ -2,6 +2,10 @@ package com.omcommunication.portal.controller;
 
 import com.omcommunication.portal.model.AuditLog;
 import com.omcommunication.portal.model.Inquiry;
+import com.omcommunication.portal.model.User;
+import com.omcommunication.portal.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.omcommunication.portal.model.Invoice;
 import com.omcommunication.portal.model.SiteSurvey;
 import com.omcommunication.portal.model.Ticket;
@@ -33,6 +37,8 @@ public class AdminController {
     private final TicketService ticketService;
     private final SiteSurveyService siteSurveyService;
     private final AuditLogService auditLogService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${razorpay.key-id:NOT_CONFIGURED}")
     private String razorpayKeyId;
@@ -47,12 +53,16 @@ public class AdminController {
                            InvoiceService invoiceService,
                            TicketService ticketService,
                            SiteSurveyService siteSurveyService,
-                           AuditLogService auditLogService) {
+                           AuditLogService auditLogService,
+                           UserRepository userRepository,
+                           PasswordEncoder passwordEncoder) {
         this.inquiryService = inquiryService;
         this.invoiceService = invoiceService;
         this.ticketService = ticketService;
         this.siteSurveyService = siteSurveyService;
         this.auditLogService = auditLogService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // ─── Dashboard Metrics ────────────────────────────────────────────────────
@@ -278,4 +288,54 @@ public class AdminController {
             @RequestParam(defaultValue = "100") int limit) {
         return ResponseEntity.ok(auditLogService.getRecentLogs(Math.min(limit, 200)));
     }
+    // ─── Account Management ───────────────────────────────────────────────────
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body) {
+        String currentPassword = body.get("currentPassword");
+        String newPassword = body.get("newPassword");
+
+        if (currentPassword == null || currentPassword.isBlank()
+                || newPassword == null || newPassword.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Both currentPassword and newPassword are required."));
+        }
+        if (newPassword.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of("error", "New password must be at least 8 characters."));
+        }
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found in database"));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return ResponseEntity.status(401).body(Map.of("error", "Current password is incorrect."));
+        }
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            return ResponseEntity.badRequest().body(Map.of("error", "New password must differ from the current password."));
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        auditLogService.log("PASSWORD_CHANGED", "USER", username,
+                "Admin password changed successfully", username);
+
+        return ResponseEntity.ok(Map.of("message", "Password changed successfully."));
+    }
+
+    @PostMapping("/logout-all-sessions")
+    public ResponseEntity<?> logoutAllSessions() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found in database"));
+
+        user.setTokenVersion(user.getTokenVersion() + 1);
+        userRepository.save(user);
+
+        auditLogService.log("LOGOUT_ALL_SESSIONS", "USER", username,
+                "All sessions revoked for admin user", username);
+
+        return ResponseEntity.ok(Map.of("message", "All sessions have been revoked. Please log in again."));
+    }
+
 }
