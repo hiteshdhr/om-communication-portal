@@ -183,7 +183,7 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.82)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <motion.div
         initial={{ opacity: 0, scale: 0.98, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -193,39 +193,56 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
           width: '100%',
           maxWidth: viewMode === 'PREVIEW' ? '1100px' : '920px',
           maxHeight: '94vh',
-          background: '#0B132B',
-          color: '#F8FAFC',
-          borderRadius: 16,
-          border: '1px solid rgba(255,255,255,0.12)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
+          background: 'var(--admin-surface)',
+          color: 'var(--admin-text-primary)',
+          borderRadius: 14,
+          border: '1px solid var(--admin-border)',
+          boxShadow: '0 20px 40px -8px rgba(0,0,0,0.18), 0 4px 12px -2px rgba(0,0,0,0.08)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
         }}
       >
         {/* ── MODAL HEADER ────────────────────────────────────────────────── */}
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#070D1E' }}>
+        <div style={{
+          padding: '16px 24px',
+          borderBottom: '1px solid var(--admin-border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'var(--admin-surface-subtle)',
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(180, 35, 60, 0.2)', border: '1px solid #B4233C', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F87171' }}>
+            <div style={{
+              width: 36,
+              height: 36,
+              borderRadius: 8,
+              background: 'var(--admin-accent-light)',
+              border: '1px solid var(--admin-accent)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--admin-accent)',
+            }}>
               <FileText size={18} />
             </div>
             <div>
-              <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>
+              <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--admin-text-primary)', letterSpacing: '-0.01em' }}>
                 {savedDoc?.id ? 'Edit Document' : 'Create New Document'}
               </h2>
-              <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginTop: 1 }}>
                 OM Communication Works — Document Management System
               </div>
             </div>
           </div>
 
           {/* Toggle View Mode & Close */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {viewMode === 'EDIT' ? (
               <button
                 onClick={() => setViewMode('PREVIEW')}
                 className="btn-secondary"
-                style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6, background: 'rgba(255,255,255,0.08)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.2)' }}
+                style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6 }}
               >
                 <Eye size={14} /> Live A4 Preview
               </button>
@@ -233,33 +250,45 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
               <button
                 onClick={() => setViewMode('EDIT')}
                 className="btn-secondary"
-                style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6, background: 'rgba(255,255,255,0.08)', color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.2)' }}
+                style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6 }}
               >
                 <Edit3 size={14} /> Back to Edit Form
               </button>
             )}
 
-            <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: 4 }}>
-              <X size={20} />
+            <button
+              onClick={onClose}
+              style={{
+                background: 'none',
+                border: '1px solid var(--admin-border)',
+                borderRadius: 6,
+                color: 'var(--admin-text-muted)',
+                cursor: 'pointer',
+                padding: '4px 6px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <X size={18} />
             </button>
           </div>
         </div>
 
         {/* ── MODAL BODY ──────────────────────────────────────────────────── */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '24px', background: 'var(--admin-surface)' }}>
           {viewMode === 'EDIT' ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-              
-              {/* STEP 1: SELECT DOCUMENT TYPE */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              {/* STEP 1: SELECT DOCUMENT TYPE ── editorial 01/02/03 format */}
               <div>
-                <label className="form-label" style={{ color: '#E2E8F0', marginBottom: 10, display: 'block', fontWeight: 700 }}>
-                  1. SELECT DOCUMENT TYPE
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--admin-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>
+                  Step 1 — Select Document Type
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
                   {[
-                    { id: 'QUOTATION', title: 'QUOTATION', desc: 'Price estimate / proposal sent before order confirmation.', icon: FileText },
-                    { id: 'TAX_INVOICE', title: 'TAX INVOICE', desc: 'Formal invoice with 18% GST calculation & breakdown.', icon: Receipt },
-                    { id: 'BILL', title: 'BILL / NON-GST', desc: 'Statement of charges without GST calculation.', icon: Calculator },
+                    { id: 'QUOTATION', num: '01', title: 'QUOTATION', desc: 'Price estimate or proposal sent before order confirmation.', icon: FileText },
+                    { id: 'TAX_INVOICE', num: '02', title: 'TAX INVOICE', desc: 'Formal invoice with 18% GST calculation and breakdown.', icon: Receipt },
+                    { id: 'BILL', num: '03', title: 'BILL / NON-GST', desc: 'Statement of charges without GST calculation.', icon: Calculator },
                   ].map(t => {
                     const Icon = t.icon
                     const isSelected = documentType === t.id
@@ -269,20 +298,33 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                         onClick={() => setDocumentType(t.id)}
                         style={{
                           padding: '14px 16px',
-                          borderRadius: 10,
+                          borderRadius: 8,
                           cursor: 'pointer',
-                          background: isSelected ? 'rgba(180, 35, 60, 0.15)' : 'rgba(255,255,255,0.03)',
-                          border: isSelected ? '2px solid #B4233C' : '1px solid rgba(255,255,255,0.1)',
-                          transition: 'all 0.2s ease',
+                          background: isSelected ? 'var(--admin-accent-light)' : 'var(--admin-surface-subtle)',
+                          border: isSelected ? '2px solid var(--admin-accent)' : '1px solid var(--admin-border)',
+                          transition: 'all 0.18s ease',
+                          position: 'relative',
                         }}
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                          <span style={{ fontWeight: 800, fontSize: '0.9rem', color: isSelected ? '#F87171' : '#FFFFFF' }}>
+                        {/* Editorial number */}
+                        <div style={{
+                          fontFamily: 'Georgia, "Times New Roman", serif',
+                          fontSize: '1.6rem',
+                          fontWeight: 700,
+                          lineHeight: 1,
+                          color: isSelected ? 'var(--admin-accent)' : 'var(--admin-border)',
+                          marginBottom: 8,
+                          userSelect: 'none',
+                        }}>
+                          {t.num}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
+                          <span style={{ fontWeight: 700, fontSize: '0.82rem', color: isSelected ? 'var(--admin-accent)' : 'var(--admin-text-primary)', letterSpacing: '0.04em' }}>
                             {t.title}
                           </span>
-                          <Icon size={16} color={isSelected ? '#F87171' : '#94A3B8'} />
+                          <Icon size={15} color={isSelected ? 'var(--admin-accent)' : 'var(--admin-text-muted)'} />
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: '#94A3B8', lineHeight: 1.3 }}>
+                        <div style={{ fontSize: '0.74rem', color: 'var(--admin-text-muted)', lineHeight: 1.45 }}>
                           {t.desc}
                         </div>
                       </div>
@@ -292,13 +334,13 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
               </div>
 
               {/* STEP 2: CUSTOMER DETAILS */}
-              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
-                <label className="form-label" style={{ color: '#E2E8F0', marginBottom: 14, display: 'block', fontWeight: 700 }}>
-                  2. CUSTOMER & DELIVERY INFORMATION
-                </label>
+              <div style={{ background: 'var(--admin-surface-subtle)', padding: '20px', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--admin-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>
+                  Step 2 — Customer &amp; Delivery Information
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <div>
-                    <label className="form-label" style={{ color: '#94A3B8' }}>Customer / Company Name *</label>
+                    <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>Customer / Company Name *</label>
                     <input
                       className="form-input"
                       placeholder="e.g. Abhyant Apartments or M/S Delhi Infra"
@@ -309,7 +351,7 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   </div>
 
                   <div>
-                    <label className="form-label" style={{ color: '#94A3B8' }}>Phone Number</label>
+                    <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>Phone Number</label>
                     <input
                       className="form-input"
                       placeholder="e.g. +91 98765 43210"
@@ -319,7 +361,7 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   </div>
 
                   <div>
-                    <label className="form-label" style={{ color: '#94A3B8' }}>Email Address</label>
+                    <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>Email Address</label>
                     <input
                       className="form-input"
                       type="email"
@@ -330,7 +372,7 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   </div>
 
                   <div>
-                    <label className="form-label" style={{ color: '#94A3B8' }}>GSTIN (where applicable)</label>
+                    <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>GSTIN (where applicable)</label>
                     <input
                       className="form-input"
                       placeholder="e.g. 07AAAAA0000A1Z5"
@@ -340,7 +382,7 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   </div>
 
                   <div style={{ gridColumn: 'span 2' }}>
-                    <label className="form-label" style={{ color: '#94A3B8' }}>Billing & Site Address</label>
+                    <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>Billing &amp; Site Address</label>
                     <textarea
                       className="form-input"
                       rows={2}
@@ -353,23 +395,23 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
               </div>
 
               {/* STEP 3: LINE ITEMS EDITOR */}
-              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{ background: 'var(--admin-surface-subtle)', padding: '20px', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                  <label className="form-label" style={{ color: '#E2E8F0', margin: 0, fontWeight: 700 }}>
-                    3. PRODUCTS & SERVICES (LINE ITEMS)
-                  </label>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--admin-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    Step 3 — Products &amp; Services (Line Items)
+                  </div>
                   <button
                     type="button"
                     onClick={handleAddItem}
                     className="btn-secondary"
-                    style={{ padding: '4px 12px', fontSize: '0.75rem', gap: 4, background: 'rgba(255,255,255,0.08)' }}
+                    style={{ padding: '4px 12px', fontSize: '0.75rem', gap: 4 }}
                   >
                     <Plus size={14} /> Add Item
                   </button>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px 110px 36px', gap: 10, fontSize: '0.75rem', color: '#94A3B8', fontWeight: 700, padding: '0 4px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 110px 110px 36px', gap: 10, fontSize: '0.72rem', color: 'var(--admin-text-muted)', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', padding: '0 4px', paddingBottom: 6, borderBottom: '1px solid var(--admin-border)' }}>
                     <span>Description</span>
                     <span style={{ textAlign: 'center' }}>Qty</span>
                     <span style={{ textAlign: 'right' }}>Rate (₹)</span>
@@ -403,15 +445,15 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                           value={it.unitPrice}
                           onChange={e => handleItemChange(idx, 'unitPrice', parseFloat(e.target.value) || 0)}
                         />
-                        <div style={{ textAlign: 'right', fontWeight: 700, color: '#4ADE80', fontSize: '0.9rem' }}>
+                        <div style={{ textAlign: 'right', fontWeight: 700, color: 'var(--admin-success)', fontSize: '0.88rem' }}>
                           ₹{amt.toLocaleString('en-IN')}
                         </div>
                         <button
                           type="button"
                           onClick={() => handleRemoveItem(idx)}
-                          style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', display: 'flex', justifyContent: 'center' }}
+                          style={{ background: 'none', border: 'none', color: 'var(--admin-danger)', cursor: 'pointer', display: 'flex', justifyContent: 'center' }}
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={15} />
                         </button>
                       </div>
                     )
@@ -420,15 +462,15 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
               </div>
 
               {/* STEP 4: DOCUMENT SETTINGS & TERMS */}
-              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
-                <label className="form-label" style={{ color: '#E2E8F0', marginBottom: 14, display: 'block', fontWeight: 700 }}>
-                  4. DOCUMENT SETTINGS & TAX CONFIGURATION
-                </label>
+              <div style={{ background: 'var(--admin-surface-subtle)', padding: '20px', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--admin-text-muted)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>
+                  Step 4 — Document Settings &amp; Tax Configuration
+                </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   {documentType === 'QUOTATION' && (
                     <div style={{ gridColumn: 'span 2' }}>
-                      <label className="form-label" style={{ color: '#94A3B8' }}>Quotation Subject</label>
+                      <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>Quotation Subject</label>
                       <input
                         className="form-input"
                         value={subject}
@@ -443,16 +485,16 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                       id="gstToggle"
                       checked={gstEnabled}
                       onChange={e => setGstEnabled(e.target.checked)}
-                      style={{ width: 18, height: 18, accentColor: '#B4233C', cursor: 'pointer' }}
+                      style={{ width: 16, height: 16, accentColor: 'var(--admin-accent)', cursor: 'pointer' }}
                     />
-                    <label htmlFor="gstToggle" style={{ fontSize: '0.85rem', color: '#FFFFFF', fontWeight: 600, cursor: 'pointer' }}>
+                    <label htmlFor="gstToggle" style={{ fontSize: '0.85rem', color: 'var(--admin-text-primary)', fontWeight: 600, cursor: 'pointer' }}>
                       Include GST (18% Tax)
                     </label>
                   </div>
 
                   {gstEnabled && (
                     <div>
-                      <label className="form-label" style={{ color: '#94A3B8' }}>GST Rate (%)</label>
+                      <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>GST Rate (%)</label>
                       <input
                         className="form-input"
                         type="number"
@@ -462,8 +504,8 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                     </div>
                   )}
 
-                  <div style={{ gridColumn: 'span 2', marginTop: 6 }}>
-                    <label className="form-label" style={{ color: '#94A3B8' }}>Terms & Conditions (Bullet Points)</label>
+                  <div style={{ gridColumn: 'span 2', marginTop: 2 }}>
+                    <label className="form-label" style={{ color: 'var(--admin-text-secondary)' }}>Terms &amp; Conditions (Bullet Points)</label>
                     <textarea
                       className="form-input"
                       rows={3}
@@ -473,21 +515,21 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   </div>
                 </div>
 
-                {/* Summary Card */}
-                <div style={{ marginTop: 16, paddingTop: 14, borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 24, fontSize: '0.9rem' }}>
+                {/* Summary Totals */}
+                <div style={{ marginTop: 16, paddingTop: 14, borderTop: '1px solid var(--admin-border)', display: 'flex', justifyContent: 'flex-end', gap: 28, fontSize: '0.88rem' }}>
                   <div>
-                    <span style={{ color: '#94A3B8' }}>Subtotal: </span>
-                    <span style={{ fontWeight: 700, color: '#FFFFFF' }}>₹{subtotal.toLocaleString('en-IN')}</span>
+                    <span style={{ color: 'var(--admin-text-muted)' }}>Subtotal: </span>
+                    <span style={{ fontWeight: 700, color: 'var(--admin-text-primary)' }}>₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   {gstEnabled && (
                     <div>
-                      <span style={{ color: '#94A3B8' }}>GST ({gstRate}%): </span>
-                      <span style={{ fontWeight: 700, color: '#FBBF24' }}>₹{taxAmount.toLocaleString('en-IN')}</span>
+                      <span style={{ color: 'var(--admin-text-muted)' }}>GST ({gstRate}%): </span>
+                      <span style={{ fontWeight: 700, color: 'var(--admin-warning)' }}>₹{taxAmount.toLocaleString('en-IN')}</span>
                     </div>
                   )}
                   <div>
-                    <span style={{ color: '#94A3B8' }}>Total: </span>
-                    <span style={{ fontWeight: 900, color: '#4ADE80', fontSize: '1.05rem' }}>₹{totalAmount.toLocaleString('en-IN')}</span>
+                    <span style={{ color: 'var(--admin-text-muted)' }}>Total: </span>
+                    <span style={{ fontWeight: 800, color: 'var(--admin-success)', fontSize: '1rem' }}>₹{totalAmount.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>
@@ -496,23 +538,23 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
           ) : (
             /* PREVIEW MODE: Realistic A4 Document Container */
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
-              
+
               {/* Preview Action Toolbar */}
-              <div style={{ width: '100%', maxWidth: '794px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '12px 18px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)' }}>
-                <div style={{ fontSize: '0.85rem', color: '#94A3B8' }}>
-                  Document: <strong style={{ color: '#FFFFFF' }}>{currentDoc.invoiceNumber}</strong> ({documentType})
+              <div style={{ width: '100%', maxWidth: '794px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--admin-surface-subtle)', padding: '12px 18px', borderRadius: 8, border: '1px solid var(--admin-border)' }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--admin-text-muted)' }}>
+                  Document: <strong style={{ color: 'var(--admin-text-primary)' }}>{currentDoc.invoiceNumber}</strong> <span style={{ color: 'var(--admin-text-faint)' }}>({documentType})</span>
                 </div>
 
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <button onClick={handlePrint} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6, background: '#FFFFFF', color: '#0F172A' }}>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={handlePrint} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6 }}>
                     <Printer size={14} /> Print / Save PDF
                   </button>
 
-                  <button onClick={handleWhatsAppSend} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6, background: '#25D366', color: '#FFFFFF', border: 'none' }}>
+                  <button onClick={handleWhatsAppSend} style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: 6, background: '#25D366', color: '#FFFFFF', border: 'none', borderRadius: 7, fontWeight: 600, cursor: 'pointer' }}>
                     <MessageCircle size={14} /> WhatsApp
                   </button>
 
-                  <button onClick={handleEmailSend} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', gap: 6, background: '#3B82F6', color: '#FFFFFF', border: 'none' }}>
+                  <button onClick={handleEmailSend} style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: 6, background: '#3B82F6', color: '#FFFFFF', border: 'none', borderRadius: 7, fontWeight: 600, cursor: 'pointer' }}>
                     <Mail size={14} /> Email
                   </button>
                 </div>
@@ -534,19 +576,23 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
         </div>
 
         {/* ── MODAL FOOTER ACTIONS ────────────────────────────────────────── */}
-        <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.1)', background: '#070D1E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button type="button" onClick={onClose} className="btn-secondary" style={{ color: '#94A3B8' }}>
+        <div style={{ padding: '14px 24px', borderTop: '1px solid var(--admin-border)', background: 'var(--admin-surface-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn-secondary"
+            style={{ color: 'var(--admin-text-muted)' }}
+          >
             Cancel
           </button>
 
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 10 }}>
             {viewMode === 'EDIT' ? (
               <>
                 <button
                   type="button"
                   onClick={() => setViewMode('PREVIEW')}
                   className="btn-secondary"
-                  style={{ background: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }}
                 >
                   <Eye size={15} /> Preview Document
                 </button>
@@ -556,7 +602,7 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   disabled={loading}
                   onClick={handleFinalizeSave}
                   className="btn-primary"
-                  style={{ background: '#B4233C', padding: '10px 20px' }}
+                  style={{ padding: '10px 20px' }}
                 >
                   <ShieldCheck size={16} /> {loading ? 'Saving...' : 'Finalize & Save Document'}
                 </button>
@@ -567,7 +613,6 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   type="button"
                   onClick={() => setViewMode('EDIT')}
                   className="btn-secondary"
-                  style={{ background: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }}
                 >
                   <Edit3 size={15} /> Edit Details
                 </button>
@@ -577,7 +622,7 @@ export default function CreateDocumentModal({ initialData = null, onClose, onSav
                   disabled={loading}
                   onClick={handleFinalizeSave}
                   className="btn-primary"
-                  style={{ background: '#16A34A', padding: '10px 20px' }}
+                  style={{ padding: '10px 20px', background: 'var(--admin-success)' }}
                 >
                   <Check size={16} /> {savedDoc?.id ? 'Update Saved Document' : 'Finalize Document'}
                 </button>

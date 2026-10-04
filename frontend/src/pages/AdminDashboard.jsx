@@ -196,6 +196,12 @@ export default function AdminDashboard() {
   const [selectedLogEntry, setSelectedLogEntry] = useState(null)
   const [logActionFilter, setLogActionFilter] = useState('')
   const [logTextFilter, setLogTextFilter] = useState('')
+  const [editingBusiness, setEditingBusiness] = useState(false)
+  const [businessEditForm, setBusinessEditForm] = useState({})
+  const [savingBusiness, setSavingBusiness] = useState(false)
+  const [editingDocument, setEditingDocument] = useState(false)
+  const [documentEditForm, setDocumentEditForm] = useState({})
+  const [savingDocument, setSavingDocument] = useState(false)
   const [sectionErrors, setSectionErrors] = useState({
     metrics: false,
     inquiries: false,
@@ -450,6 +456,34 @@ export default function AdminDashboard() {
   }
 
 
+
+  async function saveBusinessSettings() {
+    setSavingBusiness(true)
+    try {
+      await api.put('/admin/settings/business', businessEditForm)
+      setSettingsData(d => ({ ...d, ...businessEditForm }))
+      setEditingBusiness(false)
+      toast.success('Business settings saved.')
+    } catch {
+      toast.error('Failed to save business settings.')
+    } finally {
+      setSavingBusiness(false)
+    }
+  }
+
+  async function saveDocumentSettings() {
+    setSavingDocument(true)
+    try {
+      await api.put('/admin/settings/document', documentEditForm)
+      setSettingsData(d => ({ ...d, ...documentEditForm }))
+      setEditingDocument(false)
+      toast.success('Document settings saved.')
+    } catch {
+      toast.error('Failed to save document settings.')
+    } finally {
+      setSavingDocument(false)
+    }
+  }
 
   const metricCards = [
     { label: 'Total Inquiries', value: metrics?.totalInquiries ?? '—', icon: Inbox, color: '#B4233C', sub: 'All time service leads' },
@@ -1128,17 +1162,22 @@ export default function AdminDashboard() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
 
                 {/* Inner Tab Bar */}
-                <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--border)', marginBottom: 24, overflowX: 'auto' }}>
+                <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--admin-border)', marginBottom: 24, overflowX: 'auto' }}>
                   {[
-                    { key: 'business', label: 'Business Settings', icon: Building2 },
-                    { key: 'document', label: 'Document Settings', icon: FileText },
-                    { key: 'account', label: 'Account & Security', icon: Shield },
-                    { key: 'log', label: 'Activity Log', icon: ClipboardList },
+                    { key: 'business',     label: 'Business Settings',  icon: Building2 },
+                    { key: 'document',     label: 'Document Settings',   icon: FileText },
+                    { key: 'account',      label: 'Account & Security',  icon: Shield },
+                    { key: 'integrations', label: 'Integrations',        icon: Database },
+                    { key: 'log',          label: 'Activity Log',        icon: ClipboardList },
                   ].map(({ key, label, icon: Icon }) => (
-                    <button key={key} onClick={() => { setSettingsTab(key); if ((key === 'business' || key === 'document') && !settingsData) fetchSettings() }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'none', border: 'none', cursor: 'pointer', borderBottom: settingsTab === key ? '2px solid #B4233C' : '2px solid transparent', color: settingsTab === key ? '#FFFFFF' : '#64748B', fontWeight: settingsTab === key ? 700 : 500, fontSize: '0.875rem', whiteSpace: 'nowrap', transition: 'color 0.15s' }}
-                      onMouseEnter={e => { if (settingsTab !== key) e.currentTarget.style.color = '#CBD5E1' }}
-                      onMouseLeave={e => { if (settingsTab !== key) e.currentTarget.style.color = '#64748B' }}>
+                    <button key={key}
+                      onClick={() => {
+                        setSettingsTab(key)
+                        if ((key === 'business' || key === 'document' || key === 'integrations' || key === 'log') && !settingsData) fetchSettings()
+                      }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'none', border: 'none', cursor: 'pointer', borderBottom: settingsTab === key ? '2px solid var(--admin-accent)' : '2px solid transparent', color: settingsTab === key ? 'var(--admin-accent)' : 'var(--admin-text-secondary)', fontWeight: settingsTab === key ? 700 : 500, fontSize: '0.875rem', whiteSpace: 'nowrap', transition: 'color 0.15s' }}
+                      onMouseEnter={e => { if (settingsTab !== key) e.currentTarget.style.color = 'var(--admin-text-primary)' }}
+                      onMouseLeave={e => { if (settingsTab !== key) e.currentTarget.style.color = 'var(--admin-text-secondary)' }}>
                       <Icon size={15} /> {label}
                     </button>
                   ))}
@@ -1148,63 +1187,79 @@ export default function AdminDashboard() {
                 {settingsTab === 'business' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                     {!settingsData && !settingsLoading && (
-                      <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
-                        <Building2 size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>Load Business Settings</div>
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center' }}>
+                        <Building2 size={36} color="var(--admin-text-muted)" style={{ marginBottom: 12 }} />
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--admin-text-primary)', marginBottom: 8 }}>Load Business Settings</div>
                         <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>Load Settings</button>
                       </div>
                     )}
-                    {settingsLoading && <div className="glass-card" style={{ padding: 32, textAlign: 'center', color: '#94A3B8' }}>Loading…</div>}
-                    {settingsData && (
-                      <>
-                        <div className="glass-card" style={{ padding: 24 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                            <Building2 size={18} color="#B4233C" />
-                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Business Information</span>
+                    {settingsLoading && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center', color: 'var(--admin-text-muted)' }}>Loading…</div>
+                    )}
+                    {settingsData && !editingBusiness && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <Building2 size={18} color="var(--admin-accent)" />
+                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Business Information</span>
                           </div>
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 16 }}>
-                            {[
-                              ['Business Name', settingsData.businessName],
-                              ['Address', settingsData.businessAddress],
-                              ['Phone', settingsData.businessPhone],
-                              ['Email', settingsData.businessEmail],
-                              ['GSTIN', settingsData.gstin],
-                              ['PAN', settingsData.pan],
-                            ].map(([label, value]) => (
-                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
-                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
-                                <div style={{ fontSize: '0.9375rem', fontWeight: 600, color: '#E2E8F0' }}>{value || '—'}</div>
-                              </div>
-                            ))}
-                          </div>
+                          <button onClick={() => { setBusinessEditForm({ businessName: settingsData.businessName, businessAddress: settingsData.businessAddress, businessPhone: settingsData.businessPhone, businessEmail: settingsData.businessEmail, gstin: settingsData.gstin, pan: settingsData.pan }); setEditingBusiness(true) }}
+                            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: 'none', border: '1px solid var(--admin-border)', borderRadius: 7, color: 'var(--admin-text-secondary)', fontWeight: 600, fontSize: '0.8125rem', cursor: 'pointer' }}>
+                            <Edit3 size={13} /> Edit Business Information
+                          </button>
                         </div>
-
-                        <div className="glass-card" style={{ padding: 24 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                            <Database size={18} color="#60A5FA" />
-                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Integration Status</span>
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                            {[
-                              { label: 'Razorpay Payment', status: settingsData.razorpayStatus, sub: `Key: ${settingsData.razorpayKeyIdPrefix} — Secret: Environment Managed`, icon: CreditCard },
-                              { label: 'Email (SMTP)', status: settingsData.emailStatus, sub: `Host: ${settingsData.emailHost} — Password: Environment Managed`, icon: Mail },
-                              { label: 'PostgreSQL Database', status: settingsData.databaseStatus, sub: 'Connection via Railway — Credentials: Environment Managed', icon: Database },
-                            ].map(({ label, status, sub, icon: Icon }) => {
-                              const ok = status === 'Configured' || status === 'Connected'
-                              return (
-                                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 14, background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
-                                  <Icon size={18} color={ok ? '#4ADE80' : '#FBBF24'} style={{ flexShrink: 0 }} />
-                                  <div style={{ flex: 1, minWidth: 0 }}>
-                                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.875rem' }}>{label}</div>
-                                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 2 }}>{sub}</div>
-                                  </div>
-                                  <span style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: ok ? 'rgba(34,197,94,0.15)' : 'rgba(251,191,36,0.15)', color: ok ? '#4ADE80' : '#FBBF24' }}>{status}</span>
-                                </div>
-                              )
-                            })}
-                          </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 16 }}>
+                          {[
+                            ['Business Name', settingsData.businessName],
+                            ['Address', settingsData.businessAddress],
+                            ['Phone', settingsData.businessPhone],
+                            ['Email', settingsData.businessEmail],
+                            ['GSTIN', settingsData.gstin],
+                            ['PAN', settingsData.pan],
+                          ].map(([label, value]) => (
+                            <div key={label} style={{ background: 'var(--admin-surface-subtle)', borderRadius: 8, padding: '12px 16px', border: '1px solid var(--admin-border-subtle)' }}>
+                              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
+                              <div style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--admin-text-primary)' }}>{value || '—'}</div>
+                            </div>
+                          ))}
                         </div>
-                      </>
+                      </div>
+                    )}
+                    {settingsData && editingBusiness && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                          <Building2 size={18} color="var(--admin-accent)" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Edit Business Information</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 16, marginBottom: 20 }}>
+                          {[
+                            ['businessName', 'Business Name'],
+                            ['businessAddress', 'Address'],
+                            ['businessPhone', 'Phone'],
+                            ['businessEmail', 'Email'],
+                            ['gstin', 'GSTIN'],
+                            ['pan', 'PAN'],
+                          ].map(([field, label]) => (
+                            <div key={field}>
+                              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>{label}</label>
+                              <input value={businessEditForm[field] || ''} onChange={e => setBusinessEditForm(f => ({ ...f, [field]: e.target.value }))}
+                                style={{ width: '100%', boxSizing: 'border-box', padding: '9px 12px', background: 'var(--admin-input-bg)', border: '1px solid var(--admin-input-border)', borderRadius: 7, color: 'var(--admin-text-primary)', fontSize: '0.9rem', outline: 'none' }}
+                                onFocus={e => { e.target.style.borderColor = 'var(--admin-input-focus)' }}
+                                onBlur={e => { e.target.style.borderColor = 'var(--admin-input-border)' }} />
+                            </div>
+                          ))}
+                        </div>
+                        <div style={{ display: 'flex', gap: 10 }}>
+                          <button onClick={saveBusinessSettings} disabled={savingBusiness}
+                            style={{ padding: '9px 20px', background: 'var(--admin-accent)', border: 'none', borderRadius: 7, color: '#FFFFFF', fontWeight: 700, fontSize: '0.875rem', cursor: savingBusiness ? 'default' : 'pointer', opacity: savingBusiness ? 0.7 : 1 }}>
+                            {savingBusiness ? 'Saving…' : 'Save Changes'}
+                          </button>
+                          <button onClick={() => setEditingBusiness(false)}
+                            style={{ padding: '9px 20px', background: 'none', border: '1px solid var(--admin-border)', borderRadius: 7, color: 'var(--admin-text-secondary)', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
@@ -1213,18 +1268,27 @@ export default function AdminDashboard() {
                 {settingsTab === 'document' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                     {!settingsData && !settingsLoading && (
-                      <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
-                        <FileText size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center' }}>
+                        <FileText size={36} color="var(--admin-text-muted)" style={{ marginBottom: 12 }} />
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--admin-text-primary)', marginBottom: 8 }}>Load Document Settings</div>
                         <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>Load Settings</button>
                       </div>
                     )}
-                    {settingsLoading && <div className="glass-card" style={{ padding: 32, textAlign: 'center', color: '#94A3B8' }}>Loading…</div>}
-                    {settingsData && (
+                    {settingsLoading && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center', color: 'var(--admin-text-muted)' }}>Loading…</div>
+                    )}
+                    {settingsData && !editingDocument && (
                       <>
-                        <div className="glass-card" style={{ padding: 24 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                            <FileText size={18} color="#F59E0B" />
-                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Document Numbering</span>
+                        <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                              <FileText size={18} color="var(--admin-warning)" />
+                              <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Document Numbering</span>
+                            </div>
+                            <button onClick={() => { setDocumentEditForm({ quotationPrefix: settingsData.quotationPrefix, invoicePrefix: settingsData.invoicePrefix, billPrefix: settingsData.billPrefix, defaultGstRate: settingsData.defaultGstRate, defaultTerms: settingsData.defaultTerms }); setEditingDocument(true) }}
+                              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: 'none', border: '1px solid var(--admin-border)', borderRadius: 7, color: 'var(--admin-text-secondary)', fontWeight: 600, fontSize: '0.8125rem', cursor: 'pointer' }}>
+                              <Edit3 size={13} /> Edit Document Settings
+                            </button>
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 14 }}>
                             {[
@@ -1233,38 +1297,79 @@ export default function AdminDashboard() {
                               ['Bill Prefix', settingsData.billPrefix],
                               ['Default GST Rate', `${settingsData.defaultGstRate}%`],
                             ].map(([label, value]) => (
-                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</div>
-                                <code style={{ fontSize: '1rem', fontWeight: 700, color: '#E2E8F0', fontFamily: 'ui-monospace,monospace' }}>{value}</code>
+                              <div key={label} style={{ background: 'var(--admin-surface-subtle)', borderRadius: 8, padding: '12px 16px', border: '1px solid var(--admin-border-subtle)' }}>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</div>
+                                <code style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--admin-text-primary)', fontFamily: 'ui-monospace,monospace' }}>{value}</code>
                               </div>
                             ))}
                           </div>
-                          <div style={{ marginTop: 16, background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
-                            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>Default Terms & Conditions</div>
-                            <div style={{ fontSize: '0.875rem', color: '#E2E8F0' }}>{settingsData.defaultTerms}</div>
+                          <div style={{ marginTop: 16, background: 'var(--admin-surface-subtle)', borderRadius: 8, padding: '12px 16px', border: '1px solid var(--admin-border-subtle)' }}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>Default Terms & Conditions</div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--admin-text-primary)' }}>{settingsData.defaultTerms}</div>
                           </div>
                         </div>
 
-                        <div className="glass-card" style={{ padding: 24 }}>
+                        <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                            <TrendingUp size={18} color="#4ADE80" />
-                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>App Statistics</span>
+                            <TrendingUp size={18} color="var(--admin-success)" />
+                            <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>App Statistics</span>
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 14 }}>
                             {[
-                              ['Total Documents', settingsData.totalDocuments, '#60A5FA'],
-                              ['Total Leads', settingsData.totalLeads, '#34D399'],
-                              ['Total Tickets', settingsData.totalTickets, '#FBBF24'],
-                              ['Total Revenue', fmtCurrency(settingsData.totalRevenue), '#4ADE80'],
+                              ['Total Documents', settingsData.totalDocuments, 'var(--admin-info)'],
+                              ['Total Leads', settingsData.totalLeads, 'var(--admin-success)'],
+                              ['Total Tickets', settingsData.totalTickets, 'var(--admin-warning)'],
+                              ['Total Revenue', fmtCurrency(settingsData.totalRevenue), 'var(--admin-accent)'],
                             ].map(([label, value, color]) => (
-                              <div key={label} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '18px 16px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 2px 12px rgba(0,0,0,0.25)' }}>
+                              <div key={label} style={{ background: 'var(--admin-surface-subtle)', borderRadius: 10, padding: '18px 16px', textAlign: 'center', border: '1px solid var(--admin-border)' }}>
                                 <div style={{ fontSize: '1.5rem', fontWeight: 800, color, letterSpacing: '-0.02em', lineHeight: 1.2 }}>{value}</div>
-                                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#94A3B8', marginTop: 8, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--admin-text-muted)', marginTop: 8, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
                               </div>
                             ))}
                           </div>
                         </div>
                       </>
+                    )}
+                    {settingsData && editingDocument && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                          <FileText size={18} color="var(--admin-warning)" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Edit Document Settings</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 16, marginBottom: 16 }}>
+                          {[
+                            ['quotationPrefix', 'Quotation Prefix'],
+                            ['invoicePrefix', 'Tax Invoice Prefix'],
+                            ['billPrefix', 'Bill Prefix'],
+                            ['defaultGstRate', 'Default GST Rate (%)'],
+                          ].map(([field, label]) => (
+                            <div key={field}>
+                              <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>{label}</label>
+                              <input value={documentEditForm[field] || ''} onChange={e => setDocumentEditForm(f => ({ ...f, [field]: e.target.value }))}
+                                style={{ width: '100%', boxSizing: 'border-box', padding: '9px 12px', background: 'var(--admin-input-bg)', border: '1px solid var(--admin-input-border)', borderRadius: 7, color: 'var(--admin-text-primary)', fontSize: '0.9rem', outline: 'none' }}
+                                onFocus={e => { e.target.style.borderColor = 'var(--admin-input-focus)' }}
+                                onBlur={e => { e.target.style.borderColor = 'var(--admin-input-border)' }} />
+                            </div>
+                          ))}
+                        </div>
+                        <div style={{ marginBottom: 20 }}>
+                          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Default Terms & Conditions</label>
+                          <textarea value={documentEditForm.defaultTerms || ''} onChange={e => setDocumentEditForm(f => ({ ...f, defaultTerms: e.target.value }))} rows={4}
+                            style={{ width: '100%', boxSizing: 'border-box', padding: '9px 12px', background: 'var(--admin-input-bg)', border: '1px solid var(--admin-input-border)', borderRadius: 7, color: 'var(--admin-text-primary)', fontSize: '0.875rem', resize: 'vertical', outline: 'none', fontFamily: 'inherit' }}
+                            onFocus={e => { e.target.style.borderColor = 'var(--admin-input-focus)' }}
+                            onBlur={e => { e.target.style.borderColor = 'var(--admin-input-border)' }} />
+                        </div>
+                        <div style={{ display: 'flex', gap: 10 }}>
+                          <button onClick={saveDocumentSettings} disabled={savingDocument}
+                            style={{ padding: '9px 20px', background: 'var(--admin-accent)', border: 'none', borderRadius: 7, color: '#FFFFFF', fontWeight: 700, fontSize: '0.875rem', cursor: savingDocument ? 'default' : 'pointer', opacity: savingDocument ? 0.7 : 1 }}>
+                            {savingDocument ? 'Saving…' : 'Save Changes'}
+                          </button>
+                          <button onClick={() => setEditingDocument(false)}
+                            style={{ padding: '9px 20px', background: 'none', border: '1px solid var(--admin-border)', borderRadius: 7, color: 'var(--admin-text-secondary)', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 )}
@@ -1274,11 +1379,10 @@ export default function AdminDashboard() {
                   const storedUser = (() => { try { return JSON.parse(localStorage.getItem('om_admin_user') || '{}') } catch { return {} } })()
                   return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                      {/* Admin Account Info */}
-                      <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                          <UserCircle size={18} color="#60A5FA" />
-                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Admin Account</span>
+                          <UserCircle size={18} color="var(--admin-info)" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Admin Account</span>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 14 }}>
                           {[
@@ -1286,37 +1390,36 @@ export default function AdminDashboard() {
                             ['Email', storedUser.email || '—'],
                             ['Role', storedUser.role || 'ROLE_ADMIN'],
                           ].map(([label, value]) => (
-                            <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
-                              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
-                              <div style={{ fontSize: '0.9375rem', fontWeight: 600, color: '#E2E8F0' }}>{value}</div>
+                            <div key={label} style={{ background: 'var(--admin-surface-subtle)', borderRadius: 8, padding: '12px 16px', border: '1px solid var(--admin-border-subtle)' }}>
+                              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--admin-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{label}</div>
+                              <div style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--admin-text-primary)' }}>{value}</div>
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      {/* Password Management */}
-                      <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                          <Key size={18} color="#C5A03F" />
-                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Password Management</span>
+                          <Key size={18} color="var(--admin-warning)" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Password Management</span>
                         </div>
-                        <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: 16 }}>Change your admin password. You must provide your current password to confirm the change.</p>
+                        <p style={{ color: 'var(--admin-text-secondary)', fontSize: '0.875rem', marginBottom: 16 }}>Change your admin password. You must provide your current password to confirm the change.</p>
                         <button onClick={() => setShowChangePwd(true)} className="btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px' }}>
                           <Key size={15} /> Change Password
                         </button>
                       </div>
 
-                      {/* Session Management */}
-                      <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                          <Shield size={18} color="#F87171" />
-                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Session Management</span>
+                          <Shield size={18} color="var(--admin-danger)" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Session Management</span>
                         </div>
-                        <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: 4 }}>
+                        <p style={{ color: 'var(--admin-text-secondary)', fontSize: '0.875rem', marginBottom: 4 }}>
                           Sessions are authenticated via JWT tokens valid for 24 hours. "Logout All Sessions" invalidates all tokens immediately — including this one — by incrementing a server-side version counter.
                         </p>
-                        <p style={{ color: '#94A3B8', fontSize: '0.8125rem', marginBottom: 18 }}>Use this if your credentials were compromised or you logged in from an untrusted device.</p>
-                        <button onClick={logoutAllSessions} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: 'rgba(180,35,60,0.15)', border: '1px solid rgba(180,35,60,0.4)', borderRadius: 8, color: '#F87171', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
+                        <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.8125rem', marginBottom: 18 }}>Use this if your credentials were compromised or you logged in from an untrusted device.</p>
+                        <button onClick={logoutAllSessions}
+                          style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: 'var(--admin-danger-bg)', border: '1px solid var(--admin-danger)', borderRadius: 8, color: 'var(--admin-danger)', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer' }}>
                           <LogOut size={15} /> Logout All Sessions
                         </button>
                       </div>
@@ -1324,35 +1427,81 @@ export default function AdminDashboard() {
                   )
                 })()}
 
+                {/* ── INTEGRATIONS ── */}
+                {settingsTab === 'integrations' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    {!settingsData && !settingsLoading && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center' }}>
+                        <Database size={36} color="var(--admin-text-muted)" style={{ marginBottom: 12 }} />
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--admin-text-primary)', marginBottom: 8 }}>Load Integration Status</div>
+                        <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>Load Status</button>
+                      </div>
+                    )}
+                    {settingsLoading && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center', color: 'var(--admin-text-muted)' }}>Loading…</div>
+                    )}
+                    {settingsData && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                          <Database size={18} color="var(--admin-info)" />
+                          <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--admin-text-primary)' }}>Integration Status</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, border: '1px solid var(--admin-border)', borderRadius: 8, overflow: 'hidden' }}>
+                          {[
+                            { label: 'Razorpay Payment', status: settingsData.razorpayStatus, sub: `Key prefix: ${settingsData.razorpayKeyIdPrefix} — Secret: Environment Managed`, icon: CreditCard },
+                            { label: 'Email (SMTP)', status: settingsData.emailStatus, sub: `Host: ${settingsData.emailHost} — Password: Environment Managed`, icon: Mail },
+                            { label: 'PostgreSQL Database', status: settingsData.databaseStatus, sub: 'Connection via Railway — Credentials: Environment Managed', icon: Database },
+                          ].map(({ label, status, sub, icon: Icon }, idx, arr) => {
+                            const ok = status === 'Configured' || status === 'Connected'
+                            return (
+                              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 18px', background: 'var(--admin-surface)', borderBottom: idx < arr.length - 1 ? '1px solid var(--admin-border)' : 'none' }}>
+                                <Icon size={18} color={ok ? 'var(--admin-success)' : 'var(--admin-warning)'} style={{ flexShrink: 0 }} />
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ fontWeight: 600, color: 'var(--admin-text-primary)', fontSize: '0.875rem' }}>{label}</div>
+                                  <div style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted)', marginTop: 2 }}>{sub}</div>
+                                </div>
+                                <span style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: ok ? 'var(--admin-success-bg)' : 'var(--admin-warning-bg)', color: ok ? 'var(--admin-success)' : 'var(--admin-warning)' }}>{status}</span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <p style={{ marginTop: 16, fontSize: '0.8125rem', color: 'var(--admin-text-muted)' }}>All secrets and credentials are managed server-side via environment variables. No sensitive values are transmitted to or stored in this interface.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* ── ACTIVITY LOG ── */}
                 {settingsTab === 'log' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                     {auditLogs.length === 0 && !settingsLoading && (
-                      <div className="glass-card" style={{ padding: 32, textAlign: 'center' }}>
-                        <ClipboardList size={36} color="#94A3B8" style={{ marginBottom: 12 }} />
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>Activity Log</div>
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center' }}>
+                        <ClipboardList size={36} color="var(--admin-text-muted)" style={{ marginBottom: 12 }} />
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--admin-text-primary)', marginBottom: 8 }}>Activity Log</div>
                         <button onClick={fetchSettings} className="btn-primary" style={{ padding: '10px 24px' }}>Load Log</button>
                       </div>
                     )}
-                    {settingsLoading && <div className="glass-card" style={{ padding: 32, textAlign: 'center', color: '#94A3B8' }}>Loading…</div>}
+                    {settingsLoading && (
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 32, textAlign: 'center', color: 'var(--admin-text-muted)' }}>Loading…</div>
+                    )}
                     {auditLogs.length > 0 && (
-                      <div className="glass-card" style={{ padding: 24 }}>
+                      <div style={{ background: 'var(--admin-surface)', border: '1px solid var(--admin-border)', borderRadius: 10, padding: 24 }}>
                         {/* Filters */}
                         <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: '0 0 auto' }}>
-                            <Filter size={14} color="#64748B" />
+                            <Filter size={14} color="var(--admin-text-muted)" />
                             <select value={logActionFilter} onChange={e => setLogActionFilter(e.target.value)}
-                              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text-primary)', padding: '6px 10px', fontSize: '0.8125rem' }}>
+                              style={{ background: 'var(--admin-input-bg)', border: '1px solid var(--admin-input-border)', borderRadius: 6, color: 'var(--admin-text-primary)', padding: '6px 10px', fontSize: '0.8125rem' }}>
                               <option value="">All Types</option>
                               {['INVOICE', 'INQUIRY', 'TICKET', 'SURVEY', 'USER', 'DOCUMENT'].map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
                           </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: '1 1 200px', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px' }}>
-                            <Search size={14} color="#64748B" />
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flex: '1 1 200px', background: 'var(--admin-input-bg)', border: '1px solid var(--admin-input-border)', borderRadius: 6, padding: '6px 10px' }}>
+                            <Search size={14} color="var(--admin-text-muted)" />
                             <input value={logTextFilter} onChange={e => setLogTextFilter(e.target.value)} placeholder="Search actions, refs, details…"
-                              style={{ background: 'none', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: '0.8125rem', width: '100%' }} />
+                              style={{ background: 'none', border: 'none', outline: 'none', color: 'var(--admin-text-primary)', fontSize: '0.8125rem', width: '100%' }} />
                           </div>
-                          <span style={{ color: '#64748B', fontSize: '0.8125rem' }}>
+                          <span style={{ color: 'var(--admin-text-muted)', fontSize: '0.8125rem' }}>
                             {auditLogs.filter(l => (!logActionFilter || (l.entityType || '').toUpperCase().includes(logActionFilter)) && (!logTextFilter || JSON.stringify(l).toLowerCase().includes(logTextFilter.toLowerCase()))).length} entries
                           </span>
                         </div>
@@ -1361,9 +1510,9 @@ export default function AdminDashboard() {
                         <div style={{ overflowX: 'auto' }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
                             <thead>
-                              <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                              <tr style={{ borderBottom: '2px solid var(--admin-border)' }}>
                                 {['WHEN', 'WHO', 'WHAT', 'WHICH', 'RESULT / DETAIL'].map(h => (
-                                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: '#64748B', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{h}</th>
+                                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: 'var(--admin-text-muted)', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{h}</th>
                                 ))}
                               </tr>
                             </thead>
@@ -1371,27 +1520,34 @@ export default function AdminDashboard() {
                               {auditLogs
                                 .filter(l => (!logActionFilter || (l.entityType || '').toUpperCase().includes(logActionFilter)) && (!logTextFilter || JSON.stringify(l).toLowerCase().includes(logTextFilter.toLowerCase())))
                                 .map(entry => {
-                                  const badgeColor = {
-                                    DOCUMENT_CREATED: '#4ADE80', DOCUMENT_UPDATED: '#60A5FA', DOCUMENT_DELETED: '#F87171',
-                                    STATUS_CHANGED: '#F59E0B', SURVEY_SCHEDULED: '#A78BFA', SURVEY_UPDATED: '#60A5FA',
-                                    TICKET_UPDATED: '#38BDF8', TICKET_DELETED: '#F87171',
-                                    INQUIRY_DELETED: '#F87171',
-                                    PASSWORD_CHANGED: '#C5A03F', LOGOUT_ALL_SESSIONS: '#F87171',
-                                    ADMIN_LOGIN: '#4ADE80',
-                                  }[entry.action] || '#94A3B8'
+                                  const badgeStyle = {
+                                    DOCUMENT_CREATED: { color: 'var(--admin-success)', bg: 'var(--admin-success-bg)' },
+                                    DOCUMENT_UPDATED: { color: 'var(--admin-info)', bg: 'var(--admin-info-bg)' },
+                                    DOCUMENT_DELETED: { color: 'var(--admin-danger)', bg: 'var(--admin-danger-bg)' },
+                                    STATUS_CHANGED:    { color: 'var(--admin-warning)', bg: 'var(--admin-warning-bg)' },
+                                    SURVEY_SCHEDULED:  { color: '#7C3AED', bg: 'rgba(124,58,237,0.1)' },
+                                    SURVEY_UPDATED:    { color: 'var(--admin-info)', bg: 'var(--admin-info-bg)' },
+                                    TICKET_UPDATED:    { color: 'var(--admin-info)', bg: 'var(--admin-info-bg)' },
+                                    TICKET_DELETED:    { color: 'var(--admin-danger)', bg: 'var(--admin-danger-bg)' },
+                                    INQUIRY_DELETED:   { color: 'var(--admin-danger)', bg: 'var(--admin-danger-bg)' },
+                                    PASSWORD_CHANGED:  { color: 'var(--admin-warning)', bg: 'var(--admin-warning-bg)' },
+                                    LOGOUT_ALL_SESSIONS: { color: 'var(--admin-danger)', bg: 'var(--admin-danger-bg)' },
+                                    ADMIN_LOGIN:       { color: 'var(--admin-success)', bg: 'var(--admin-success-bg)' },
+                                  }[entry.action] || { color: 'var(--admin-text-muted)', bg: 'var(--admin-surface-subtle)' }
                                   return (
-                                    <tr key={entry.id} onClick={() => setSelectedLogEntry(entry)} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer', transition: 'background 0.1s' }}
-                                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                                    <tr key={entry.id} onClick={() => setSelectedLogEntry(entry)}
+                                      style={{ borderBottom: '1px solid var(--admin-border)', cursor: 'pointer', transition: 'background 0.1s' }}
+                                      onMouseEnter={e => e.currentTarget.style.background = 'var(--admin-surface-subtle)'}
                                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                      <td style={{ padding: '10px 12px', color: '#94A3B8', whiteSpace: 'nowrap' }}>{new Date(entry.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</td>
-                                      <td style={{ padding: '10px 12px', color: '#E2E8F0', fontWeight: 600 }}>{entry.performedBy || 'SYSTEM'}</td>
+                                      <td style={{ padding: '10px 12px', color: 'var(--admin-text-muted)', whiteSpace: 'nowrap' }}>{new Date(entry.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</td>
+                                      <td style={{ padding: '10px 12px', color: 'var(--admin-text-primary)', fontWeight: 600 }}>{entry.performedBy || 'SYSTEM'}</td>
                                       <td style={{ padding: '10px 12px' }}>
-                                        <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: badgeColor + '26', color: badgeColor }}>{entry.action}</span>
+                                        <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: badgeStyle.bg, color: badgeStyle.color }}>{entry.action}</span>
                                       </td>
-                                      <td style={{ padding: '10px 12px', color: '#CBD5E1' }}><span style={{ fontWeight: 600 }}>{entry.entityType}</span>{entry.entityRef ? <span style={{ color: '#64748B' }}> · {entry.entityRef}</span> : ''}</td>
-                                      <td style={{ padding: '10px 12px', color: '#94A3B8', maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                      <td style={{ padding: '10px 12px', color: 'var(--admin-text-primary)' }}><span style={{ fontWeight: 600 }}>{entry.entityType}</span>{entry.entityRef ? <span style={{ color: 'var(--admin-text-muted)' }}> · {entry.entityRef}</span> : ''}</td>
+                                      <td style={{ padding: '10px 12px', color: 'var(--admin-text-muted)', maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                         {entry.detail}
-                                        <ChevronRight size={12} color="#475569" style={{ marginLeft: 4, verticalAlign: 'middle' }} />
+                                        <ChevronRight size={12} color="var(--admin-text-faint)" style={{ marginLeft: 4, verticalAlign: 'middle' }} />
                                       </td>
                                     </tr>
                                   )
@@ -1406,7 +1562,6 @@ export default function AdminDashboard() {
 
               </div>
             )}
-
           </>
         )}
       </main>

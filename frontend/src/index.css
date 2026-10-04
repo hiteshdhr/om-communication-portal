@@ -79,6 +79,80 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* ─── Admin Workspace Semantic Tokens ────────────────────────────────────── */
+/* These tokens govern the light-workspace area of the admin portal.          */
+/* The sidebar intentionally uses --bg-charcoal (dark). These tokens are for  */
+/* the main content area, modals, settings panels, tables, and forms.         */
+:root {
+  /* Admin surface hierarchy */
+  --admin-surface:        #FFFFFF;
+  --admin-surface-subtle: #F6F7F8;
+  --admin-surface-inset:  #F0F2F5;
+
+  /* Admin text (WCAG AA on --admin-surface) */
+  --admin-text-primary:   #111827;
+  --admin-text-secondary: #59636F;
+  --admin-text-muted:     #6B7280;
+  --admin-text-faint:     #9CA3AF;
+
+  /* Admin borders */
+  --admin-border:         #E5E7EB;
+  --admin-border-subtle:  #F0F2F5;
+
+  /* Admin accent (OCW red) */
+  --admin-accent:         #B4233C;
+  --admin-accent-light:   #FDF2F4;
+  --admin-accent-hover:   #8F1C30;
+
+  /* Admin status colours */
+  --admin-success:        #18864B;
+  --admin-success-bg:     #F0FBF4;
+  --admin-warning:        #B7791F;
+  --admin-warning-bg:     #FFFBEB;
+  --admin-danger:         #C93636;
+  --admin-danger-bg:      #FFF5F5;
+  --admin-info:           #3E6F8F;
+  --admin-info-bg:        #EFF6FF;
+
+  /* Admin input fields */
+  --admin-input-bg:       #FFFFFF;
+  --admin-input-border:   #D1D5DB;
+  --admin-input-focus:    #B4233C;
+}
+
+[data-theme='dark'] {
+  --admin-surface:        #1B1F25;
+  --admin-surface-subtle: #15181D;
+  --admin-surface-inset:  #0F1115;
+
+  --admin-text-primary:   #F5F7FA;
+  --admin-text-secondary: #A7B0BC;
+  --admin-text-muted:     #86909E;
+  --admin-text-faint:     #5E6875;
+
+  --admin-border:         #2A3038;
+  --admin-border-subtle:  #232830;
+
+  --admin-accent:         #C43752;
+  --admin-accent-light:   rgba(196, 55, 82, 0.15);
+  --admin-accent-hover:   #A12D43;
+
+  --admin-success:        #22A85A;
+  --admin-success-bg:     rgba(34, 168, 90, 0.12);
+  --admin-warning:        #D48A2A;
+  --admin-warning-bg:     rgba(212, 138, 42, 0.12);
+  --admin-danger:         #E04444;
+  --admin-danger-bg:      rgba(224, 68, 68, 0.12);
+  --admin-info:           #5B9EC4;
+  --admin-info-bg:        rgba(91, 158, 196, 0.12);
+
+  --admin-input-bg:       #1B1F25;
+  --admin-input-border:   #2A3038;
+  --admin-input-focus:    #C43752;
+}
+
+
+
 :root {
   /* ── Typography Scale ── */
   --font-display: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
