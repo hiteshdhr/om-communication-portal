@@ -10,10 +10,21 @@ export default function BillTemplate({ doc = {} }) {
   const totalAmount = Number(doc.totalAmount || doc.subtotal || 0)
   const totalQty = items.reduce((acc, it) => acc + (Number(it.quantity) || 1), 0)
 
-  // Exact border matching reference image
   const outerBorder = '1.5px solid #B0B0B0'
   const innerBorder = '1px solid #B0B0B0'
-  const pinkBg = '#FCE7F3'
+  const pinkBg = '#FCE7F3'   // matches reference image — keep as-is
+
+  // Quantity label: "1 NO" / "4 NOS"
+  const qtyLabel = (qty) => {
+    const n = Number(qty) || 1
+    return `${n}${n === 1 ? 'NO.' : 'NOS.'}`
+  }
+
+  // Default terms if none configured
+  const defaultTerms = ['ADVANCE PAYMENT 100%', 'GOODS ONCE SOLD WILL NOT BE TAKEN BACK']
+  const termsList = doc.termsAndConditions
+    ? doc.termsAndConditions.split('\n').filter(Boolean)
+    : defaultTerms
 
   return (
     <div
@@ -32,6 +43,16 @@ export default function BillTemplate({ doc = {} }) {
         lineHeight: 1.4,
       }}
     >
+      {/* Print isolation — hides all admin UI; only .a4-document prints */}
+      <style>{`
+        @media print {
+          body * { visibility: hidden !important; }
+          .a4-document { visibility: visible !important; position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; margin: 0 !important; padding: 20px !important; box-shadow: none !important; border-radius: 0 !important; }
+          .a4-document * { visibility: visible !important; }
+          @page { margin: 0; size: A4 portrait; }
+        }
+      `}</style>
+
       {/* ── OUTER BORDER CONTAINER ─────────────────────────────── */}
       <div style={{
         border: outerBorder,
@@ -87,9 +108,12 @@ export default function BillTemplate({ doc = {} }) {
             {doc.clientPhone && (
               <div style={{ fontSize: '11px', color: '#555555', marginTop: 1 }}>Ph: {doc.clientPhone}</div>
             )}
+            {doc.clientEmail && (
+              <div style={{ fontSize: '11px', color: '#555555' }}>Email: {doc.clientEmail}</div>
+            )}
           </div>
 
-          {/* Right: Invoice No. + Invoice Date */}
+          {/* Right: Invoice No. + Invoice Date side-by-side (matches reference) */}
           <div style={{ padding: '10px 14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
             <div style={{ borderRight: innerBorder, paddingRight: 10 }}>
               <div style={{ fontSize: '10px', fontWeight: 700, color: '#555555', marginBottom: 4 }}>Invoice No.</div>
@@ -111,7 +135,6 @@ export default function BillTemplate({ doc = {} }) {
           <div style={{
             display: 'grid',
             gridTemplateColumns: '50px 1fr 80px 90px 110px',
-            background: pinkBg,
             borderBottom: outerBorder,
           }}>
             {[
@@ -136,7 +159,7 @@ export default function BillTemplate({ doc = {} }) {
             ))}
           </div>
 
-          {/* Table Rows */}
+          {/* Item Rows */}
           <div style={{ flex: 1 }}>
             {items.map((item, idx) => {
               const amt = Number(item.amount || ((item.quantity || 1) * (item.unitPrice || 0)) || 0)
@@ -158,23 +181,19 @@ export default function BillTemplate({ doc = {} }) {
                     {item.description}
                   </div>
                   <div style={{ padding: '7px 6px', borderRight: innerBorder, textAlign: 'center', fontWeight: 600 }}>
-                    {item.quantity} NOS
+                    {qtyLabel(item.quantity)}
                   </div>
                   <div style={{ padding: '7px 6px', borderRight: innerBorder, textAlign: 'right', fontWeight: 500 }}>
                     {Number(item.unitPrice || 0).toLocaleString('en-IN')}
                   </div>
                   <div style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 600 }}>
-                    {amt.toLocaleString('en-IN')}
+                    {amt.toLocaleString('en-IN')}/-
                   </div>
                 </div>
               )
             })}
 
-            {/* Ruled filler: extends the column grid to the bottom of the page
-                exactly like the reference bill, so the table reads as one
-                continuous ruled block (vertical separators continue through the
-                empty area) rather than a borderless void. flex:1 makes it grow
-                to fill whatever height remains above the TOTAL row. */}
+            {/* Ruled filler: vertical separators continue through empty area — matches reference exactly */}
             <div style={{
               flex: 1,
               minHeight: '200px',
@@ -189,13 +208,13 @@ export default function BillTemplate({ doc = {} }) {
             </div>
           </div>
 
-          {/* ── TOTAL ROW ─────────────────────────────────────────── */}
+          {/* ── TOTAL ROW (pink bg, matches reference) ────────────── */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: '50px 1fr 80px 90px 110px',
             background: pinkBg,
             borderTop: outerBorder,
-            borderBottom: outerBorder,
+            borderBottom: innerBorder,
           }}>
             <div style={{ padding: '8px 6px', borderRight: innerBorder }} />
             <div style={{ padding: '8px 10px', borderRight: innerBorder, textAlign: 'right', fontWeight: 800, fontSize: '12px' }}>
@@ -206,7 +225,7 @@ export default function BillTemplate({ doc = {} }) {
             </div>
             <div style={{ padding: '8px 6px', borderRight: innerBorder }} />
             <div style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, fontSize: '13px', color: '#0F172A' }}>
-              ₹ {totalAmount.toLocaleString('en-IN')}
+              ₹{totalAmount.toLocaleString('en-IN')}
             </div>
           </div>
 
@@ -229,30 +248,46 @@ export default function BillTemplate({ doc = {} }) {
         {/* ── AMOUNT IN WORDS ───────────────────────────────────── */}
         <div style={{ padding: '8px 14px 10px', borderBottom: outerBorder }}>
           <div style={{ fontSize: '11px', fontWeight: 700, color: '#333333', marginBottom: 2 }}>
-            Total Amount (In Words):
+            Total Amount (in words)
           </div>
-          <div style={{ fontSize: '12.5px', fontWeight: 400, color: '#0F172A', textTransform: 'capitalize' }}>
+          <div style={{ fontSize: '12.5px', fontWeight: 400, color: '#0F172A', textTransform: 'uppercase' }}>
             {numberToWordsINR(totalAmount)}
           </div>
         </div>
 
-        {/* ── SIGNATURE BOX ─────────────────────────────────────── */}
-        <div style={{
-          padding: '12px 18px 16px',
-          minHeight: '96px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          justifyContent: 'flex-end',
-        }}>
-          <div style={{ textAlign: 'center', minWidth: 200 }}>
-            <div style={{ fontSize: '11px', fontWeight: 600, color: '#475569', marginBottom: 2 }}>For</div>
-            <div style={{ fontSize: '12.5px', fontWeight: 900, color: '#0F172A', textTransform: 'uppercase', marginBottom: 36 }}>
-              OM COMMUNICATION WORKS
+        {/* ── TERMS & CONDITIONS + SIGNATORY (side by side, matches reference) */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 240px', minHeight: '96px', borderBottom: outerBorder }}>
+
+          {/* Left: Terms and Conditions */}
+          <div style={{ padding: '10px 14px', borderRight: outerBorder }}>
+            <div style={{ fontSize: '10px', fontWeight: 700, color: '#555555', marginBottom: 4 }}>
+              Terms and Conditions
             </div>
-            <div style={{ borderTop: '1px solid #334155', paddingTop: 5 }}>
-              <div style={{ fontSize: '11px', fontWeight: 800, color: '#0F172A', textTransform: 'uppercase' }}>
-                Authorised Signatory
+            {termsList.map((t, i) => (
+              <div key={i} style={{ fontSize: '11px', color: '#333333', fontWeight: 600, marginBottom: 2, textTransform: 'uppercase' }}>
+                {t}
+              </div>
+            ))}
+          </div>
+
+          {/* Right: Authorised Signatory */}
+          <div style={{
+            padding: '10px 14px 12px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}>
+            <div style={{ textAlign: 'center', width: '100%' }}>
+              {/* Signature space */}
+              <div style={{ height: '40px' }} />
+              <div style={{ borderTop: '1px solid #334155', paddingTop: 4, textAlign: 'center' }}>
+                <div style={{ fontSize: '10px', fontWeight: 700, color: '#0F172A', textDecoration: 'underline' }}>
+                  Authorised Signatory For
+                </div>
+                <div style={{ fontSize: '11px', fontWeight: 900, color: '#0F172A', textTransform: 'uppercase', marginTop: 2 }}>
+                  OM COMMUNICATION WORKS
+                </div>
               </div>
             </div>
           </div>

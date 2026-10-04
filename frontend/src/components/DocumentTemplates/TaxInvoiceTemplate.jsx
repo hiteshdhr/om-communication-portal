@@ -17,6 +17,27 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
   const border = '1.5px solid #1E293B'
   const headerBg = '#F1F5F9'
 
+  // Quantity label: "1 NO" / "4 NOS"
+  const qtyLabel = (qty) => {
+    const n = Number(qty) || 1
+    return `${n} ${n === 1 ? 'NO' : 'NOS'}`
+  }
+
+  // Filler rows to fill A4 space — minimum 12 data rows visible
+  const MIN_ROWS = 12
+  const fillerCount = Math.max(0, MIN_ROWS - items.length)
+
+  // Default terms if none configured
+  const defaultTerms = [
+    'ADVANCE PAYMENT 100%',
+    gstEnabled ? 'GST INCLUDED AS APPLICABLE' : 'GST EXTRA AS APPLICABLE',
+    'GOODS ONCE SOLD WILL NOT BE TAKEN BACK',
+    'SUBJECT TO DELHI JURISDICTION',
+  ]
+  const termsList = doc.termsAndConditions
+    ? doc.termsAndConditions.split('\n').filter(Boolean)
+    : defaultTerms
+
   return (
     <div
       className="a4-document invoice-doc"
@@ -34,6 +55,16 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
         lineHeight: 1.45,
       }}
     >
+      {/* Print isolation — hides all admin UI; only .a4-document prints */}
+      <style>{`
+        @media print {
+          body * { visibility: hidden !important; }
+          .a4-document { visibility: visible !important; position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; margin: 0 !important; padding: 20px !important; box-shadow: none !important; border-radius: 0 !important; }
+          .a4-document * { visibility: visible !important; }
+          @page { margin: 0; size: A4 portrait; }
+        }
+      `}</style>
+
       {/* ── OUTER BORDER ───────────────────────────────────────── */}
       <div style={{ border, padding: 0 }}>
 
@@ -78,7 +109,8 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
 
         {/* ── BILL TO / INVOICE META ────────────────────────────── */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', borderBottom: border }}>
-          {/* Bill To */}
+
+          {/* Bill To — company name, address, phone, email, GSTIN */}
           <div style={{ padding: '10px 14px', borderRight: border }}>
             <div style={{ fontSize: '9.5px', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
               BILL TO
@@ -91,11 +123,6 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
                 {doc.clientAddress}
               </div>
             )}
-            {doc.clientGstin && (
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A', marginTop: 3 }}>
-                GSTIN: {doc.clientGstin}
-              </div>
-            )}
             {doc.clientPhone && (
               <div style={{ fontSize: '11px', color: '#475569', marginTop: 2 }}>
                 Ph: {doc.clientPhone}
@@ -106,15 +133,20 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
                 Email: {doc.clientEmail}
               </div>
             )}
+            {doc.clientGstin && (
+              <div style={{ fontSize: '11px', fontWeight: 700, color: '#0F172A', marginTop: 3 }}>
+                GSTIN: {doc.clientGstin}
+              </div>
+            )}
           </div>
 
-          {/* Invoice Meta */}
+          {/* Invoice Meta — Tax Invoice never shows quotation subject */}
           <div style={{ padding: '10px 14px' }}>
             <table style={{ width: '100%', fontSize: '11.5px' }}>
               <tbody>
                 <tr>
                   <td style={{ padding: '4px 0', fontWeight: 700, color: '#334155' }}>Invoice No.</td>
-                  <td style={{ padding: '4px 0', textAlign: 'right', fontWeight: 900, color: '#991B1B', fontSize: '12px' }}>
+                  <td style={{ padding: '4px 0', textAlign: 'right', fontWeight: 900, color: '#1E293B', fontSize: '12px' }}>
                     {doc.invoiceNumber || 'OCW-INV-2026-001'}
                   </td>
                 </tr>
@@ -122,13 +154,6 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
                   <td style={{ padding: '4px 0', fontWeight: 700, color: '#334155' }}>Invoice Date</td>
                   <td style={{ padding: '4px 0', textAlign: 'right', fontWeight: 700 }}>{dateStr}</td>
                 </tr>
-                {doc.subject && (
-                  <tr>
-                    <td colSpan={2} style={{ padding: '6px 0 0', fontWeight: 700, color: '#334155', fontSize: '10.5px' }}>
-                      Sub: {doc.subject}
-                    </td>
-                  </tr>
-                )}
               </tbody>
             </table>
           </div>
@@ -140,7 +165,7 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
             <tr style={{ background: headerBg }}>
               <th style={{ padding: '8px 6px', borderBottom: border, borderRight: border, width: '42px', textAlign: 'center', fontWeight: 800, fontSize: '11px' }}>S.NO.</th>
               <th style={{ padding: '8px 10px', borderBottom: border, borderRight: border, textAlign: 'left', fontWeight: 800, fontSize: '11px' }}>ITEMS / DESCRIPTION</th>
-              <th style={{ padding: '8px 6px', borderBottom: border, borderRight: border, width: '65px', textAlign: 'center', fontWeight: 800, fontSize: '11px' }}>QTY.</th>
+              <th style={{ padding: '8px 6px', borderBottom: border, borderRight: border, width: '72px', textAlign: 'center', fontWeight: 800, fontSize: '11px' }}>QTY.</th>
               <th style={{ padding: '8px 10px', borderBottom: border, borderRight: border, width: '90px', textAlign: 'right', fontWeight: 800, fontSize: '11px' }}>RATE (₹)</th>
               <th style={{ padding: '8px 10px', borderBottom: border, width: '105px', textAlign: 'right', fontWeight: 800, fontSize: '11px' }}>AMOUNT (₹)</th>
             </tr>
@@ -157,7 +182,7 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
                     {item.description}
                   </td>
                   <td style={{ padding: '7px 6px', borderRight: border, textAlign: 'center', fontWeight: 700, verticalAlign: 'top' }}>
-                    {item.quantity} {item.unit ? item.unit.toUpperCase() : 'NOS'}
+                    {qtyLabel(item.quantity)}
                   </td>
                   <td style={{ padding: '7px 10px', borderRight: border, textAlign: 'right', verticalAlign: 'top', fontWeight: 600 }}>
                     {Number(item.unitPrice || 0).toLocaleString('en-IN')}
@@ -168,15 +193,19 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
                 </tr>
               )
             })}
-            {/* Filler row if few items to give some breathing room but NOT an enormous space */}
-            {items.length < 4 && (
-              <tr>
-                <td colSpan={5} style={{ height: `${Math.max(20, (4 - items.length) * 18)}px`, borderBottom: border }} />
+            {/* Filler rows: empty ruled rows maintaining column borders */}
+            {Array.from({ length: fillerCount }).map((_, i) => (
+              <tr key={`filler-${i}`} style={{ borderBottom: '1px solid #E2E8F0', height: '26px' }}>
+                <td style={{ borderRight: border }}>&nbsp;</td>
+                <td style={{ borderRight: border }}>&nbsp;</td>
+                <td style={{ borderRight: border }}>&nbsp;</td>
+                <td style={{ borderRight: border }}>&nbsp;</td>
+                <td>&nbsp;</td>
               </tr>
-            )}
+            ))}
           </tbody>
 
-          {/* ── SUBTOTAL / GST / TOTAL ROWS ─────────────────────── */}
+          {/* ── SUBTOTAL / CGST / SGST / TOTAL ROWS ─────────────── */}
           <tfoot>
             {gstEnabled && taxAmount > 0 && (
               <>
@@ -189,29 +218,34 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan={4} style={{ padding: '6px 10px', borderRight: border, textAlign: 'right', fontWeight: 700, borderTop: '1px solid #CBD5E1' }}>
-                    CGST ({gstRate / 2}%) + SGST ({gstRate / 2}%) = GST {gstRate}%
+                  <td colSpan={4} style={{ padding: '5px 10px', borderRight: border, textAlign: 'right', fontWeight: 700, borderTop: '1px solid #CBD5E1' }}>
+                    CGST @ {gstRate / 2}%
                   </td>
-                  <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, borderTop: '1px solid #CBD5E1' }}>
-                    ₹ {taxAmount.toLocaleString('en-IN')}
+                  <td style={{ padding: '5px 10px', textAlign: 'right', fontWeight: 700, borderTop: '1px solid #CBD5E1' }}>
+                    ₹ {(taxAmount / 2).toLocaleString('en-IN')}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan={4} style={{ padding: '5px 10px', borderRight: border, textAlign: 'right', fontWeight: 700, borderTop: '1px solid #CBD5E1' }}>
+                    SGST @ {gstRate / 2}%
+                  </td>
+                  <td style={{ padding: '5px 10px', textAlign: 'right', fontWeight: 700, borderTop: '1px solid #CBD5E1' }}>
+                    ₹ {(taxAmount / 2).toLocaleString('en-IN')}
                   </td>
                 </tr>
               </>
             )}
 
-            {/* TOTAL ROW */}
-            <tr style={{ background: '#F1F5F9', borderTop: border }}>
-              <td style={{ padding: '8px 6px', borderRight: border, borderTop: border, textAlign: 'center', fontWeight: 900 }}>
-                TOTAL
+            {/* GRAND TOTAL ROW — bold, red-tinted background, clearly separated */}
+            <tr style={{ background: '#FEF2F4', borderTop: border }}>
+              <td colSpan={2} style={{ padding: '9px 10px', borderRight: border, borderTop: border, textAlign: 'right', fontWeight: 900, fontSize: '12px', letterSpacing: '0.04em' }}>
+                GRAND TOTAL
               </td>
-              <td style={{ padding: '8px 10px', borderRight: border, borderTop: border, fontWeight: 700, fontSize: '11px', color: '#334155' }}>
-                {/* empty */}
-              </td>
-              <td style={{ padding: '8px 6px', borderRight: border, borderTop: border, textAlign: 'center', fontWeight: 900 }}>
+              <td style={{ padding: '9px 6px', borderRight: border, borderTop: border, textAlign: 'center', fontWeight: 900 }}>
                 {totalQty}
               </td>
-              <td style={{ padding: '8px 10px', borderRight: border, borderTop: border, textAlign: 'right' }} />
-              <td style={{ padding: '8px 10px', textAlign: 'right', fontWeight: 900, fontSize: '13px', color: '#0F172A', borderTop: border }}>
+              <td style={{ padding: '9px 10px', borderRight: border, borderTop: border }} />
+              <td style={{ padding: '9px 10px', textAlign: 'right', fontWeight: 900, fontSize: '13px', color: '#0F172A', borderTop: border }}>
                 ₹ {totalAmount.toLocaleString('en-IN')}
               </td>
             </tr>
@@ -229,20 +263,18 @@ export default function TaxInvoiceTemplate({ doc = {} }) {
         </div>
 
         {/* ── TERMS & CONDITIONS ───────────────────────────────── */}
-        {doc.termsAndConditions && (
-          <div style={{ borderTop: border, padding: '8px 14px' }}>
-            <div style={{ fontSize: '9.5px', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
-              TERMS & CONDITIONS
-            </div>
-            {doc.termsAndConditions.split('\n').filter(Boolean).map((t, i) => (
-              <div key={i} style={{ fontSize: '10.5px', color: '#334155', fontWeight: 600, marginBottom: 2 }}>
-                • {t}
-              </div>
-            ))}
+        <div style={{ borderTop: border, padding: '8px 14px' }}>
+          <div style={{ fontSize: '9.5px', fontWeight: 800, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
+            TERMS & CONDITIONS
           </div>
-        )}
+          {termsList.map((t, i) => (
+            <div key={i} style={{ fontSize: '10.5px', color: '#334155', fontWeight: 600, marginBottom: 2 }}>
+              • {t}
+            </div>
+          ))}
+        </div>
 
-        {/* ── SIGNATORY ────────────────────────────────────────── */}
+        {/* ── AUTHORISED SIGNATORY ─────────────────────────────── */}
         <div style={{ borderTop: border, padding: '16px 14px 12px', display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ textAlign: 'center', minWidth: 200 }}>
             <div style={{ fontSize: '11px', fontWeight: 600, color: '#475569', marginBottom: 2 }}>For</div>
