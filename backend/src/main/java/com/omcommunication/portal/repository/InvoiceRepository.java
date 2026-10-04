@@ -3,6 +3,8 @@ package com.omcommunication.portal.repository;
 import com.omcommunication.portal.model.Invoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +18,14 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
     @Query("SELECT i.invoiceNumber FROM Invoice i WHERE i.invoiceNumber IS NOT NULL")
     List<String> findAllInvoiceNumbers();
 
-    @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = com.omcommunication.portal.model.Invoice.Status.PAID")
-    BigDecimal sumTotalAmountByStatusPaid();
+    @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = :status")
+    BigDecimal sumTotalAmountByStatus(@Param("status") Invoice.Status status);
 
-    @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = com.omcommunication.portal.model.Invoice.Status.PENDING")
-    BigDecimal sumTotalAmountByStatusPending();
+    default BigDecimal sumTotalAmountByStatusPaid() {
+        return sumTotalAmountByStatus(Invoice.Status.PAID);
+    }
+
+    default BigDecimal sumTotalAmountByStatusPending() {
+        return sumTotalAmountByStatus(Invoice.Status.PENDING);
+    }
 }

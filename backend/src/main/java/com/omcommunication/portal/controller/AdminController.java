@@ -58,16 +58,16 @@ public class AdminController {
     // ─── Dashboard Metrics ────────────────────────────────────────────────────
     @GetMapping("/dashboard/metrics")
     public ResponseEntity<?> getDashboardMetrics() {
-        return ResponseEntity.ok(Map.of(
-                "totalInquiries", inquiryService.countTotal(),
-                "newLeads", inquiryService.countByStatus(Inquiry.Status.NEW),
-                "siteSurveysScheduled", siteSurveyService.countByStatus(SiteSurvey.Status.SCHEDULED),
-                "quotationsPreparing", inquiryService.countByStatus(Inquiry.Status.QUOTATION_PREPARING),
-                "activeComplaints", ticketService.countByStatus(Ticket.Status.OPEN)
-                        + ticketService.countByStatus(Ticket.Status.IN_PROGRESS),
-                "totalRevenue", invoiceService.getTotalRevenue(),
-                "outstandingPayments", invoiceService.getOutstandingAmount()
-        ));
+        Map<String, Object> metrics = new HashMap<>();
+        metrics.put("totalInquiries", inquiryService.countTotal());
+        metrics.put("newLeads", inquiryService.countByStatus(Inquiry.Status.NEW));
+        metrics.put("siteSurveysScheduled", siteSurveyService.countByStatus(SiteSurvey.Status.SCHEDULED));
+        metrics.put("quotationsPreparing", inquiryService.countByStatus(Inquiry.Status.QUOTATION_PREPARING));
+        metrics.put("activeComplaints", ticketService.countByStatus(Ticket.Status.OPEN)
+                + ticketService.countByStatus(Ticket.Status.IN_PROGRESS));
+        metrics.put("totalRevenue", invoiceService.getTotalRevenue());
+        metrics.put("outstandingPayments", invoiceService.getOutstandingAmount());
+        return ResponseEntity.ok(metrics);
     }
 
     // ─── Inquiries / Leads ────────────────────────────────────────────────────
