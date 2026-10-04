@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -185,10 +185,13 @@ export default function AdminDashboard() {
   const [auditLogs, setAuditLogs] = useState([])
   const [auditFilter, setAuditFilter] = useState('')
   const [settingsLoading, setSettingsLoading] = useState(false)
-  // True when one or more dashboard API calls fail for a non-auth reason
-  // (e.g. backend down, DB error). Surfaced as a banner instead of silently
-  // rendering empty/placeholder metrics.
-  const [loadError, setLoadError] = useState(false)
+  const [sectionErrors, setSectionErrors] = useState({
+    metrics: false,
+    inquiries: false,
+    surveys: false,
+    tickets: false,
+    invoices: false,
+  })
 
   // Modals
   const [showDocumentModal, setShowDocumentModal] = useState(false)
@@ -199,46 +202,68 @@ export default function AdminDashboard() {
   const navGroups = NAV_GROUPS
   const tabs = NAV_GROUPS.flatMap(g => g.items)
 
+  const [retryStatus, setRetryStatus] = useState('')
+
   const fetchAll = useCallback(async () => {
     setLoading(true)
-    let anyError = false
-    // Use independent calls so one failure does not destroy the entire dashboard.
-    const safeGet = async (url, fallback) => {
-      try {
-        const res = await api.get(url)
-        return res
-      } catch (err) {
-        if (err.response?.status === 401 || err.response?.status === 403) {
-          toast.error('Session expired. Please log in.')
-          localStorage.removeItem('om_admin_token')
-          navigate('/admin/login')
-          throw err
+    setRetryStatus('')
+    const newErrors = { metrics: false, inquiries: false, surveys: false, tickets: false, invoices: false }
+
+    // Retry helper — retries up to maxRetries times on transient server errors
+    // (network failure, 502, 503, 504). 401/403 are NOT retried; they trigger
+    // an immediate redirect to the login page.
+    const safeFetch = async (url, fallback, key, maxRetries = 3) => {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const res = await api.get(url)
+          return res.data
+        } catch (err) {
+          const status = err.response?.status
+          // Auth failure — redirect immediately, no retry
+          if (status === 401 || status === 403) {
+            toast.error('Session expired. Please log in.')
+            localStorage.removeItem('om_admin_token')
+            localStorage.removeItem('om_admin_user')
+            navigate('/admin/login')
+            throw err
+          }
+          // Transient server/network error — retry with exponential backoff
+          const isTransient = !status || status === 502 || status === 503 || status === 504
+          if (isTransient && attempt < maxRetries) {
+            const delayMs = 1500 * Math.pow(2, attempt - 1) // 1.5s, 3s, 6s
+            setRetryStatus(`Backend is starting up… retrying in ${Math.round(delayMs / 1000)}s (attempt ${attempt}/${maxRetries - 1})`)
+            await new Promise(resolve => setTimeout(resolve, delayMs))
+            setRetryStatus('')
+            continue
+          }
+          // Final attempt failed or non-transient error
+          newErrors[key] = true
+          return fallback
         }
-        // Non-auth failure (backend/network/DB) — record it so the UI can
-        // show a real error state rather than a misleading empty dashboard.
-        anyError = true
-        return { data: fallback }
       }
+      newErrors[key] = true
+      return fallback
     }
 
     try {
       const [m, inq, surv, tick, inv] = await Promise.all([
-        safeGet('/admin/dashboard/metrics', {}),
-        safeGet('/admin/inquiries', []),
-        safeGet('/admin/site-surveys', []),
-        safeGet('/admin/tickets', []),
-        safeGet('/admin/invoices', []),
+        safeFetch('/admin/dashboard/metrics', {}, 'metrics'),
+        safeFetch('/admin/inquiries', [], 'inquiries'),
+        safeFetch('/admin/site-surveys', [], 'surveys'),
+        safeFetch('/admin/tickets', [], 'tickets'),
+        safeFetch('/admin/invoices', [], 'invoices'),
       ])
-      setLoadError(anyError)
-      setMetrics(m.data || {})
-      setInquiries(Array.isArray(inq.data) ? inq.data : [])
-      setSurveys(Array.isArray(surv.data) ? surv.data : [])
-      setTickets(Array.isArray(tick.data) ? tick.data : [])
-      setInvoices(Array.isArray(inv.data) ? inv.data : [])
+      setSectionErrors(newErrors)
+      setMetrics(m || {})
+      setInquiries(Array.isArray(inq) ? inq : [])
+      setSurveys(Array.isArray(surv) ? surv : [])
+      setTickets(Array.isArray(tick) ? tick : [])
+      setInvoices(Array.isArray(inv) ? inv : [])
     } catch (err) {
-      // safeGet already handled 401/403 above; other errors here are navigation-related
+      // 401/403 handled above
     } finally {
       setLoading(false)
+      setRetryStatus('')
     }
   }, [navigate])
 
@@ -547,12 +572,19 @@ export default function AdminDashboard() {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '60px 0', color: '#94A3B8' }}>Loading dashboard data...</div>
+          <div style={{ textAlign: 'center', padding: '60px 0', color: '#94A3B8' }}>
+            <div>Loading dashboard data...</div>
+            {retryStatus && (
+              <div style={{ marginTop: 10, fontSize: '0.8rem', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <RefreshCw size={13} style={{ animation: 'spin 1.2s linear infinite' }} />
+                {retryStatus}
+              </div>
+            )}
+          </div>
         ) : (
           <>
-            {/* Real error banner — shown when a dashboard API call failed for a
-                non-auth reason, so an empty dashboard is never mistaken for "no data". */}
-            {loadError && (
+            {/* Real error banner — shown when any dashboard API call failed for a non-auth reason */}
+            {Object.values(sectionErrors).some(Boolean) && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px', marginBottom: 20, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: 10 }}>
                 <AlertTriangle size={20} color="#F87171" />
                 <div style={{ flex: 1 }}>
@@ -643,78 +675,93 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
-                        <th style={{ padding: '12px' }}>Date</th>
-                        <th style={{ padding: '12px' }}>Client & Contact</th>
-                        <th style={{ padding: '12px' }}>Facility</th>
-                        <th style={{ padding: '12px' }}>Services Required</th>
-                        <th style={{ padding: '12px' }}>Status</th>
-                        <th style={{ padding: '12px', textAlign: 'right' }}>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredInquiries.map(inq => (
-                        <tr key={inq.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                          <td style={{ padding: '14px 12px', color: '#94A3B8', fontSize: '0.78rem' }}>{fmtDate(inq.createdAt)}</td>
-                          <td style={{ padding: '14px 12px' }}>
-                            <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{inq.clientName}</div>
-                            {inq.companyName && <div style={{ fontSize: '0.75rem', color: '#C5A03F' }}>{inq.companyName}</div>}
-                            <div style={{ fontSize: '0.78rem', color: '#94A3B8' }}>{inq.phone}</div>
-                          </td>
-                          <td style={{ padding: '14px 12px' }}>{inq.facilityType}</td>
-                          <td style={{ padding: '14px 12px' }}>{inq.servicesRequired?.join(', ')}</td>
-                          <td style={{ padding: '14px 12px' }}>
-                            <select
-                              value={inq.status}
-                              onChange={e => updateInquiryStatus(inq.id, e.target.value)}
-                              style={{
-                                background: '#0D2040',
-                                border: '1px solid rgba(197,160,63,0.3)',
-                                color: statusColor[inq.status] || '#FFFFFF',
-                                padding: '4px 8px',
-                                borderRadius: 6,
-                                fontSize: '0.75rem',
-                                fontWeight: 700
-                              }}
-                            >
-                              {INQUIRY_STATUSES.map(st => (
-                                <option key={st} value={st}>{st.replace(/_/g, ' ')}</option>
-                              ))}
-                            </select>
-                          </td>
-                          <td style={{ padding: '14px 12px', textAlign: 'right' }}>
-                            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                              <button
-                                onClick={() => setSurveyInquiry(inq)}
-                                title="Schedule Site Survey"
-                                style={{ padding: '5px 10px', borderRadius: 6, background: 'rgba(6,182,212,0.15)', border: '1px solid rgba(6,182,212,0.3)', color: '#06b6d4', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
-                              >
-                                Survey
-                              </button>
-                              <button
-                                onClick={() => openQuoteForLead(inq)}
-                                title="Create Formal Quotation"
-                                style={{ padding: '5px 10px', borderRadius: 6, background: 'rgba(197,160,63,0.15)', border: '1px solid rgba(197,160,63,0.3)', color: '#FBF6E0', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
-                              >
-                                Quote
-                              </button>
-                              <button
-                                onClick={() => deleteInquiry(inq.id)}
-                                title="Delete Lead"
-                                style={{ padding: '5px 8px', borderRadius: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer' }}
-                              >
-                                <Trash2 size={13} />
-                              </button>
-                            </div>
-                          </td>
+                {sectionErrors.inquiries ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#F87171' }}>
+                    <AlertCircle size={32} style={{ marginBottom: 8 }} />
+                    <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Failed to load leads from backend.</div>
+                    <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: 4, marginBottom: 16 }}>Check network or backend connection.</div>
+                    <button onClick={fetchAll} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <RefreshCw size={14} /> Retry Loading Leads
+                    </button>
+                  </div>
+                ) : filteredInquiries.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#94A3B8' }}>
+                    No leads or inquiries found.
+                  </div>
+                ) : (
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
+                          <th style={{ padding: '12px' }}>Date</th>
+                          <th style={{ padding: '12px' }}>Client & Contact</th>
+                          <th style={{ padding: '12px' }}>Facility</th>
+                          <th style={{ padding: '12px' }}>Services Required</th>
+                          <th style={{ padding: '12px' }}>Status</th>
+                          <th style={{ padding: '12px', textAlign: 'right' }}>Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {filteredInquiries.map(inq => (
+                          <tr key={inq.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                            <td style={{ padding: '14px 12px', color: '#94A3B8', fontSize: '0.78rem' }}>{fmtDate(inq.createdAt)}</td>
+                            <td style={{ padding: '14px 12px' }}>
+                              <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{inq.clientName}</div>
+                              {inq.companyName && <div style={{ fontSize: '0.75rem', color: '#C5A03F' }}>{inq.companyName}</div>}
+                              <div style={{ fontSize: '0.78rem', color: '#94A3B8' }}>{inq.phone}</div>
+                            </td>
+                            <td style={{ padding: '14px 12px' }}>{inq.facilityType}</td>
+                            <td style={{ padding: '14px 12px' }}>{inq.servicesRequired?.join(', ')}</td>
+                            <td style={{ padding: '14px 12px' }}>
+                              <select
+                                value={inq.status}
+                                onChange={e => updateInquiryStatus(inq.id, e.target.value)}
+                                style={{
+                                  background: '#0D2040',
+                                  border: '1px solid rgba(197,160,63,0.3)',
+                                  color: statusColor[inq.status] || '#FFFFFF',
+                                  padding: '4px 8px',
+                                  borderRadius: 6,
+                                  fontSize: '0.75rem',
+                                  fontWeight: 700
+                                }}
+                              >
+                                {INQUIRY_STATUSES.map(st => (
+                                  <option key={st} value={st}>{st.replace(/_/g, ' ')}</option>
+                                ))}
+                              </select>
+                            </td>
+                            <td style={{ padding: '14px 12px', textAlign: 'right' }}>
+                              <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                                <button
+                                  onClick={() => setSurveyInquiry(inq)}
+                                  title="Schedule Site Survey"
+                                  style={{ padding: '5px 10px', borderRadius: 6, background: 'rgba(6,182,212,0.15)', border: '1px solid rgba(6,182,212,0.3)', color: '#06b6d4', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                                >
+                                  Survey
+                                </button>
+                                <button
+                                  onClick={() => openQuoteForLead(inq)}
+                                  title="Create Formal Quotation"
+                                  style={{ padding: '5px 10px', borderRadius: 6, background: 'rgba(197,160,63,0.15)', border: '1px solid rgba(197,160,63,0.3)', color: '#FBF6E0', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                                >
+                                  Quote
+                                </button>
+                                <button
+                                  onClick={() => deleteInquiry(inq.id)}
+                                  title="Delete Lead"
+                                  style={{ padding: '5px 8px', borderRadius: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer' }}
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
 
@@ -725,7 +772,16 @@ export default function AdminDashboard() {
                   <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>Site Surveys & Field Inspections</h3>
                 </div>
 
-                {surveys.length === 0 ? (
+                {sectionErrors.surveys ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#F87171' }}>
+                    <AlertCircle size={32} style={{ marginBottom: 8 }} />
+                    <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Failed to load site surveys from backend.</div>
+                    <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: 4, marginBottom: 16 }}>Check network or backend connection.</div>
+                    <button onClick={fetchAll} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <RefreshCw size={14} /> Retry Loading Surveys
+                    </button>
+                  </div>
+                ) : surveys.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px 0', color: '#94A3B8' }}>
                     No site surveys scheduled yet. Go to "Leads" tab and click "Survey" on any lead to schedule one.
                   </div>
@@ -792,77 +848,92 @@ export default function AdminDashboard() {
             {/* SUPPORT TICKETS TAB */}
             {activeTab === 'tickets' && (
               <div className="glass-card" style={{ padding: 24 }}>
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
-                        <th style={{ padding: '12px' }}>Ticket #</th>
-                        <th style={{ padding: '12px' }}>Client</th>
-                        <th style={{ padding: '12px' }}>Issue Category</th>
-                        <th style={{ padding: '12px' }}>Priority</th>
-                        <th style={{ padding: '12px' }}>Status</th>
-                        <th style={{ padding: '12px' }}>Technician</th>
-                        <th style={{ padding: '12px', textAlign: 'right' }}>Del</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tickets.map(t => (
-                        <tr key={t.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                          <td style={{ padding: '14px 12px', fontFamily: 'monospace', fontWeight: 700, color: '#C5A03F' }}>{t.ticketNumber}</td>
-                          <td style={{ padding: '14px 12px' }}>
-                            <div style={{ fontWeight: 700 }}>{t.clientName}</div>
-                            <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{t.phone}</div>
-                          </td>
-                          <td style={{ padding: '14px 12px' }}>{t.issueCategory}</td>
-                          <td style={{ padding: '14px 12px' }}>
-                            <span style={{ color: priorityColor[t.priority] || '#FFFFFF', fontWeight: 700, fontSize: '0.75rem' }}>{t.priority}</span>
-                          </td>
-                          <td style={{ padding: '14px 12px' }}>
-                            <select
-                              value={t.status}
-                              onChange={e => updateTicketStatus(t.id, e.target.value)}
-                              style={{
-                                background: '#0D2040',
-                                border: '1px solid rgba(197,160,63,0.3)',
-                                color: statusColor[t.status] || '#FFFFFF',
-                                padding: '4px 8px',
-                                borderRadius: 6,
-                                fontSize: '0.75rem',
-                                fontWeight: 700
-                              }}
-                            >
-                              {TICKET_STATUSES.map(st => (
-                                <option key={st} value={st}>{st}</option>
-                              ))}
-                            </select>
-                          </td>
-                          <td style={{ padding: '14px 12px' }}>
-                            <input
-                              className="form-input"
-                              placeholder="Assign technician..."
-                              defaultValue={t.assignedTechnician || ''}
-                              onBlur={e => {
-                                if (e.target.value !== (t.assignedTechnician || '')) {
-                                  assignTechnician(t.id, e.target.value)
-                                }
-                              }}
-                              style={{ fontSize: '0.78rem', padding: '4px 8px', minWidth: 140 }}
-                            />
-                          </td>
-                          <td style={{ padding: '14px 12px', textAlign: 'right' }}>
-                            <button
-                              onClick={() => deleteTicket(t.id)}
-                              title="Delete Ticket"
-                              style={{ padding: '5px 8px', borderRadius: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer' }}
-                            >
-                              <Trash2 size={13} />
-                            </button>
-                          </td>
+                {sectionErrors.tickets ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#F87171' }}>
+                    <AlertCircle size={32} style={{ marginBottom: 8 }} />
+                    <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Failed to load support tickets from backend.</div>
+                    <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: 4, marginBottom: 16 }}>Check network or backend connection.</div>
+                    <button onClick={fetchAll} className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <RefreshCw size={14} /> Retry Loading Tickets
+                    </button>
+                  </div>
+                ) : tickets.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#94A3B8' }}>
+                    No support tickets filed yet.
+                  </div>
+                ) : (
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
+                          <th style={{ padding: '12px' }}>Ticket #</th>
+                          <th style={{ padding: '12px' }}>Client</th>
+                          <th style={{ padding: '12px' }}>Issue Category</th>
+                          <th style={{ padding: '12px' }}>Priority</th>
+                          <th style={{ padding: '12px' }}>Status</th>
+                          <th style={{ padding: '12px' }}>Technician</th>
+                          <th style={{ padding: '12px', textAlign: 'right' }}>Del</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {tickets.map(t => (
+                          <tr key={t.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                            <td style={{ padding: '14px 12px', fontFamily: 'monospace', fontWeight: 700, color: '#C5A03F' }}>{t.ticketNumber}</td>
+                            <td style={{ padding: '14px 12px' }}>
+                              <div style={{ fontWeight: 700 }}>{t.clientName}</div>
+                              <div style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{t.phone}</div>
+                            </td>
+                            <td style={{ padding: '14px 12px' }}>{t.issueCategory}</td>
+                            <td style={{ padding: '14px 12px' }}>
+                              <span style={{ color: priorityColor[t.priority] || '#FFFFFF', fontWeight: 700, fontSize: '0.75rem' }}>{t.priority}</span>
+                            </td>
+                            <td style={{ padding: '14px 12px' }}>
+                              <select
+                                value={t.status}
+                                onChange={e => updateTicketStatus(t.id, e.target.value)}
+                                style={{
+                                  background: '#0D2040',
+                                  border: '1px solid rgba(197,160,63,0.3)',
+                                  color: statusColor[t.status] || '#FFFFFF',
+                                  padding: '4px 8px',
+                                  borderRadius: 6,
+                                  fontSize: '0.75rem',
+                                  fontWeight: 700
+                                }}
+                              >
+                                {TICKET_STATUSES.map(st => (
+                                  <option key={st} value={st}>{st}</option>
+                                ))}
+                              </select>
+                            </td>
+                            <td style={{ padding: '14px 12px' }}>
+                              <input
+                                className="form-input"
+                                placeholder="Assign technician..."
+                                defaultValue={t.assignedTechnician || ''}
+                                onBlur={e => {
+                                  if (e.target.value !== (t.assignedTechnician || '')) {
+                                    assignTechnician(t.id, e.target.value)
+                                  }
+                                }}
+                                style={{ fontSize: '0.78rem', padding: '4px 8px', minWidth: 140 }}
+                              />
+                            </td>
+                            <td style={{ padding: '14px 12px', textAlign: 'right' }}>
+                              <button
+                                onClick={() => deleteTicket(t.id)}
+                                title="Delete Ticket"
+                                style={{ padding: '5px 8px', borderRadius: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)', color: '#f87171', cursor: 'pointer' }}
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
 
