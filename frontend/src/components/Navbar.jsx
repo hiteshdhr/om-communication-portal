@@ -332,7 +332,7 @@ export default function Navbar() {
           // Samsung-style: slide up on scroll-down, slide back on scroll-up.
           // Use `none` (not translateY(0)) when visible so the header never
           // becomes a containing block for its fixed descendants (mega menu).
-          transform: headerHidden ? 'translateY(-100%)' : 'none',
+          transform: 'none',
           willChange: 'transform',
           transition: [
             'transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)',
