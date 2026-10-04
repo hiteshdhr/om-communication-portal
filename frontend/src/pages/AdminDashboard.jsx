@@ -606,18 +606,14 @@ export default function AdminDashboard() {
 
           <div style={{ display: 'flex', gap: 12 }}>
             <button onClick={fetchAll} className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.8125rem' }}>
-              <RefreshCw size={14} /> Refresh Data
+              <RefreshCw size={14} /> Sync Data
             </button>
             {activeTab === 'invoices' && (
               <button onClick={() => { setSelectedDoc(null); setShowDocumentModal(true) }} className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.8125rem' }}>
                 <Plus size={15} /> Create Document
               </button>
             )}
-            {activeTab === 'settings' && (
-              <button onClick={fetchSettings} className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.8125rem' }}>
-                <RefreshCw size={14} /> Refresh
-              </button>
-            )}
+
           </div>
         </div>
 
@@ -1140,7 +1136,9 @@ export default function AdminDashboard() {
                     { key: 'log', label: 'Activity Log', icon: ClipboardList },
                   ].map(({ key, label, icon: Icon }) => (
                     <button key={key} onClick={() => { setSettingsTab(key); if ((key === 'business' || key === 'document') && !settingsData) fetchSettings() }}
-                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'none', border: 'none', cursor: 'pointer', borderBottom: settingsTab === key ? '2px solid #B4233C' : '2px solid transparent', color: settingsTab === key ? '#FFFFFF' : '#64748B', fontWeight: settingsTab === key ? 700 : 400, fontSize: '0.875rem', whiteSpace: 'nowrap', transition: 'all 0.15s' }}>
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'none', border: 'none', cursor: 'pointer', borderBottom: settingsTab === key ? '2px solid #B4233C' : '2px solid transparent', color: settingsTab === key ? '#FFFFFF' : '#64748B', fontWeight: settingsTab === key ? 700 : 500, fontSize: '0.875rem', whiteSpace: 'nowrap', transition: 'color 0.15s' }}
+                      onMouseEnter={e => { if (settingsTab !== key) e.currentTarget.style.color = '#CBD5E1' }}
+                      onMouseLeave={e => { if (settingsTab !== key) e.currentTarget.style.color = '#64748B' }}>
                       <Icon size={15} /> {label}
                     </button>
                   ))}
@@ -1230,14 +1228,14 @@ export default function AdminDashboard() {
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: 14 }}>
                             {[
-                              ['Quotation Prefix', settingsData.quotationPrefix, '#F59E0B'],
-                              ['Tax Invoice Prefix', settingsData.invoicePrefix, '#F87171'],
-                              ['Bill Prefix', settingsData.billPrefix, '#38BDF8'],
-                              ['Default GST Rate', `${settingsData.defaultGstRate}%`, '#4ADE80'],
-                            ].map(([label, value, color]) => (
-                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px' }}>
-                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>{label}</div>
-                                <code style={{ fontSize: '1rem', fontWeight: 700, color }}>{value}</code>
+                              ['Quotation Prefix', settingsData.quotationPrefix],
+                              ['Tax Invoice Prefix', settingsData.invoicePrefix],
+                              ['Bill Prefix', settingsData.billPrefix],
+                              ['Default GST Rate', `${settingsData.defaultGstRate}%`],
+                            ].map(([label, value]) => (
+                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '12px 16px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{label}</div>
+                                <code style={{ fontSize: '1rem', fontWeight: 700, color: '#E2E8F0', fontFamily: 'ui-monospace,monospace' }}>{value}</code>
                               </div>
                             ))}
                           </div>
@@ -1254,14 +1252,14 @@ export default function AdminDashboard() {
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(180px,1fr))', gap: 14 }}>
                             {[
-                              ['Total Documents', settingsData.totalDocuments, '#F87171'],
-                              ['Total Leads', settingsData.totalLeads, '#60A5FA'],
+                              ['Total Documents', settingsData.totalDocuments, '#60A5FA'],
+                              ['Total Leads', settingsData.totalLeads, '#34D399'],
                               ['Total Tickets', settingsData.totalTickets, '#FBBF24'],
                               ['Total Revenue', fmtCurrency(settingsData.totalRevenue), '#4ADE80'],
                             ].map(([label, value, color]) => (
-                              <div key={label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '14px 16px', textAlign: 'center' }}>
-                                <div style={{ fontSize: '1.375rem', fontWeight: 800, color }}>{value}</div>
-                                <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>{label}</div>
+                              <div key={label} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 10, padding: '18px 16px', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 2px 12px rgba(0,0,0,0.25)' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 800, color, letterSpacing: '-0.02em', lineHeight: 1.2 }}>{value}</div>
+                                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: '#94A3B8', marginTop: 8, textTransform: 'uppercase', letterSpacing: '0.07em' }}>{label}</div>
                               </div>
                             ))}
                           </div>
@@ -1417,34 +1415,44 @@ export default function AdminDashboard() {
 
       {/* Change Password Modal */}
       {showChangePwd && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.65)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
           onClick={e => { if (e.target === e.currentTarget) { setShowChangePwd(false); setChangePwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) } }}>
-          <div className="glass-card" style={{ width: '100%', maxWidth: 440, padding: 28, borderRadius: 14 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <Key size={18} color="#C5A03F" />
-                <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>Change Password</span>
+          <div style={{ width: '100%', maxWidth: 440, padding: 28, borderRadius: 16, background: '#FFFFFF', boxShadow: '0 25px 60px rgba(0,0,0,0.35)', border: '1px solid #E2E8F0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 38, height: 38, borderRadius: 9, background: 'rgba(180,35,60,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Key size={18} color="#B4233C" />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '1rem', color: '#111827', lineHeight: 1.2 }}>Change Password</div>
+                  <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: 2 }}>Minimum 8 characters required.</div>
+                </div>
               </div>
               <button onClick={() => { setShowChangePwd(false); setChangePwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748B', padding: 4 }}><X size={18} /></button>
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9CA3AF', padding: 6, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#F3F4F6'}
+                onMouseLeave={e => e.currentTarget.style.background = 'none'}><X size={18} /></button>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {[
-                { key: 'currentPassword', label: 'Current Password', show: showPwdCurrent, toggle: () => setShowPwdCurrent(v => !v) },
-                { key: 'newPassword', label: 'New Password', show: showPwdNew, toggle: () => setShowPwdNew(v => !v) },
-                { key: 'confirmPassword', label: 'Confirm New Password', show: showPwdConfirm, toggle: () => setShowPwdConfirm(v => !v) },
-              ].map(({ key, label, show, toggle }) => (
+                { key: 'currentPassword', label: 'Current Password', placeholder: 'Enter current password', show: showPwdCurrent, toggle: () => setShowPwdCurrent(v => !v) },
+                { key: 'newPassword', label: 'New Password', placeholder: 'At least 8 characters', show: showPwdNew, toggle: () => setShowPwdNew(v => !v) },
+                { key: 'confirmPassword', label: 'Confirm New Password', placeholder: 'Re-enter new password', show: showPwdConfirm, toggle: () => setShowPwdConfirm(v => !v) },
+              ].map(({ key, label, placeholder, show, toggle }) => (
                 <div key={key}>
-                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#94A3B8', marginBottom: 6 }}>{label}</label>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 0, background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 8 }}>
+                  <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#374151', marginBottom: 6, letterSpacing: '0.01em' }}>{label}</label>
+                  <div style={{ display: 'flex', alignItems: 'center', background: '#F9FAFB', border: '1.5px solid #E5E7EB', borderRadius: 8 }}
+                    onFocusCapture={e => e.currentTarget.style.borderColor = '#B4233C'}
+                    onBlurCapture={e => e.currentTarget.style.borderColor = '#E5E7EB'}>
                     <input
                       type={show ? 'text' : 'password'}
                       value={changePwdForm[key]}
                       onChange={e => setChangePwdForm(f => ({ ...f, [key]: e.target.value }))}
                       autoComplete={key === 'currentPassword' ? 'current-password' : 'new-password'}
-                      style={{ flex: 1, background: 'none', border: 'none', outline: 'none', padding: '10px 14px', color: 'var(--text-primary)', fontSize: '0.9375rem' }}
+                      placeholder={placeholder}
+                      style={{ flex: 1, background: 'none', border: 'none', outline: 'none', padding: '11px 14px', color: '#111827', fontSize: '0.9375rem' }}
                     />
-                    <button type="button" onClick={toggle} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 12px', color: '#64748B' }}>
+                    <button type="button" onClick={toggle} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 12px', color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
                       {show ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
@@ -1452,13 +1460,19 @@ export default function AdminDashboard() {
               ))}
             </div>
             {changePwdForm.newPassword && changePwdForm.confirmPassword && changePwdForm.newPassword !== changePwdForm.confirmPassword && (
-              <div style={{ marginTop: 10, fontSize: '0.8125rem', color: '#F87171' }}>Passwords do not match.</div>
+              <div style={{ marginTop: 12, fontSize: '0.8125rem', color: '#DC2626', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span>&#x2715;</span> Passwords do not match.
+              </div>
             )}
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
+            <div style={{ display: 'flex', gap: 10, marginTop: 24, justifyContent: 'flex-end' }}>
               <button onClick={() => { setShowChangePwd(false); setChangePwdForm({ currentPassword: '', newPassword: '', confirmPassword: '' }) }}
-                className="btn-secondary" style={{ flex: 1, padding: '10px 0' }}>Cancel</button>
+                style={{ padding: '10px 20px', borderRadius: 8, background: 'none', border: '1.5px solid #D1D5DB', color: '#374151', fontWeight: 600, fontSize: '0.875rem', cursor: 'pointer', transition: 'background 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#F9FAFB'}
+                onMouseLeave={e => e.currentTarget.style.background = 'none'}>Cancel</button>
               <button onClick={changePassword} disabled={changePwdLoading}
-                className="btn-primary" style={{ flex: 1, padding: '10px 0', opacity: changePwdLoading ? 0.6 : 1 }}>
+                style={{ padding: '10px 22px', borderRadius: 8, background: changePwdLoading ? '#9CA3AF' : '#B4233C', border: 'none', color: '#FFFFFF', fontWeight: 700, fontSize: '0.875rem', cursor: changePwdLoading ? 'not-allowed' : 'pointer', transition: 'background 0.15s' }}
+                onMouseEnter={e => { if (!changePwdLoading) e.currentTarget.style.background = '#9B1D30' }}
+                onMouseLeave={e => { if (!changePwdLoading) e.currentTarget.style.background = '#B4233C' }}>
                 {changePwdLoading ? 'Saving…' : 'Change Password'}
               </button>
             </div>
