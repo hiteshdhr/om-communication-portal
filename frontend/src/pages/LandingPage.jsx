@@ -1,10 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion'
-import {
-  Camera, PhoneCall, DoorOpen, Fingerprint, Network, Wrench,
-  Shield, CheckCircle2, ArrowRight, ChevronRight, Phone, MessageCircle, Clock, Settings
-} from 'lucide-react'
+import { ChevronRight, Phone, MessageCircle } from 'lucide-react'
 
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -302,9 +299,9 @@ function EditorialProblemStories() {
   )
 }
 
-// ─── Component: AMC Section (Clean Light Layout) ──────────────────────────────
+// ─── Component: AMC Section (Editorial 2-Column Split) ────────────────────────
 function AMCSection() {
-  const sectionRef  = useRef(null)
+  const sectionRef   = useRef(null)
   const headerInView = useInView(sectionRef, { once: true, margin: '-60px' })
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
@@ -316,11 +313,23 @@ function AMCSection() {
     return () => mq.removeEventListener('change', h)
   }, [])
 
-  const AMC_STEPS = [
-    { label: 'INSTALL', sub: 'Site-engineered installation to spec', icon: Wrench },
-    { label: 'MAINTAIN', sub: 'Scheduled quarterly preventive audits', icon: CheckCircle2 },
-    { label: 'MONITOR', sub: 'Voltage, lens & storage health checks', icon: Shield },
-    { label: 'SUPPORT', sub: 'Priority emergency technician dispatch', icon: Clock },
+  const AMC_COVERAGE = [
+    {
+      service: 'PREVENTIVE AUDIT',
+      detail: 'Quarterly on-site inspection of all camera mounts, lens focus, and NVR storage disks.',
+    },
+    {
+      service: 'EMERGENCY DISPATCH',
+      detail: 'Priority technician response within 4 hours for critical system failure.',
+    },
+    {
+      service: 'CABLE & TERMINATION CHECK',
+      detail: 'Annual re-inspection of all conduit raceways, junction boxes, and crimp terminations.',
+    },
+    {
+      service: 'VOLTAGE & POWER HEALTH',
+      detail: 'UPS battery testing, supply voltage verification, and surge suppressor condition review.',
+    },
   ]
 
   return (
@@ -335,93 +344,85 @@ function AMCSection() {
       }}
     >
       <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
-        {/* Section heading — fade + slide */}
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: prefersReducedMotion ? 0.15 : 0.55, ease: EASE_STANDARD }}
-          style={{ textAlign: 'center', marginBottom: 44 }}
-        >
-          <div className="eyebrow" style={{ justifyContent: 'center' }}>Annual Maintenance Contracts</div>
-          <h2
-            id="amc-heading"
-            style={{
-              fontFamily: "'Manrope', 'Inter', sans-serif",
-              fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-              fontWeight: 900,
-              color: 'var(--text-primary)',
-              letterSpacing: '-0.03em',
-              margin: '0 0 10px',
-            }}
-          >
-            Security doesn't end at installation.
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: 580, margin: '0 auto', lineHeight: 1.6 }}>
-            Dust accumulation, power surges, and cable oxidation are primary causes of sudden footage loss. Our structured AMC plans deliver consistent recording reliability.
-          </p>
-        </motion.div>
-
-        {/* Process Steps Grid — staggered card reveal */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 16,
-          marginBottom: 36,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gap: 'clamp(36px, 5vw, 72px)',
+          alignItems: 'start',
         }}>
-          {AMC_STEPS.map((step, i) => (
-            <motion.div
-              key={step.label}
-              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 22, scale: 0.98 }}
-              animate={headerInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{
-                duration: prefersReducedMotion ? 0.15 : 0.5,
-                delay: prefersReducedMotion ? 0 : 0.15 + i * 0.075,
-                ease: EASE_STANDARD,
-              }}
+
+          {/* Left: Editorial header + CTA */}
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: prefersReducedMotion ? 0.15 : 0.55, ease: EASE_STANDARD }}
+          >
+            <div className="eyebrow">Annual Maintenance Contracts</div>
+            <h2
+              id="amc-heading"
               style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border-light)',
-                borderRadius: 8,
-                padding: '24px 20px',
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+                fontFamily: "'Manrope', 'Inter', sans-serif",
+                fontSize: 'clamp(1.8rem, 4vw, 3rem)',
+                fontWeight: 900,
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.03em',
+                margin: '0 0 14px',
               }}
             >
-              <div style={{
-                width: 46,
-                height: 46,
-                borderRadius: '50%',
-                background: 'var(--red-light)',
-                border: '1px solid rgba(180, 35, 60, 0.25)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 12,
-              }}>
-                <step.icon size={20} color="#B4233C" />
-              </div>
-              <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-primary)', letterSpacing: '0.04em', marginBottom: 4 }}>
-                {step.label}
-              </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                {step.sub}
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              Security doesn't end at installation.
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.65, margin: '0 0 28px' }}>
+              Dust accumulation, power surges, and cable oxidation cause the majority of preventable footage loss events. A structured AMC contract converts unpredictable system failure into scheduled, documented maintenance.
+            </p>
+            <Link
+              to="/services/amc"
+              className="btn-primary"
+              style={{ fontSize: '0.9375rem', padding: '12px 28px', display: 'inline-flex' }}
+            >
+              Discuss Maintenance Support →
+            </Link>
+          </motion.div>
 
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: prefersReducedMotion ? 0.1 : 0.45, delay: prefersReducedMotion ? 0 : 0.5, ease: EASE_STANDARD }}
-          style={{ textAlign: 'center' }}
-        >
-          <Link to="/services/amc" className="btn-primary" style={{ fontSize: '0.9375rem', padding: '12px 28px' }}>
-            Discuss Maintenance Support →
-          </Link>
-        </motion.div>
+          {/* Right: Coverage rows — thin rule table */}
+          <div>
+            {AMC_COVERAGE.map((item, i) => (
+              <motion.div
+                key={item.service}
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 16 }}
+                animate={headerInView ? { opacity: 1, x: 0 } : {}}
+                transition={{
+                  duration: prefersReducedMotion ? 0.15 : 0.45,
+                  delay: prefersReducedMotion ? 0 : 0.1 + i * 0.09,
+                  ease: EASE_STANDARD,
+                }}
+                style={{
+                  borderTop: '1px solid var(--border-color)',
+                  borderBottom: i === AMC_COVERAGE.length - 1 ? '1px solid var(--border-color)' : 'none',
+                  padding: '16px 0',
+                }}
+              >
+                <div style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  color: 'var(--red-primary)',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  marginBottom: 4,
+                }}>
+                  {item.service}
+                </div>
+                <div style={{
+                  fontSize: '0.875rem',
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.55,
+                }}>
+                  {item.detail}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+        </div>
       </div>
     </section>
   )

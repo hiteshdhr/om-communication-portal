@@ -39,8 +39,8 @@ export default function SolutionNavigator({ activeSectionId }) {
         background: 'rgba(4,12,26,0.95)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        borderBottom: '1px solid rgba(197,160,63,0.12)',
-        borderTop: '1px solid rgba(197,160,63,0.08)',
+        borderBottom: '1px solid rgba(180,35,60,0.15)',
+        borderTop: '1px solid rgba(180,35,60,0.08)',
       }}
     >
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
