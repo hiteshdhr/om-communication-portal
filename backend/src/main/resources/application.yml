@@ -109,6 +109,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/postgres-patch.sql
+      continue-on-error: true
   h2:
     console:
       enabled: false

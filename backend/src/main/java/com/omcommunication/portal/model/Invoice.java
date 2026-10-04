@@ -70,7 +70,7 @@ public class Invoice {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Valid
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<InvoiceItem> items = new ArrayList<>();
 
     @NotBlank(message = "Document type is required")

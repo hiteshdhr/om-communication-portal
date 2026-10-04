@@ -18,6 +18,14 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
     @Query("SELECT i.invoiceNumber FROM Invoice i WHERE i.invoiceNumber IS NOT NULL")
     List<String> findAllInvoiceNumbers();
 
+    /**
+     * Fetches all invoices with their line items in a single query, ordered newest first.
+     * Uses LEFT JOIN FETCH so invoices with no items are still returned.
+     * DISTINCT prevents duplicate Invoice rows from the join.
+     */
+    @Query("SELECT DISTINCT i FROM Invoice i LEFT JOIN FETCH i.items ORDER BY i.createdAt DESC")
+    List<Invoice> findAllWithItemsOrderByCreatedAtDesc();
+
     @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = :status")
     BigDecimal sumTotalAmountByStatus(@Param("status") Invoice.Status status);
 

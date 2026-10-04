@@ -7,7 +7,6 @@ import com.omcommunication.portal.repository.DocumentCounterRepository;
 import com.omcommunication.portal.repository.InvoiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -218,8 +217,15 @@ public class InvoiceService {
                 .orElseThrow(() -> new RuntimeException("Invoice not found: " + invoiceNumber));
     }
 
+    @Transactional(readOnly = true)
     public List<Invoice> getAllInvoices() {
-        return invoiceRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        return invoiceRepository.findAllWithItemsOrderByCreatedAtDesc();
+    }
+
+    /** Efficient COUNT(*) — does not load invoice entities or their items. */
+    @Transactional(readOnly = true)
+    public long countAllInvoices() {
+        return invoiceRepository.count();
     }
 
     @Transactional

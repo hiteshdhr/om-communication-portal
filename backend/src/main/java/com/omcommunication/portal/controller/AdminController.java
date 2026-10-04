@@ -265,7 +265,7 @@ public class AdminController {
         settings.put("databaseStatus", "Connected");
 
         // Stats
-        settings.put("totalDocuments", invoiceService.getAllInvoices().size());
+        settings.put("totalDocuments", invoiceService.countAllInvoices());
         settings.put("totalLeads", inquiryService.countTotal());
         settings.put("totalTickets", ticketService.getAllTickets().size());
         settings.put("totalRevenue", invoiceService.getTotalRevenue());
