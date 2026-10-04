@@ -29,6 +29,7 @@ import SolutionsPage from './pages/SolutionsPage'
 import InstallationPage from './pages/InstallationPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ContactPage from './pages/ContactPage'
+import LLMInfoPage from './pages/LLMInfoPage'
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('om_admin_token')
@@ -90,6 +91,7 @@ export default function App() {
         } />
 
         {/* Catch-all redirect */}
+        <Route path="/llm" element={<LLMInfoPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
