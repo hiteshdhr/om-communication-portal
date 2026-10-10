@@ -87,6 +87,9 @@ export default function Navbar() {
   const [activeMenu, setActiveMenu]       = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Phone pill hover state (desktop only)
+  const [phonePillHovered, setPhonePillHovered] = useState(false)
+
   // Scroll state — controls transparent vs solid appearance only
   const [scrolled, setScrolled] = useState(false)
   // Hide-on-scroll-down / reveal-on-scroll-up (Samsung-style header)
@@ -373,7 +376,7 @@ export default function Navbar() {
                 transition: 'opacity 0.35s ease',
               }}
             />
-            <div>
+            <div className="brand-wordmark">
               <div style={{
                 fontFamily: "'Manrope', 'Inter', sans-serif",
                 fontWeight: 900,
@@ -569,6 +572,8 @@ export default function Navbar() {
             <a
               href="tel:+917217715296"
               className="desktop-phone"
+              onMouseEnter={() => { if (!prefersReducedMotion) setPhonePillHovered(true) }}
+              onMouseLeave={() => setPhonePillHovered(false)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -576,17 +581,37 @@ export default function Navbar() {
                 textDecoration: 'none',
                 fontSize: '0.875rem',
                 fontWeight: 600,
-                color: navTextColor,
-                transition: 'color 0.3s ease',
+                padding: '6px 12px',
+                borderRadius: 20,
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
+                border: isTransparent
+                  ? '1px solid rgba(255,255,255,0.28)'
+                  : (phonePillHovered ? '1px solid var(--red-primary)' : '1px solid var(--border-light)'),
+                background: (!isTransparent && phonePillHovered) ? 'var(--red-light)' : 'transparent',
+                transition: prefersReducedMotion
+                  ? 'none'
+                  : 'background 0.22s ease, border-color 0.22s ease',
               }}
             >
-              <Phone size={14} color={isTransparent ? 'rgba(255,255,255,0.7)' : 'var(--red-primary)'} />
-              <span>+91 72177 15296</span>
+              <Phone
+                size={14}
+                color={isTransparent ? 'rgba(255,255,255,0.7)' : 'var(--red-primary)'}
+                style={{ flexShrink: 0 }}
+              />
+              <span style={{
+                color: isTransparent
+                  ? 'rgba(255,255,255,0.88)'
+                  : (phonePillHovered ? 'var(--red-primary)' : 'var(--text-primary)'),
+                transition: prefersReducedMotion ? 'none' : 'color 0.22s ease',
+              }}>
+                +91 72177 15296
+              </span>
             </a>
 
             <Link
               to="/quote"
-              className="btn-primary"
+              className="btn-primary desktop-quote"
               style={{
                 fontSize: '0.875rem',
                 padding: '8px 18px',
@@ -600,6 +625,32 @@ export default function Navbar() {
             >
               Get a Quote
             </Link>
+
+            {/* Mobile Call CTA — visible only on mobile (≤860px), hidden on desktop */}
+            <a
+              href="tel:+917217715296"
+              className="mobile-call-cta"
+              aria-label="Call OM Communication Works: +91 72177 15296"
+              style={{
+                display: 'none',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+                textDecoration: 'none',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: '#FFFFFF',
+                background: 'var(--red-primary)',
+                padding: '0 12px',
+                borderRadius: 8,
+                minHeight: 44,
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+            >
+              <Phone size={14} color="#FFFFFF" style={{ flexShrink: 0 }} />
+              <span>Call OCW</span>
+            </a>
 
             {/* Mobile Menu Button */}
             <button
@@ -1014,9 +1065,22 @@ export default function Navbar() {
       {/* ── Responsive CSS ─────────────────────────────────────────────────── */}
       <style>{`
         @media (max-width: 860px) {
-          .desktop-nav   { display: none !important; }
-          .desktop-phone { display: none !important; }
-          .mobile-toggle { display: block !important; }
+          .desktop-nav    { display: none !important; }
+          .desktop-phone  { display: none !important; }
+          .desktop-quote  { display: none !important; }
+          .mobile-toggle  { display: block !important; }
+          .mobile-call-cta { display: flex !important; }
+        }
+        /* Hide brand wordmark text on very small phones to prevent header overflow */
+        @media (max-width: 480px) {
+          .brand-wordmark { display: none !important; }
+        }
+        /* Respect reduced-motion: disable phone pill transitions */
+        @media (prefers-reduced-motion: reduce) {
+          .phone-pill,
+          .phone-pill span {
+            transition: none !important;
+          }
         }
       `}</style>
     </>
