@@ -147,7 +147,7 @@ export default function ComplaintDesk() {
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
                 padding: '36px'
               }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Client / Facility Name *</label>
                     <input className="form-input" placeholder="Your full name" value={form.clientName}
@@ -170,7 +170,7 @@ export default function ComplaintDesk() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginTop: 16 }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Service Category</label>
                     <select className="form-input" value={form.issueCategory}
@@ -243,7 +243,7 @@ export default function ComplaintDesk() {
                         border: `1px solid ${statusColors[trackResult.status]}40`
                       }}>{trackResult.status.replace('_', ' ')}</div>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
                       {[
                         ['Client', trackResult.clientName],
                         ['Category', trackResult.issueCategory || 'General'],

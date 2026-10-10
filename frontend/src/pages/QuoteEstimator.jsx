@@ -180,6 +180,11 @@ export default function QuoteEstimator() {
         }}
       />
       <Navbar />
+      <style>{`
+        @media (max-width: 480px) {
+          .quote-step-label { display: none !important; }
+        }
+      `}</style>
 
       <div style={{ maxWidth: 840, margin: '0 auto', padding: '110px 24px 80px' }}>
         <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Quote Estimator' }]} />
@@ -214,7 +219,7 @@ export default function QuoteEstimator() {
                 }}>
                   {i < step ? <CheckCircle2 size={16} /> : i + 1}
                 </div>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, marginTop: 6, color: i === step ? 'var(--red-primary)' : 'var(--text-secondary)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
+                <div className="quote-step-label" style={{ fontSize: '0.72rem', fontWeight: 600, marginTop: 6, color: i === step ? 'var(--red-primary)' : 'var(--text-secondary)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}>
                   {s}
                 </div>
               </div>
@@ -366,7 +371,7 @@ export default function QuoteEstimator() {
                 {services.includes('CCTV Surveillance') && (
                   <div style={{ background: 'var(--bg-surface)', padding: 18, borderRadius: 10, border: '1px solid var(--border-light)', marginBottom: 16 }}>
                     <div style={{ color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>CCTV Parameters</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
                       <div>
                         <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Approx. Number of Points</label>
                         <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={cctvScope.approxPoints} onChange={e => setCctvScope(s => ({ ...s, approxPoints: e.target.value }))}>
@@ -392,7 +397,7 @@ export default function QuoteEstimator() {
                 {services.includes('EPABX & Telecom') && (
                   <div style={{ background: 'var(--bg-surface)', padding: 18, borderRadius: 10, border: '1px solid var(--border-light)', marginBottom: 16 }}>
                     <div style={{ color: 'var(--red-primary)', fontWeight: 700, fontSize: '0.82rem', marginBottom: 10, textTransform: 'uppercase' }}>EPABX Parameters</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
                       <div>
                         <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 4 }}>Approx. Extension Lines</label>
                         <select className="form-input" style={{ fontSize: '0.85rem', padding: '8px 12px' }} value={epabxScope.approxLines} onChange={e => setEpabxScope(s => ({ ...s, approxLines: e.target.value }))}>
@@ -437,7 +442,7 @@ export default function QuoteEstimator() {
                   Our field engineers will reach out to schedule an on-site inspection:
                 </p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 16 }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Contact Person Name *</label>
                     <input
