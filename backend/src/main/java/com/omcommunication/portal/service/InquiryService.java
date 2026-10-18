@@ -43,6 +43,11 @@ public class InquiryService {
         return inquiryRepository.count();
     }
 
+    public Inquiry getById(UUID id) {
+        return inquiryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inquiry not found: " + id));
+    }
+
     public void deleteInquiry(UUID id) {
         if (!inquiryRepository.existsById(id)) {
             throw new RuntimeException("Inquiry not found: " + id);

@@ -30,6 +30,7 @@ import InstallationPage from './pages/InstallationPage'
 import ProjectsPage from './pages/ProjectsPage'
 import ContactPage from './pages/ContactPage'
 import LLMInfoPage from './pages/LLMInfoPage'
+import GetHelpPage from './pages/GetHelpPage'
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('om_admin_token')
@@ -78,6 +79,9 @@ export default function App() {
         <Route path="/installation" element={<InstallationPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/contact" element={<ContactPage />} />
+
+        {/* Service Portal — unified customer request entry */}
+        <Route path="/get-help" element={<GetHelpPage />} />
 
         {/* Dynamic Service Quote & Complaint Desk */}
         <Route path="/quote" element={<QuoteEstimator />} />

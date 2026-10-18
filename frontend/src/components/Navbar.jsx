@@ -542,6 +542,28 @@ export default function Navbar() {
             >
               AMC
             </Link>
+
+            <Link
+              to="/get-help"
+              style={{
+                textDecoration: 'none',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                color: location.pathname === '/get-help'
+                  ? (isTransparent ? '#fff' : 'var(--red-primary)')
+                  : (isTransparent ? 'rgba(255,255,255,0.88)' : 'var(--red-primary)'),
+                padding: '6px 14px',
+                borderRadius: 6,
+                border: isTransparent
+                  ? '1px solid rgba(255,255,255,0.32)'
+                  : '1px solid var(--border-red)',
+                background: isTransparent ? 'rgba(255,255,255,0.08)' : 'var(--bg-blush)',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Get Help
+            </Link>
           </nav>
 
           {/* ── Right Actions ── */}
@@ -768,6 +790,16 @@ export default function Navbar() {
                   >
                     <Phone size={15} color="var(--red-primary)" /> Call +91 72177 15296
                   </a>
+                  <Link to="/get-help" style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    gap: 8, padding: '10px 16px', borderRadius: 6,
+                    border: '1px solid var(--border-red)',
+                    background: 'var(--bg-blush)',
+                    textDecoration: 'none', color: 'var(--red-primary)',
+                    fontWeight: 700, fontSize: '0.9rem',
+                  }}>
+                    Get Help
+                  </Link>
                   <Link to="/quote" className="btn-primary" style={{ justifyContent: 'center' }}>
                     Get a Quotation
                   </Link>

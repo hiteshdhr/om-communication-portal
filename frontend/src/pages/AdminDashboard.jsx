@@ -49,6 +49,14 @@ const INQUIRY_STATUSES = [
   'NEW', 'CONTACTED', 'SITE_SURVEY', 'REQUIREMENT_CONFIRMED',
   'QUOTATION_PREPARING', 'QUOTED', 'NEGOTIATION', 'WON', 'LOST', 'CANCELLED', 'EXPIRED'
 ]
+
+function getRequestType(message) {
+  if (!message) return null
+  if (message.startsWith('[Installation / Addition Request]')) return { label: 'Installation', color: '#2563EB' }
+  if (message.startsWith('[Maintenance / AMC Enquiry]')) return { label: 'AMC', color: '#16A34A' }
+  if (message.startsWith('[New Project / Enterprise Enquiry]')) return { label: 'New Project', color: '#D97706' }
+  return null
+}
 const TICKET_STATUSES = ['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']
 const SURVEY_STATUSES = ['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']
 
@@ -775,6 +783,7 @@ export default function AdminDashboard() {
                         <tr style={{ borderBottom: '1px solid rgba(197,160,63,0.18)', color: '#94A3B8', textAlign: 'left' }}>
                           <th style={{ padding: '12px' }}>Date</th>
                           <th style={{ padding: '12px' }}>Client & Contact</th>
+                          <th style={{ padding: '12px' }}>Type</th>
                           <th style={{ padding: '12px' }}>Facility</th>
                           <th style={{ padding: '12px' }}>Services Required</th>
                           <th style={{ padding: '12px' }}>Status</th>
@@ -789,6 +798,20 @@ export default function AdminDashboard() {
                               <div style={{ fontWeight: 700, color: '#FFFFFF' }}>{inq.clientName}</div>
                               {inq.companyName && <div style={{ fontSize: '0.75rem', color: '#C5A03F' }}>{inq.companyName}</div>}
                               <div style={{ fontSize: '0.78rem', color: '#94A3B8' }}>{inq.phone}</div>
+                            </td>
+                            <td style={{ padding: '14px 12px' }}>
+                              {(() => {
+                                const rt = getRequestType(inq.message)
+                                return rt ? (
+                                  <span style={{
+                                    padding: '3px 9px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 700,
+                                    background: `${rt.color}18`, color: rt.color,
+                                    border: `1px solid ${rt.color}35`, whiteSpace: 'nowrap'
+                                  }}>{rt.label}</span>
+                                ) : (
+                                  <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Quote / General</span>
+                                )
+                              })()}
                             </td>
                             <td style={{ padding: '14px 12px' }}>{inq.facilityType}</td>
                             <td style={{ padding: '14px 12px' }}>{inq.servicesRequired?.join(', ')}</td>

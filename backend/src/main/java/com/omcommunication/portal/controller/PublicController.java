@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -77,6 +78,27 @@ public class PublicController {
                 "assignedTechnician", ticket.getAssignedTechnician() != null
                         ? ticket.getAssignedTechnician() : "Awaiting Assignment"
         ));
+    }
+
+    // ─── Track Inquiry by UUID ────────────────────────────────────────────────
+    // Returns minimal safe data (no PII). The UUID itself acts as the secret
+    // reference the customer saved from their success screen.
+    @GetMapping("/inquiries/track/{id}")
+    public ResponseEntity<?> trackInquiry(@PathVariable UUID id) {
+        try {
+            Inquiry inquiry = inquiryService.getById(id);
+            return ResponseEntity.ok(Map.of(
+                    "inquiryId", inquiry.getId().toString(),
+                    "status", inquiry.getStatus().name(),
+                    "servicesRequired", inquiry.getServicesRequired() != null
+                            ? inquiry.getServicesRequired() : List.of(),
+                    "facilityType", inquiry.getFacilityType() != null
+                            ? inquiry.getFacilityType() : "",
+                    "createdAt", inquiry.getCreatedAt().toString()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(Map.of("error", "Inquiry not found."));
+        }
     }
 
     // ─── Get Invoice for Payment Page (PII-minimized) ─────────────────────────
