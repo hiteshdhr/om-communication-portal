@@ -9,10 +9,10 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' }
 })
 
-// Attach JWT token to every admin request
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('om_admin_token')
-  if (token) {
+  const isLoginRequest = config.url?.includes('/auth/login')
+  if (token && !isLoginRequest) {
     config.headers.Authorization = `Bearer ${token}`
   }
   return config
