@@ -262,6 +262,11 @@ function SuccessScreen({ result, onReset }) {
               <Search size={15} /> Track This Ticket
             </Link>
           )}
+          {result.inquiryId && (
+            <Link to={`/complaint?track=${result.inquiryId}&type=inquiry`} className="btn-secondary" style={{ fontSize: '0.875rem' }}>
+              <Search size={15} /> Track This Request
+            </Link>
+          )}
           <button onClick={onReset} className="btn-secondary" style={{ fontSize: '0.875rem' }}>
             Submit Another Request
           </button>

@@ -809,7 +809,7 @@ export default function AdminDashboard() {
                                     border: `1px solid ${rt.color}35`, whiteSpace: 'nowrap'
                                   }}>{rt.label}</span>
                                 ) : (
-                                  <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Quote / General</span>
+                                  <span style={{ padding: '3px 9px', borderRadius: 6, fontSize: '0.7rem', fontWeight: 700, background: 'rgba(100,116,139,0.12)', color: '#64748B', border: '1px solid rgba(100,116,139,0.25)', whiteSpace: 'nowrap' }}>Quote / General</span>
                                 )
                               })()}
                             </td>
