@@ -5,9 +5,11 @@ import toast from 'react-hot-toast'
 import {
   Wrench, PlusCircle, ClipboardList, Building2, Camera, Phone, DoorOpen,
   Fingerprint, Network, ChevronRight, ChevronLeft, CheckCircle2, Send,
-  AlertCircle, ArrowLeft, Home, Factory, ShoppingBag, Briefcase, Search
+  AlertCircle, ArrowLeft, Home, Factory, ShoppingBag, Briefcase, Search, Settings
 } from 'lucide-react'
 import api from '../api'
+import imgResidential from '../assets/ocw/03-services/cctv/cctv-residential-installation.jpg'
+import imgCommercial from '../assets/ocw/04-industries/commercial/commercial-cctv-monitoring.jpg'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import SEO from '../components/SEO'
@@ -927,106 +929,212 @@ function ProjectForm({ onBack, onSubmitted }) {
   )
 }
 
-// ─── Path Selector ─────────────────────────────────────────────────────────────
-function PathSelector({ onSelect }) {
+// ─── Getting Started Selector (Option 4 Design) ────────────────────────────────
+const SITE_TYPES = [
+  {
+    id: 'home',
+    label: 'Home / Small Office',
+    description: 'For homes, apartments, small offices and individual installations.',
+    img: imgResidential,
+  },
+  {
+    id: 'business',
+    label: 'Business / Society / School / Factory',
+    description: 'For commercial buildings, housing societies, educational institutions and industrial sites.',
+    img: imgCommercial,
+  },
+]
+
+const ACTIONS = [
+  { id: 'new-installation', Icon: PlusCircle, label: 'New Installation', description: 'Set up a brand-new CCTV or security system.' },
+  { id: 'repair', Icon: Wrench, label: 'Repair or Fix an Issue', description: 'Resolve a fault with existing equipment.' },
+  { id: 'add-upgrade', Icon: Settings, label: 'Add or Upgrade', description: 'Add cameras or expand your current system.' },
+  { id: 'annual-maintenance', Icon: ClipboardList, label: 'Annual Maintenance', description: 'Request an AMC or routine service visit.' },
+]
+
+const PROCESS_STEPS = [
+  { num: 1, title: 'Tell us your requirement', detail: 'Quick details about your space and service needs' },
+  { num: 2, title: 'Our team reviews', detail: 'We assess the requirement and may contact you for more details' },
+  { num: 3, title: 'Get a response', detail: 'We share next steps, which may include a consultation or quotation' },
+]
+
+const ACTION_TO_PATH = {
+  'new-installation': 'installation',
+  'repair': 'repair',
+  'add-upgrade': 'installation',
+  'annual-maintenance': 'amc',
+}
+
+function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) {
+  const [siteType, setSiteType] = useState(initialSiteType || null)
+  const [action, setAction] = useState(initialAction || null)
+  const canContinue = siteType !== null && action !== null
+
   return (
     <div>
       <div style={{ marginBottom: 40 }}>
-        <div className="eyebrow">Customer Service Portal</div>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 900, margin: '0 0 12px', letterSpacing: '-0.025em' }}>
-          How can we help you?
+        <div className="eyebrow">Get Started</div>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 900, margin: '8px 0 12px', letterSpacing: '-0.025em' }}>
+          Find the right solution for your space
         </h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.65, maxWidth: 560, margin: 0 }}>
-          Choose the option that best describes what you need. Each path takes two to three minutes.
+          Tell us a little about your requirement. We&apos;ll guide you to the best option.
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 380px), 1fr))', gap: 16 }}>
-        {PATHS.map(({ id, Icon, title, description, examples, accentColor, outcome }) => (
-          <motion.button
-            key={id}
-            type="button"
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onSelect(id)}
-            style={{
-              background: 'var(--bg-card)', border: '1px solid var(--border-color)',
-              borderRadius: 14, padding: '28px', cursor: 'pointer', textAlign: 'left',
-              display: 'flex', flexDirection: 'column', gap: 16,
-              boxShadow: '0 2px 12px rgba(0,0,0,0.03)',
-              transition: 'border-color 0.2s, box-shadow 0.2s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = accentColor; e.currentTarget.style.boxShadow = `0 8px 24px rgba(0,0,0,0.08)` }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.03)' }}
-          >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-              <div style={{
-                width: 48, height: 48, borderRadius: 12, flexShrink: 0,
-                background: `${accentColor}14`,
-                border: `1px solid ${accentColor}30`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Icon size={22} color={accentColor} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, marginBottom: 36 }}>
+        {SITE_TYPES.map(({ id, label, description, img }) => {
+          const selected = siteType === id
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setSiteType(id)}
+              style={{
+                padding: 0, borderRadius: 14, cursor: 'pointer', textAlign: 'left', overflow: 'hidden',
+                border: `2px solid ${selected ? 'var(--red-primary)' : 'var(--border-color)'}`,
+                background: 'var(--bg-card)',
+                boxShadow: selected ? '0 0 0 3px rgba(180,35,60,0.12)' : '0 2px 12px rgba(0,0,0,0.04)',
+                transition: 'border-color 0.18s, box-shadow 0.18s',
+              }}
+            >
+              <div style={{ height: 180, overflow: 'hidden' }}>
+                <img
+                  src={img}
+                  alt={label}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
+                />
               </div>
-              <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: '0 0 6px', color: 'var(--text-primary)', lineHeight: 1.3 }}>
-                  {title}
-                </h3>
-                <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55 }}>
-                  {description}
-                </p>
+              <div style={{ padding: '16px 18px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: 4 }}>{label}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{description}</div>
+                </div>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                  background: selected ? 'var(--red-primary)' : 'var(--bg-surface)',
+                  border: selected ? 'none' : '1px solid var(--border-light)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.18s',
+                }}>
+                  <ChevronRight size={16} color={selected ? '#fff' : 'var(--text-muted)'} />
+                </div>
               </div>
-            </div>
-
-            <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 5 }}>
-              {examples.map(ex => (
-                <li key={ex} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: accentColor, flexShrink: 0 }} />
-                  {ex}
-                </li>
-              ))}
-            </ul>
-
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              paddingTop: 14, borderTop: '1px solid var(--border-light)',
-            }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>{outcome}</span>
-              <div style={{
-                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                background: `${accentColor}14`, border: `1px solid ${accentColor}30`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <ChevronRight size={15} color={accentColor} />
-              </div>
-            </div>
-          </motion.button>
-        ))}
+            </button>
+          )
+        })}
       </div>
 
-      <div style={{ marginTop: 36, padding: '18px 22px', background: 'var(--bg-surface)', borderRadius: 10, border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-        <div style={{ flex: 1, minWidth: 220 }}>
-          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3 }}>Already have a ticket number?</div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Track the status of an existing support ticket.</div>
+      <div style={{ marginBottom: 36 }}>
+        <h2 style={{ fontSize: '1.1rem', fontWeight: 800, margin: '0 0 14px', color: 'var(--text-primary)', letterSpacing: '-0.015em' }}>
+          What do you want to do?
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 12 }}>
+          {ACTIONS.map(({ id, Icon, label, description }) => {
+            const selected = action === id
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setAction(id)}
+                style={{
+                  padding: '18px 16px', borderRadius: 12, cursor: 'pointer', textAlign: 'left',
+                  border: `1.5px solid ${selected ? 'var(--red-primary)' : 'var(--border-color)'}`,
+                  background: selected ? 'rgba(180,35,60,0.04)' : 'var(--bg-card)',
+                  transition: 'all 0.15s',
+                  display: 'flex', flexDirection: 'column', gap: 10,
+                }}
+              >
+                <div style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: selected ? 'var(--red-primary)' : 'var(--bg-surface)',
+                  border: selected ? 'none' : '1px solid var(--border-light)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'all 0.15s',
+                }}>
+                  <Icon size={18} color={selected ? '#fff' : 'var(--text-muted)'} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-primary)', marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{description}</div>
+                </div>
+              </button>
+            )
+          })}
         </div>
-        <Link to="/complaint" className="btn-secondary" style={{ fontSize: '0.85rem', padding: '9px 20px', whiteSpace: 'nowrap' }}>
-          <Search size={14} /> Track a Ticket
-        </Link>
+      </div>
+
+      <div style={{ background: 'var(--bg-surface)', borderRadius: 14, border: '1px solid var(--border-light)', padding: '24px', marginBottom: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 20 }}>
+          {PROCESS_STEPS.map(({ num, title, detail }) => (
+            <div key={num} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                background: 'var(--red-primary)', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '0.85rem', fontWeight: 800,
+              }}>{num}</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: 4 }}>{title}</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{detail}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button
+          type="button"
+          className="btn-primary"
+          disabled={!canContinue}
+          onClick={() => onContinue({ siteType, action })}
+          style={{
+            padding: '14px 40px', fontSize: '1rem', fontWeight: 700,
+            opacity: canContinue ? 1 : 0.4, cursor: canContinue ? 'pointer' : 'default',
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+          }}
+        >
+          Continue <ChevronRight size={18} />
+        </button>
       </div>
     </div>
   )
 }
 
+// ─── Label maps for context chip ───────────────────────────────────────────────
+const SITE_TYPE_LABELS = {
+  home: 'Home / Small Office',
+  business: 'Business / Society / School / Factory',
+}
+
+const ACTION_LABELS = {
+  'new-installation': 'New Installation',
+  'repair': 'Repair or Fix an Issue',
+  'add-upgrade': 'Add or Upgrade',
+  'annual-maintenance': 'Annual Maintenance',
+}
+
 // ─── Page root ─────────────────────────────────────────────────────────────────
 export default function GetHelpPage() {
+  const [selection, setSelection] = useState({ siteType: null, action: null })
   const [selectedPath, setSelectedPath] = useState(null)
   const [submitted, setSubmitted] = useState(null)
+
+  function handleContinue({ siteType, action }) {
+    setSelection({ siteType, action })
+    setSelectedPath(ACTION_TO_PATH[action])
+  }
+
+  function handleBack() {
+    setSelectedPath(null)
+  }
 
   if (submitted) {
     return (
       <>
         <Navbar />
-        <SuccessScreen result={submitted} onReset={() => { setSubmitted(null); setSelectedPath(null) }} />
+        <SuccessScreen result={submitted} onReset={() => { setSubmitted(null); setSelectedPath(null); setSelection({ siteType: null, action: null }) }} />
         <Footer />
       </>
     )
@@ -1044,26 +1152,43 @@ export default function GetHelpPage() {
       <div style={{ maxWidth: 900, margin: '0 auto', padding: 'clamp(96px, 14vw, 120px) 20px 80px' }}>
         <Breadcrumbs items={[{ label: 'Home', path: '/' }, { label: 'Get Help' }]} />
 
+        {selectedPath && selection.siteType && (
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: 'var(--bg-surface)', border: '1px solid var(--border-light)',
+            borderRadius: 20, padding: '5px 12px', marginBottom: 20,
+            fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-secondary)',
+          }}>
+            <span>{SITE_TYPE_LABELS[selection.siteType]}</span>
+            <ChevronRight size={11} />
+            <span style={{ color: 'var(--text-primary)' }}>{ACTION_LABELS[selection.action]}</span>
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
           {!selectedPath ? (
             <motion.div key="selector" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}>
-              <PathSelector onSelect={setSelectedPath} />
+              <GettingStartedSelector
+                onContinue={handleContinue}
+                initialSiteType={selection.siteType}
+                initialAction={selection.action}
+              />
             </motion.div>
           ) : selectedPath === 'repair' ? (
             <motion.div key="repair" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}>
-              <RepairForm onBack={() => setSelectedPath(null)} onSubmitted={setSubmitted} />
+              <RepairForm onBack={handleBack} onSubmitted={setSubmitted} />
             </motion.div>
           ) : selectedPath === 'installation' ? (
             <motion.div key="installation" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}>
-              <InstallationForm onBack={() => setSelectedPath(null)} onSubmitted={setSubmitted} />
+              <InstallationForm onBack={handleBack} onSubmitted={setSubmitted} />
             </motion.div>
           ) : selectedPath === 'amc' ? (
             <motion.div key="amc" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}>
-              <AmcForm onBack={() => setSelectedPath(null)} onSubmitted={setSubmitted} />
+              <AmcForm onBack={handleBack} onSubmitted={setSubmitted} />
             </motion.div>
           ) : (
             <motion.div key="project" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}>
-              <ProjectForm onBack={() => setSelectedPath(null)} onSubmitted={setSubmitted} />
+              <ProjectForm onBack={handleBack} onSubmitted={setSubmitted} />
             </motion.div>
           )}
         </AnimatePresence>
