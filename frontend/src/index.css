@@ -569,3 +569,13 @@ h1, h2, h3, h4, h5, h6 {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+/* ─── Get Started page ──────────────────────────────────────────────── */
+.gs-action-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 620px) {
+  .gs-action-grid { grid-template-columns: repeat(2, 1fr); }
+}

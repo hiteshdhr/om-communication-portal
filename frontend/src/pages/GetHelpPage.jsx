@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -972,17 +972,17 @@ function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) 
 
   return (
     <div>
-      <div style={{ marginBottom: 40 }}>
+      <div style={{ marginBottom: 28 }}>
         <div className="eyebrow">Get Started</div>
-        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.6rem)', fontWeight: 900, margin: '8px 0 12px', letterSpacing: '-0.025em' }}>
+        <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 900, margin: '6px 0 10px', letterSpacing: '-0.025em' }}>
           Find the right solution for your space
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.65, maxWidth: 560, margin: 0 }}>
-          Tell us a little about your requirement. We&apos;ll guide you to the best option.
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.94rem', lineHeight: 1.6, maxWidth: 520, margin: 0 }}>
+          Tell us about your space and what you need. We&apos;ll guide you to the right form.
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, marginBottom: 36 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14, marginBottom: 24 }}>
         {SITE_TYPES.map(({ id, label, description, img }) => {
           const selected = siteType === id
           return (
@@ -991,33 +991,33 @@ function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) 
               type="button"
               onClick={() => setSiteType(id)}
               style={{
-                padding: 0, borderRadius: 14, cursor: 'pointer', textAlign: 'left', overflow: 'hidden',
+                padding: 0, borderRadius: 12, cursor: 'pointer', textAlign: 'left', overflow: 'hidden',
                 border: `2px solid ${selected ? 'var(--red-primary)' : 'var(--border-color)'}`,
                 background: 'var(--bg-card)',
-                boxShadow: selected ? '0 0 0 3px rgba(180,35,60,0.12)' : '0 2px 12px rgba(0,0,0,0.04)',
+                boxShadow: selected ? '0 0 0 3px rgba(180,35,60,0.10)' : '0 1px 6px rgba(0,0,0,0.04)',
                 transition: 'border-color 0.18s, box-shadow 0.18s',
               }}
             >
-              <div style={{ height: 180, overflow: 'hidden' }}>
+              <div style={{ height: 160, overflow: 'hidden' }}>
                 <img
                   src={img}
                   alt={label}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
                 />
               </div>
-              <div style={{ padding: '16px 18px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+              <div style={{ padding: '13px 16px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text-primary)', marginBottom: 4 }}>{label}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{description}</div>
+                  <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{description}</div>
                 </div>
                 <div style={{
-                  width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                  width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
                   background: selected ? 'var(--red-primary)' : 'var(--bg-surface)',
                   border: selected ? 'none' : '1px solid var(--border-light)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all 0.18s',
                 }}>
-                  <ChevronRight size={16} color={selected ? '#fff' : 'var(--text-muted)'} />
+                  <ChevronRight size={14} color={selected ? '#fff' : 'var(--text-muted)'} />
                 </div>
               </div>
             </button>
@@ -1025,11 +1025,11 @@ function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) 
         })}
       </div>
 
-      <div style={{ marginBottom: 36 }}>
-        <h2 style={{ fontSize: '1.1rem', fontWeight: 800, margin: '0 0 14px', color: 'var(--text-primary)', letterSpacing: '-0.015em' }}>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: '0.95rem', fontWeight: 800, margin: '0 0 12px', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
           What do you want to do?
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 12 }}>
+        <div className="gs-action-grid">
           {ACTIONS.map(({ id, Icon, label, description }) => {
             const selected = action === id
             return (
@@ -1038,25 +1038,25 @@ function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) 
                 type="button"
                 onClick={() => setAction(id)}
                 style={{
-                  padding: '18px 16px', borderRadius: 12, cursor: 'pointer', textAlign: 'left',
+                  padding: '14px 12px', borderRadius: 10, cursor: 'pointer', textAlign: 'left',
                   border: `1.5px solid ${selected ? 'var(--red-primary)' : 'var(--border-color)'}`,
                   background: selected ? 'rgba(180,35,60,0.04)' : 'var(--bg-card)',
                   transition: 'all 0.15s',
-                  display: 'flex', flexDirection: 'column', gap: 10,
+                  display: 'flex', flexDirection: 'column', gap: 8,
                 }}
               >
                 <div style={{
-                  width: 40, height: 40, borderRadius: 10,
+                  width: 34, height: 34, borderRadius: 8,
                   background: selected ? 'var(--red-primary)' : 'var(--bg-surface)',
                   border: selected ? 'none' : '1px solid var(--border-light)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   transition: 'all 0.15s',
                 }}>
-                  <Icon size={18} color={selected ? '#fff' : 'var(--text-muted)'} />
+                  <Icon size={16} color={selected ? '#fff' : 'var(--text-muted)'} />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-primary)', marginBottom: 3 }}>{label}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{description}</div>
+                  <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--text-primary)', marginBottom: 2 }}>{label}</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{description}</div>
                 </div>
               </button>
             )
@@ -1064,39 +1064,47 @@ function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) 
         </div>
       </div>
 
-      <div style={{ background: 'var(--bg-surface)', borderRadius: 14, border: '1px solid var(--border-light)', padding: '24px', marginBottom: 32 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 20 }}>
-          {PROCESS_STEPS.map(({ num, title, detail }) => (
-            <div key={num} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-              <div style={{
-                width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                background: 'var(--red-primary)', color: '#fff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.85rem', fontWeight: 800,
-              }}>{num}</div>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)', marginBottom: 4 }}>{title}</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{detail}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
+        <div style={{
+          position: 'absolute', top: 15, left: '16.66%', right: '16.66%',
+          height: 1, background: 'var(--border-light)',
+        }} />
+        {PROCESS_STEPS.map(({ num, title, detail }) => (
+          <div key={num} style={{
+            flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+            textAlign: 'center', padding: '0 6px', position: 'relative',
+          }}>
+            <div style={{
+              width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
+              background: 'var(--red-primary)', color: '#fff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '0.8rem', fontWeight: 800, marginBottom: 10,
+            }}>{num}</div>
+            <div style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--text-primary)', marginBottom: 3 }}>{title}</div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{detail}</div>
+          </div>
+        ))}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
         <button
           type="button"
           className="btn-primary"
           disabled={!canContinue}
           onClick={() => onContinue({ siteType, action })}
           style={{
-            padding: '14px 40px', fontSize: '1rem', fontWeight: 700,
-            opacity: canContinue ? 1 : 0.4, cursor: canContinue ? 'pointer' : 'default',
+            padding: '13px 40px', fontSize: '0.95rem', fontWeight: 700,
+            opacity: canContinue ? 1 : 0.38, cursor: canContinue ? 'pointer' : 'default',
             display: 'inline-flex', alignItems: 'center', gap: 8,
           }}
         >
-          Continue <ChevronRight size={18} />
+          Continue <ChevronRight size={17} />
         </button>
+        {!canContinue && (
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>
+            Select your space type and what you need above to continue
+          </p>
+        )}
       </div>
     </div>
   )
