@@ -1038,22 +1038,14 @@ function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) 
                 type="button"
                 onClick={() => setAction(id)}
                 style={{
-                  padding: '14px 12px', borderRadius: 10, cursor: 'pointer', textAlign: 'left',
+                  padding: '16px 14px', borderRadius: 10, cursor: 'pointer', textAlign: 'left',
                   border: `1.5px solid ${selected ? 'var(--red-primary)' : 'var(--border-color)'}`,
                   background: selected ? 'rgba(180,35,60,0.04)' : 'var(--bg-card)',
                   transition: 'all 0.15s',
-                  display: 'flex', flexDirection: 'column', gap: 8,
+                  display: 'flex', flexDirection: 'column', gap: 10,
                 }}
               >
-                <div style={{
-                  width: 34, height: 34, borderRadius: 8,
-                  background: selected ? 'var(--red-primary)' : 'var(--bg-surface)',
-                  border: selected ? 'none' : '1px solid var(--border-light)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  transition: 'all 0.15s',
-                }}>
-                  <Icon size={16} color={selected ? '#fff' : 'var(--text-muted)'} />
-                </div>
+                <Icon size={20} color={selected ? 'var(--red-primary)' : 'var(--text-muted)'} strokeWidth={1.6} />
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--text-primary)', marginBottom: 2 }}>{label}</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{description}</div>
@@ -1064,25 +1056,25 @@ function GettingStartedSelector({ onContinue, initialSiteType, initialAction }) 
         </div>
       </div>
 
-      <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
-        <div style={{
-          position: 'absolute', top: 15, left: '16.66%', right: '16.66%',
-          height: 1, background: 'var(--border-light)',
-        }} />
-        {PROCESS_STEPS.map(({ num, title, detail }) => (
-          <div key={num} style={{
-            flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
-            textAlign: 'center', padding: '0 6px', position: 'relative',
-          }}>
-            <div style={{
-              width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
-              background: 'var(--red-primary)', color: '#fff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.8rem', fontWeight: 800, marginBottom: 10,
-            }}>{num}</div>
-            <div style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--text-primary)', marginBottom: 3 }}>{title}</div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{detail}</div>
-          </div>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 0, marginBottom: 24 }}>
+        {PROCESS_STEPS.map(({ num, title, detail }, i) => (
+          <Fragment key={num}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start', gap: 10, minWidth: 0 }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+                background: 'var(--red-primary)', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '0.78rem', fontWeight: 800,
+              }}>{num}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--text-primary)', marginBottom: 2, lineHeight: 1.3 }}>{title}</div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>{detail}</div>
+              </div>
+            </div>
+            {i < 2 && (
+              <div style={{ flexShrink: 0, padding: '4px 8px', color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1 }}>→</div>
+            )}
+          </Fragment>
         ))}
       </div>
 
