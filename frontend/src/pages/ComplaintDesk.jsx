@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -106,37 +106,46 @@ export default function ComplaintDesk() {
   const [inquiryResult, setInquiryResult] = useState(null)
   const [inquiryLoading, setInquiryLoading] = useState(false)
 
+  const latestTicketReq = useRef(0)
+  const latestInquiryReq = useRef(0)
+
   async function fetchTicketById(id) {
+    const reqId = ++latestTicketReq.current
     setTicketLoading(true)
     setTicketResult(null)
     try {
       const { data } = await api.get(`/public/tickets/track/${id.trim().toUpperCase()}`)
+      if (reqId !== latestTicketReq.current) return
       setTicketResult(data)
     } catch (err) {
+      if (reqId !== latestTicketReq.current) return
       if (err.response?.status === 404) {
         toast.error('Ticket not found. Please verify your ticket number.')
       } else {
         toast.error('Unable to retrieve ticket status. Please try again.')
       }
     } finally {
-      setTicketLoading(false)
+      if (reqId === latestTicketReq.current) setTicketLoading(false)
     }
   }
 
   async function fetchInquiryById(id) {
+    const reqId = ++latestInquiryReq.current
     setInquiryLoading(true)
     setInquiryResult(null)
     try {
       const { data } = await api.get(`/public/inquiries/track/${id.trim()}`)
+      if (reqId !== latestInquiryReq.current) return
       setInquiryResult(data)
     } catch (err) {
+      if (reqId !== latestInquiryReq.current) return
       if (err.response?.status === 404) {
         toast.error('Reference not found. Please check the ID and try again.')
       } else {
         toast.error('Unable to retrieve request status. Please try again.')
       }
     } finally {
-      setInquiryLoading(false)
+      if (reqId === latestInquiryReq.current) setInquiryLoading(false)
     }
   }
 
