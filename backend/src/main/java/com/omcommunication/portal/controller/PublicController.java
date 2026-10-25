@@ -81,12 +81,16 @@ public class PublicController {
     }
 
     // ─── Track Inquiry by UUID ────────────────────────────────────────────────
-    // Returns minimal safe data (no PII). The UUID itself acts as the secret
-    // reference the customer saved from their success screen.
     @GetMapping("/inquiries/track/{id}")
-    public ResponseEntity<?> trackInquiry(@PathVariable UUID id) {
+    public ResponseEntity<?> trackInquiry(@PathVariable String id) {
+        UUID uuid;
         try {
-            Inquiry inquiry = inquiryService.getById(id);
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(Map.of("error", "Inquiry not found."));
+        }
+        try {
+            Inquiry inquiry = inquiryService.getById(uuid);
             return ResponseEntity.ok(Map.of(
                     "inquiryId", inquiry.getId().toString(),
                     "status", inquiry.getStatus().name(),
@@ -97,7 +101,10 @@ public class PublicController {
                     "createdAt", inquiry.getCreatedAt().toString()
             ));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(Map.of("error", "Inquiry not found."));
+            if (e.getMessage() != null && e.getMessage().startsWith("Inquiry not found")) {
+                return ResponseEntity.status(404).body(Map.of("error", "Inquiry not found."));
+            }
+            return ResponseEntity.status(500).body(Map.of("error", "Unable to retrieve request status."));
         }
     }
 

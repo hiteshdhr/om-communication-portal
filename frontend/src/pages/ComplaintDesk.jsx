@@ -38,6 +38,58 @@ const initialForm = {
   priority: 'MEDIUM', description: '', installationAddress: '',
 }
 
+function InquiryStatusResult({ inquiryResult }) {
+  const cfg = INQUIRY_STATUS[inquiryResult.status] || { color: '#6B7280', label: inquiryResult.status, next: '' }
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      style={{ marginTop: 24, background: 'var(--bg-surface)', borderRadius: 10, padding: 24, border: '1px solid var(--border-light)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+        <div>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Reference ID</div>
+          <div style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', wordBreak: 'break-all' }}>
+            {inquiryResult.inquiryId}
+          </div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: 6 }}>
+            Submitted: {new Date(inquiryResult.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+          </div>
+        </div>
+        <div style={{
+          padding: '6px 14px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap',
+          background: `${cfg.color}18`, color: cfg.color, border: `1px solid ${cfg.color}40`,
+        }}>{cfg.label}</div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 16 }}>
+        {inquiryResult.facilityType && (
+          <div style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '12px 14px', border: '1px solid var(--border-light)' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>Facility Type</div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>{inquiryResult.facilityType}</div>
+          </div>
+        )}
+        {inquiryResult.servicesRequired?.length > 0 && (
+          <div style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '12px 14px', border: '1px solid var(--border-light)', gridColumn: inquiryResult.facilityType ? 'auto' : '1 / -1' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Services</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {inquiryResult.servicesRequired.map(s => (
+                <span key={s} style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', borderRadius: 5, padding: '2px 8px' }}>{s}</span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {cfg.next && (
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: `${cfg.color}10`, border: `1px solid ${cfg.color}30`, borderRadius: 8, padding: '12px 14px' }}>
+          <ClipboardList size={15} color={cfg.color} style={{ marginTop: 1, flexShrink: 0 }} />
+          <span style={{ fontSize: '0.84rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+            <strong>Next step:</strong> {cfg.next}
+          </span>
+        </div>
+      )}
+    </motion.div>
+  )
+}
+
 export default function ComplaintDesk() {
   const [searchParams] = useSearchParams()
   const [form, setForm] = useState(initialForm)
@@ -54,6 +106,40 @@ export default function ComplaintDesk() {
   const [inquiryResult, setInquiryResult] = useState(null)
   const [inquiryLoading, setInquiryLoading] = useState(false)
 
+  async function fetchTicketById(id) {
+    setTicketLoading(true)
+    setTicketResult(null)
+    try {
+      const { data } = await api.get(`/public/tickets/track/${id.trim().toUpperCase()}`)
+      setTicketResult(data)
+    } catch (err) {
+      if (err.response?.status === 404) {
+        toast.error('Ticket not found. Please verify your ticket number.')
+      } else {
+        toast.error('Unable to retrieve ticket status. Please try again.')
+      }
+    } finally {
+      setTicketLoading(false)
+    }
+  }
+
+  async function fetchInquiryById(id) {
+    setInquiryLoading(true)
+    setInquiryResult(null)
+    try {
+      const { data } = await api.get(`/public/inquiries/track/${id.trim()}`)
+      setInquiryResult(data)
+    } catch (err) {
+      if (err.response?.status === 404) {
+        toast.error('Reference not found. Please check the ID and try again.')
+      } else {
+        toast.error('Unable to retrieve request status. Please try again.')
+      }
+    } finally {
+      setInquiryLoading(false)
+    }
+  }
+
   useEffect(() => {
     const trackParam = searchParams.get('track')
     const typeParam = searchParams.get('type')
@@ -62,9 +148,12 @@ export default function ComplaintDesk() {
     if (typeParam === 'inquiry') {
       setTrackType('inquiry')
       setInquiryId(trackParam)
+      fetchInquiryById(trackParam)
     } else {
       setTrackType('ticket')
-      setTicketId(trackParam.toUpperCase())
+      const id = trackParam.toUpperCase()
+      setTicketId(id)
+      fetchTicketById(id)
     }
   }, [searchParams])
 
@@ -88,35 +177,13 @@ export default function ComplaintDesk() {
   async function handleTicketTrack(e) {
     e.preventDefault()
     if (!ticketId.trim()) return
-    setTicketLoading(true)
-    setTicketResult(null)
-    try {
-      const { data } = await api.get(`/public/tickets/track/${ticketId.trim().toUpperCase()}`)
-      setTicketResult(data)
-    } catch {
-      toast.error('Ticket not found. Please verify your ticket number.')
-    } finally {
-      setTicketLoading(false)
-    }
+    await fetchTicketById(ticketId)
   }
 
   async function handleInquiryTrack(e) {
     e.preventDefault()
     if (!inquiryId.trim()) return
-    setInquiryLoading(true)
-    setInquiryResult(null)
-    try {
-      const { data } = await api.get(`/public/inquiries/track/${inquiryId.trim()}`)
-      setInquiryResult(data)
-    } catch (err) {
-      if (err.response?.status === 404) {
-        toast.error('Reference not found. Please check the ID and try again.')
-      } else {
-        toast.error('Unable to retrieve request status. Please try again.')
-      }
-    } finally {
-      setInquiryLoading(false)
-    }
+    await fetchInquiryById(inquiryId)
   }
 
   if (submitted) {
@@ -258,7 +325,7 @@ export default function ComplaintDesk() {
 
                 <div style={{ display: 'flex', gap: 6, marginBottom: 28, background: 'var(--bg-surface)', borderRadius: 8, padding: 4, border: '1px solid var(--border-light)' }}>
                   {[['ticket', 'Repair Ticket'], ['inquiry', 'Service Enquiry']].map(([id, label]) => (
-                    <button key={id} onClick={() => { setTrackType(id); setTicketResult(null); setInquiryResult(null) }} style={{
+                    <button type="button" key={id} onClick={() => { setTrackType(id); setTicketResult(null); setInquiryResult(null) }} style={{
                       flex: 1, padding: '8px 12px', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.82rem',
                       background: trackType === id ? 'var(--bg-card)' : 'transparent',
                       color: trackType === id ? 'var(--text-primary)' : 'var(--text-secondary)',
@@ -330,57 +397,7 @@ export default function ComplaintDesk() {
                       </button>
                     </div>
 
-                    {inquiryResult && (() => {
-                      const cfg = INQUIRY_STATUS[inquiryResult.status] || { color: '#6B7280', label: inquiryResult.status, next: '' }
-                      return (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                          style={{ marginTop: 24, background: 'var(--bg-surface)', borderRadius: 10, padding: 24, border: '1px solid var(--border-light)' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-                            <div>
-                              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Reference ID</div>
-                              <div style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', wordBreak: 'break-all' }}>
-                                {inquiryResult.inquiryId}
-                              </div>
-                              <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginTop: 6 }}>
-                                Submitted: {new Date(inquiryResult.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                              </div>
-                            </div>
-                            <div style={{
-                              padding: '6px 14px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap',
-                              background: `${cfg.color}18`, color: cfg.color, border: `1px solid ${cfg.color}40`,
-                            }}>{cfg.label}</div>
-                          </div>
-
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 16 }}>
-                            {inquiryResult.facilityType && (
-                              <div style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '12px 14px', border: '1px solid var(--border-light)' }}>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>Facility Type</div>
-                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>{inquiryResult.facilityType}</div>
-                              </div>
-                            )}
-                            {inquiryResult.servicesRequired?.length > 0 && (
-                              <div style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '12px 14px', border: '1px solid var(--border-light)', gridColumn: inquiryResult.facilityType ? 'auto' : '1 / -1' }}>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Services</div>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                                  {inquiryResult.servicesRequired.map(s => (
-                                    <span key={s} style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', background: 'var(--bg-surface)', border: '1px solid var(--border-light)', borderRadius: 5, padding: '2px 8px' }}>{s}</span>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-
-                          {cfg.next && (
-                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, background: `${cfg.color}10`, border: `1px solid ${cfg.color}30`, borderRadius: 8, padding: '12px 14px' }}>
-                              <ClipboardList size={15} color={cfg.color} style={{ marginTop: 1, flexShrink: 0 }} />
-                              <span style={{ fontSize: '0.84rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
-                                <strong>Next step:</strong> {cfg.next}
-                              </span>
-                            </div>
-                          )}
-                        </motion.div>
-                      )
-                    })()}
+                    {inquiryResult && <InquiryStatusResult inquiryResult={inquiryResult} />}
                   </form>
                 )}
               </div>

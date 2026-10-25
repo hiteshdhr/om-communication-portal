@@ -11,7 +11,7 @@ const api = axios.create({
 
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('om_admin_token')
-  const isLoginRequest = config.url?.includes('/auth/login')
+  const isLoginRequest = config.url === '/auth/login'
   if (token && !isLoginRequest) {
     config.headers.Authorization = `Bearer ${token}`
   }
